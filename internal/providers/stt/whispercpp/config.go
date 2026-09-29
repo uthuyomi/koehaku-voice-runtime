@@ -27,6 +27,7 @@ type RuntimeConfig struct {
 	QueueCapacity    int
 	InitTimeout      time.Duration
 	InferenceTimeout time.Duration
+	OpenVINODevice   string
 }
 
 func DefaultRuntimeConfig() RuntimeConfig {
@@ -61,6 +62,9 @@ func RuntimeConfigFromEnv(getenv func(string) string) (RuntimeConfig, error) {
 	}
 	if v := getenv("STT_LANGUAGE"); v != "" {
 		c.Language = v
+	}
+	if v := getenv("STT_OPENVINO_DEVICE"); v != "" {
+		c.OpenVINODevice = v
 	}
 	for key, dst := range map[string]*int{"STT_THREADS": &c.Threads, "STT_BEST_OF": &c.BestOf, "STT_BEAM_SIZE": &c.BeamSize, "STT_QUEUE_CAPACITY": &c.QueueCapacity} {
 		if v := getenv(key); v != "" {

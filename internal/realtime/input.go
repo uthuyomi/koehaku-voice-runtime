@@ -232,6 +232,7 @@ func (s *Session) endSpeech(valid bool) error {
 	s.interruptionChangedLocked()
 	s.input.attempted = false
 	s.transitionLocked(TurnPossibleEnd, "vad_end")
+	s.startSpeculationLocked()
 	s.wakeInputLocked()
 	return nil
 }
@@ -301,6 +302,11 @@ func (s *Session) AppendRealtimeAudio(data []byte) error {
 	}
 	s.observeInterruptionAudioLocked(data)
 	_, _ = s.inputAudioBuffer.Write(data)
+
+	if s.input.state == TurnSpeaking {
+		s.queueSpeculationPreviewLocked()
+	}
+
 	return nil
 }
 func (s *Session) commitTurnLocked(reason string) {

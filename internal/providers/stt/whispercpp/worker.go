@@ -145,9 +145,15 @@ type serverWorker struct {
 
 func commonArgs(c RuntimeConfig, device string) []string {
 	a := []string{"-m", c.ModelPath, "-l", c.Language, "-nt", "-t", strconv.Itoa(c.Threads), "-bo", strconv.Itoa(c.BestOf), "-bs", strconv.Itoa(c.BeamSize)}
+
 	if device == "cpu" {
 		a = append(a, "-ng")
 	}
+
+	if c.OpenVINODevice != "" {
+		a = append(a, "-oved", c.OpenVINODevice)
+	}
+
 	return a
 }
 func startWorker(ctx context.Context, c RuntimeConfig, device string) (worker, error) {
