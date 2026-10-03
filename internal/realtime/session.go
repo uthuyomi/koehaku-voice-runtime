@@ -12,6 +12,7 @@ import (
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/conversation"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
+	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
 )
 
@@ -41,6 +42,7 @@ type Session struct {
 	interruption        *interruptionRuntime
 	generationDone      bool
 	speculation         *speculationRuntime
+	streaming           *streamingSTTRuntime
 	conversation        *conversation.Runtime
 	conversationUpdates chan ConversationUpdate
 	responseContext     context.Context
@@ -48,6 +50,17 @@ type Session struct {
 	responseUsed        bool
 	generationTextOnly  bool
 	generationRequest   llm.Request
+}
+
+type streamingSTTRuntime struct {
+	provider   stt.StreamingProvider
+	stream     stt.Stream
+	epoch      uint64
+	turnID     string
+	latest     *stt.StreamResult
+	frozen     string
+	finalizing bool
+	workers    sync.WaitGroup
 }
 
 func NewSession(parent context.Context) *Session {
@@ -316,8 +329,14 @@ func (s *Session) NewInputResponseContext() context.Context {
 func (s *Session) closeRuntime() {
 	s.cancel()
 	s.CancelGeneration()
+	s.mu.Lock()
+	s.cancelStreamingTurnLocked()
+	s.mu.Unlock()
 	if s.input != nil {
 		<-s.input.done
+	}
+	if s.streaming != nil {
+		s.streaming.workers.Wait()
 	}
 	if s.speculation != nil {
 		s.speculation.workers.Wait()

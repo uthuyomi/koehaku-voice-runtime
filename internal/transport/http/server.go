@@ -32,6 +32,7 @@ type Server struct {
 	localOrigins        bool
 	engine              *engine.Engine
 	sttProvider         stt.Provider
+	streamingSTT        stt.StreamingProvider
 	speculativeSTT      *limited.Provider
 	speculationConfig   realtime.SpeculationConfig
 	llmProvider         llm.Provider
@@ -105,6 +106,7 @@ func (s *Server) SetSTTProvider(
 	if provider == nil {
 		s.sttProvider = nil
 		s.speculativeSTT = nil
+		s.streamingSTT = nil
 		return
 	}
 	// One shared process budget for legacy, committed and speculative requests.
@@ -114,6 +116,7 @@ func (s *Server) SetSTTProvider(
 	}
 	s.speculativeSTT = limited.New(provider, concurrency)
 	s.sttProvider = s.speculativeSTT
+	s.streamingSTT, _ = provider.(stt.StreamingProvider)
 }
 
 func (s *Server) SetSpeculationConfig(c realtime.SpeculationConfig) error {

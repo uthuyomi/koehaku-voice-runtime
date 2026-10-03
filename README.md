@@ -80,6 +80,22 @@ Missing TTS/STT/LLM disables the corresponding service. STT startup probing can 
 
 ## Browser Voice Demo
 
+For local Windows development, configure provider paths and credentials in the
+root `.env`, then start the complete Browser Voice stack with one command:
+
+```powershell
+./scripts/dev.ps1 nemotron
+# or the existing final-only path
+./scripts/dev.ps1 whisper
+```
+
+Nemotron performance logging defaults to enabled; use `-NoPerformance` to
+disable it. The launcher performs dependency, model, executable and port
+checks, builds the Engine and browser SDK, and starts Engine, Smart Turn and the
+loopback browser server. The Engine remains the sole owner of its persistent
+Nemotron worker. Open the printed Browser URL and press Ctrl+C in the launcher
+to stop the complete child-process tree.
+
 After provider setup, keep Smart Turn and the engine running. From the repository root:
 
 ```powershell

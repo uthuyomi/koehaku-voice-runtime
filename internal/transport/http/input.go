@@ -48,6 +48,10 @@ func (s *Server) consumeInputUpdates(session *realtime.Session, writer *realtime
 							return
 						}
 					}
+					if u.Transcript != nil {
+						s.handleInputTranscript(u.Context, session, writer, u.Transcript)
+						return
+					}
 					s.transcribeInputAudio(u.Context, session, writer, u.Audio, realtime.InputAudioFormatData{SampleRate: 16000, Channels: 1, Encoding: "pcm_s16le"})
 				})
 			}

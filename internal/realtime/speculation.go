@@ -329,6 +329,9 @@ func (s *Session) invalidateSpeculationLocked(reason string) {
 // Smart Turn still observes MinDelay before making the endpoint decision.
 func (s *Session) startSpeculationLocked() {
 	r := s.speculation
+	if s.streaming != nil && s.streaming.stream != nil {
+		return
+	}
 
 	if r == nil ||
 		!r.config.Enabled ||
@@ -463,6 +466,43 @@ func (s *Session) startSpeculationLocked() {
 	}
 
 	s.launchFinalSpeculationSTTLocked(w, launchPCM)
+}
+
+// startSpeculationFromTranscriptLocked reuses the existing private LLM buffer
+// and commit barrier while replacing only the snapshot STT stage.
+func (s *Session) startSpeculationFromTranscriptLocked(result stt.Result) {
+	r := s.speculation
+	if r == nil || !r.config.Enabled || s.ctx.Err() != nil || strings.TrimSpace(result.Text) == "" {
+		return
+	}
+	if r.busy || time.Since(r.lastAttempt) < r.config.Cooldown {
+		return
+	}
+	if r.attemptTurn != s.input.turnID {
+		r.attemptTurn = s.input.turnID
+		r.attempts = 0
+	}
+	if r.attempts >= r.config.MaxAttemptsPerTurn {
+		return
+	}
+	w := &speculativeWork{key: SpeculationKey{ID: newID("spec"), TurnID: s.input.turnID, Revision: s.input.epoch}, state: SpeculationRunning, started: time.Now(), result: &result}
+	w.ctx, w.cancel = context.WithCancel(s.ctx)
+	w.changed = make(chan struct{})
+	w.done = make(chan struct{})
+	r.current = w
+	r.lastAttempt = w.started
+	r.attempts++
+	r.busy = true
+	s.speculationEventLocked(w, "started", "llm", "streaming_vad_end")
+	w.timer = time.AfterFunc(r.config.Timeout, func() {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if r.current == w && w.ctx.Err() == nil && w.state != SpeculationPromoted {
+			s.endSpeculationLocked(w, SpeculationCancelled, "fallback", "timeout")
+		}
+	})
+	r.workers.Add(1)
+	go s.runSpeculationFromTranscript(w)
 }
 
 func (s *Session) launchFinalSpeculationSTTLocked(

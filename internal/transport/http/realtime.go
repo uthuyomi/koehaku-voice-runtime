@@ -13,6 +13,7 @@ import (
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
+	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
@@ -95,6 +96,11 @@ func (s *Server) handleRealtime(w http.ResponseWriter, r *http.Request) {
 		}
 		if session.ConfigureInterruption(s.backchannelProvider, s.interruptionConfig) != nil {
 			return
+		}
+		if s.streamingSTT != nil {
+			if session.ConfigureStreamingSTT(s.streamingSTT) != nil {
+				return
+			}
 		}
 		if s.speculativeSTT != nil && s.llmProvider != nil {
 			if session.ConfigureSpeculation(s.speculativeSTT, s.llmProvider, s.speculationConfig) != nil {
@@ -458,6 +464,13 @@ func (s *Server) transcribeInputAudio(
 			"STT provider returned no result",
 		)
 
+		return
+	}
+	s.handleInputTranscript(ctx, session, writer, result)
+}
+
+func (s *Server) handleInputTranscript(ctx context.Context, session *realtime.Session, writer *realtimeWriter, result *stt.Result) {
+	if result == nil || ctx.Err() != nil {
 		return
 	}
 

@@ -16,6 +16,8 @@ import (
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel/multisignal"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm/openai"
+	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/nemotron"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/whispercpp"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts/aquestalk"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection/smartturn"
@@ -86,20 +88,42 @@ func main() {
 	// STT: whisper.cpp
 	// --------------------------------------------------
 
-	sttConfig, sttConfigErr := whispercpp.RuntimeConfigFromEnv(os.Getenv)
-	var whisper *whispercpp.Runtime
-	if sttConfigErr != nil {
-		log.Println("STT unavailable: invalid runtime configuration")
+	providerName := strings.ToLower(strings.TrimSpace(os.Getenv("STT_PROVIDER")))
+	if providerName == "" {
+		providerName = "whisper"
+	}
+	var sttProvider stt.Provider
+	if providerName == "nemotron" {
+		config, configErr := nemotron.ConfigFromEnv(os.Getenv)
+		if configErr != nil {
+			log.Fatal("STT unavailable: invalid Nemotron configuration")
+		}
+		provider, providerErr := nemotron.New(engineContext, config)
+		if providerErr != nil {
+			log.Fatal("STT unavailable: Nemotron worker initialization failed")
+		}
+		defer provider.Close()
+		sttProvider = provider
+	} else if providerName == "whisper" {
+		sttConfig, sttConfigErr := whispercpp.RuntimeConfigFromEnv(os.Getenv)
+		if sttConfigErr != nil {
+			log.Println("STT unavailable: invalid runtime configuration")
+		} else {
+			whisper, providerErr := whispercpp.NewRuntime(engineContext, sttConfig)
+			if whisper != nil {
+				defer whisper.Close()
+				sttProvider = whisper
+			}
+			if providerErr != nil {
+				log.Println("STT unavailable: initialization failed")
+			}
+		}
 	} else {
-		whisper, err = whispercpp.NewRuntime(engineContext, sttConfig)
-		if whisper != nil {
-			defer whisper.Close()
-			info := whisper.RuntimeInfo()
-			log.Printf("STT runtime=%s requested_device=%s selected_device=%s model=%s persistent=%v available=%v fallback_from=%s fallback_reason=%s", info.Backend, info.RequestedDevice, info.SelectedDevice, info.Model, info.Persistent, info.Available, info.FallbackFrom, info.FallbackReason)
-		}
-		if err != nil {
-			log.Println("STT unavailable: initialization failed")
-		}
+		log.Fatal("STT_PROVIDER must be whisper or nemotron")
+	}
+	if sttProvider != nil {
+		info := stt.Describe(sttProvider)
+		log.Printf("STT runtime=%s requested_device=%s selected_device=%s model=%s persistent=%v available=%v fallback_from=%s fallback_reason=%s", info.Backend, info.RequestedDevice, info.SelectedDevice, info.Model, info.Persistent, info.Available, info.FallbackFrom, info.FallbackReason)
 	}
 	if engineContext.Err() != nil {
 		return
@@ -145,8 +169,8 @@ func main() {
 		e,
 	)
 
-	if whisper != nil {
-		server.SetSTTProvider(whisper)
+	if sttProvider != nil {
+		server.SetSTTProvider(sttProvider)
 	}
 
 	if openAIProvider != nil {

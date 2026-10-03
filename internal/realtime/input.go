@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
 )
 
@@ -53,6 +54,7 @@ type InputUpdate struct {
 	Error          string              `json:"error,omitempty"`
 	Audio          []byte              `json:"-"`
 	Context        context.Context     `json:"-"`
+	Transcript     *stt.Result         `json:"-"`
 }
 type inputRuntime struct {
 	provider       turndetection.Provider
@@ -182,12 +184,19 @@ func (s *Session) SpeechStartWithInterruption(generation, id string) error {
 		s.responseCancel = nil
 	}
 	freshTurn := s.input.state == TurnListening
+	restartStreaming := s.streaming != nil && s.streaming.finalizing
+	if restartStreaming {
+		s.cancelStreamingTurnLocked()
+	}
 	if freshTurn {
 		s.input.turnID = newID("turn")
 		s.input.hasSpeech = false
 	}
 	s.invalidateInputLocked()
 	s.transitionLocked(TurnSpeaking, "vad_start")
+	if freshTurn || restartStreaming {
+		s.startStreamingTurnLocked(s.inputAudioBuffer.Bytes())
+	}
 	if s.interruptionPendingLocked() {
 		s.interruption.resumed = true
 		if generation == s.generationID && id != "" {
@@ -215,6 +224,7 @@ func (s *Session) endSpeech(valid bool) error {
 		return nil
 	} // duplicate end cannot extend the deadline
 	if !valid && !s.input.hasSpeech {
+		s.cancelStreamingTurnLocked()
 		if s.interruptionPendingLocked() {
 			s.recoverInterruptionLocked(backchannel.FalseInterruption, "vad_misfire")
 			return nil
@@ -232,13 +242,16 @@ func (s *Session) endSpeech(valid bool) error {
 	s.interruptionChangedLocked()
 	s.input.attempted = false
 	s.transitionLocked(TurnPossibleEnd, "vad_end")
-	s.startSpeculationLocked()
+	if !s.startStreamingSpeculationLocked() {
+		s.startSpeculationLocked()
+	}
 	s.wakeInputLocked()
 	return nil
 }
 func (s *Session) CancelInput(stop bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.cancelStreamingTurnLocked()
 	if s.input == nil || s.inputAudioFormat.Mode != "realtime" {
 		if s.responseCancel != nil {
 			s.responseCancel()
@@ -302,6 +315,12 @@ func (s *Session) AppendRealtimeAudio(data []byte) error {
 	}
 	s.observeInterruptionAudioLocked(data)
 	_, _ = s.inputAudioBuffer.Write(data)
+	if s.streaming != nil && s.streaming.stream != nil && s.input.state != TurnListening {
+		if err := s.streaming.stream.WritePCM(s.ctx, data); err != nil {
+			s.inputNotifyLocked(InputUpdate{State: s.input.state, TurnID: s.input.turnID, Error: err.Error(), Reason: "streaming_stt_failed"})
+			s.cancelStreamingTurnLocked()
+		}
+	}
 
 	if s.input.state == TurnSpeaking {
 		s.queueSpeculationPreviewLocked()
@@ -310,6 +329,13 @@ func (s *Session) AppendRealtimeAudio(data []byte) error {
 	return nil
 }
 func (s *Session) commitTurnLocked(reason string) {
+	if s.beginStreamingFinalizeLocked(reason) {
+		return
+	}
+	s.commitTurnReadyLocked(reason, nil)
+}
+
+func (s *Session) commitTurnReadyLocked(reason string, transcript *stt.Result) {
 	if s.interruptionPendingLocked() {
 		s.input.endpointReady = true
 		s.input.endpointReason = reason
@@ -333,7 +359,7 @@ func (s *Session) commitTurnLocked(reason string) {
 	}
 	ctx := s.newInputResponseContextLocked(s.input.turnID)
 	s.input.state = TurnComplete
-	s.inputNotifyLocked(InputUpdate{State: TurnComplete, TurnID: s.input.turnID, Reason: reason, Audio: s.inputAudioBuffer.Bytes(), Context: ctx, SpeculationKey: key})
+	s.inputNotifyLocked(InputUpdate{State: TurnComplete, TurnID: s.input.turnID, Reason: reason, Audio: s.inputAudioBuffer.Bytes(), Context: ctx, SpeculationKey: key, Transcript: transcript})
 	// Transfer backing storage to STT, rather than copying the whole utterance.
 	s.inputAudioBuffer = bytes.Buffer{}
 	s.input.turnID = ""

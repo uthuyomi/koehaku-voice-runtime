@@ -26,6 +26,25 @@ The default runtime is persistent, final-only, small model, Japanese. It owns on
 
 Device selection never changes the model. `STT_MODEL` selects a known filename pattern, while `STT_MODEL_PATH` supports a supplied custom model. No model is bundled or auto-downloaded at Engine startup. A missing executable/model makes STT unavailable. Cancellation/error kills and waits for the child; the next eligible request reloads it. Initialization failures require Engine restart. See [configuration](configuration.md) for queue/resource bounds.
 
+## Nemotron streaming STT
+
+Set `STT_PROVIDER=nemotron` to enable the optional streaming fast path. The engine starts one persistent localhost worker, loads the sherpa-onnx Nemotron 3.5 Streaming ASR 0.6B 560 ms INT8 model once, and creates an `OnlineStream` for each turn. Browser PCM remains 16 kHz mono PCM16 and is sent in bounded binary frames; partial transcripts stay internal. VAD end starts the existing speculative LLM from the current transcript, while Smart Turn remains the commit authority and finalizes the stream. Promotion requires the trimmed speculative and final transcripts to match exactly.
+
+Build `sherpa-onnx-nemotron-worker` in the sherpa-onnx tree, then configure:
+
+```dotenv
+STT_PROVIDER=nemotron
+NEMOTRON_WORKER_EXECUTABLE=C:\path\to\sherpa-onnx-nemotron-worker.exe
+NEMOTRON_ENCODER=C:\path\to\encoder.int8.onnx
+NEMOTRON_DECODER=C:\path\to\decoder.int8.onnx
+NEMOTRON_JOINER=C:\path\to\joiner.int8.onnx
+NEMOTRON_TOKENS=C:\path\to\tokens.txt
+NEMOTRON_THREADS=2
+NEMOTRON_LANGUAGE=auto
+```
+
+The provider fixes CPU and `greedy_search` for this phase. It does not silently fall back to Whisper if startup, the model, the bounded PCM queue, or the worker fails. Set `NEMOTRON_PERFORMANCE=true` to add worker stream/decode timing logs. Returning to `STT_PROVIDER=whisper` uses the existing final-only path.
+
 ## Smart Turn
 
 Go `smartturn` calls a loopback-only HTTP sidecar at `http://127.0.0.1:8766/predict` by default, with a three-second HTTP timeout and no redirects. The CPU ONNX sidecar consumes PCM16 mono16k, at most the last eight seconds, and returns a completion probability. It is endpoint detection, not STT. Setup pins model revision/hash and dependencies; the supplied Smart Turn license notice remains in `tools/turn-detector/SMART-TURN-LICENSE`. Downloaded model/dependencies retain their own terms.
