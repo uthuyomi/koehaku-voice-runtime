@@ -217,6 +217,7 @@ func (s *Session) VADMisfire() error { return s.endSpeech(false) }
 func (s *Session) endSpeech(valid bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	vadHandlingStart := time.Now()
 	if !s.inputAudioActive || s.inputAudioFormat.Mode != "realtime" {
 		return fmt.Errorf("realtime input is not active")
 	}
@@ -242,8 +243,15 @@ func (s *Session) endSpeech(valid bool) error {
 	s.interruptionChangedLocked()
 	s.input.attempted = false
 	s.transitionLocked(TurnPossibleEnd, "vad_end")
+	if s.streaming != nil && s.streaming.stream != nil {
+		s.streaming.vadEnd = vadHandlingStart
+		log.Printf("Nemotron VAD end handling start: session=%s turn=%s", s.id, s.input.turnID)
+	}
 	if !s.startStreamingSpeculationLocked() {
 		s.startSpeculationLocked()
+	}
+	if s.streaming != nil && s.streaming.stream != nil {
+		log.Printf("Nemotron VAD end handling end: session=%s turn=%s duration_ms=%.2f", s.id, s.input.turnID, float64(time.Since(vadHandlingStart).Microseconds())/1000)
 	}
 	s.wakeInputLocked()
 	return nil
@@ -422,12 +430,21 @@ func (s *Session) runInput() {
 						ctx, cancel := context.WithDeadline(s.ctx, maxAt)
 						r.predictCancel = cancel
 						epoch := r.epoch
+						streamingActive := s.streaming != nil
+						sessionID, turnID := s.id, r.turnID
 						inFlight = true
 						workers.Add(1)
 						go func() {
 							defer workers.Done()
 							defer cancel()
+							started := time.Now()
+							if streamingActive {
+								log.Printf("Smart Turn request start: session=%s turn=%s", sessionID, turnID)
+							}
 							result, err := r.provider.Detect(ctx, turndetection.Request{Audio: snapshot})
+							if streamingActive {
+								log.Printf("Smart Turn request end: session=%s turn=%s duration_ms=%.2f complete=%v err=%v", sessionID, turnID, float64(time.Since(started).Microseconds())/1000, result.Complete, err)
+							}
 							results <- prediction{epoch, result, err}
 						}()
 					}
@@ -461,6 +478,9 @@ func (s *Session) runInput() {
 					s.invalidateSpeculationLocked("detector_failed")
 					s.inputNotifyLocked(InputUpdate{State: r.state, TurnID: r.turnID, Error: p.err.Error(), Reason: "detector_failed"})
 				} else if p.result.Complete {
+					if s.streaming != nil {
+						log.Printf("Smart Turn commit decision: session=%s turn=%s", s.id, r.turnID)
+					}
 					s.commitTurnLocked("detector_complete")
 				} else {
 					s.invalidateSpeculationLocked("continuation_likely")

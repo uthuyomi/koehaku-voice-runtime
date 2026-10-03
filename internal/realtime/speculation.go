@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"slices"
 	"strings"
 	"sync"
@@ -149,6 +150,7 @@ type speculativeWork struct {
 	changed                 chan struct{}
 	done                    chan struct{}
 	started, committedAt    time.Time
+	speechEnd               time.Time
 	sttDuration, firstDelta time.Duration
 	committed, ready        bool
 	result                  *stt.Result
@@ -485,7 +487,7 @@ func (s *Session) startSpeculationFromTranscriptLocked(result stt.Result) {
 	if r.attempts >= r.config.MaxAttemptsPerTurn {
 		return
 	}
-	w := &speculativeWork{key: SpeculationKey{ID: newID("spec"), TurnID: s.input.turnID, Revision: s.input.epoch}, state: SpeculationRunning, started: time.Now(), result: &result}
+	w := &speculativeWork{key: SpeculationKey{ID: newID("spec"), TurnID: s.input.turnID, Revision: s.input.epoch}, state: SpeculationRunning, started: time.Now(), speechEnd: s.streaming.vadEnd, result: &result}
 	w.ctx, w.cancel = context.WithCancel(s.ctx)
 	w.changed = make(chan struct{})
 	w.done = make(chan struct{})
@@ -842,6 +844,9 @@ func (s *Session) runSpeculationLLM(w *speculativeWork) {
 	s.mu.Unlock()
 
 	llmStart := time.Now()
+	if !w.speechEnd.IsZero() {
+		log.Printf("Nemotron speculative LLM start: session=%s turn=%s speech_end_ms=%.2f", s.id, w.key.TurnID, float64(time.Since(w.speechEnd).Microseconds())/1000)
+	}
 
 	stream, err := r.llm.Generate(w.ctx, request)
 	if stream != nil {
@@ -912,6 +917,9 @@ func (s *Session) runSpeculationLLM(w *speculativeWork) {
 		if first {
 			first = false
 			w.firstDelta = time.Since(llmStart)
+			if !w.speechEnd.IsZero() {
+				log.Printf("Nemotron LLM first delta: session=%s turn=%s speculative=true speech_end_ms=%.2f", s.id, w.key.TurnID, float64(time.Since(w.speechEnd).Microseconds())/1000)
+			}
 
 			s.speculationEventLocked(
 				w,

@@ -79,7 +79,9 @@ func (s *Session) startStreamingSpeculationLocked() bool {
 		return true
 	}
 	r.frozen = strings.TrimSpace(r.latest.Result.Text)
+	log.Printf("Nemotron speculative transcript freeze: session=%s turn=%s revision=%d text_bytes=%d speech_end_ms=%.2f", s.id, r.turnID, r.latest.Revision, len(r.frozen), float64(time.Since(r.vadEnd).Microseconds())/1000)
 	s.startSpeculationFromTranscriptLocked(r.latest.Result)
+	log.Printf("Nemotron speculative LLM start requested: session=%s turn=%s speech_end_ms=%.2f", s.id, r.turnID, float64(time.Since(r.vadEnd).Microseconds())/1000)
 	return true
 }
 
@@ -92,14 +94,19 @@ func (s *Session) beginStreamingFinalizeLocked(reason string) bool {
 		return true
 	}
 	r.finalizing = true
-	stream, epoch, turn := r.stream, r.epoch, r.turnID
+	stream, epoch, turn, vadEnd := r.stream, r.epoch, r.turnID, r.vadEnd
+	log.Printf("Nemotron Engine finalize request start: session=%s turn=%s epoch=%d speech_end_ms=%.2f", s.id, turn, epoch, float64(time.Since(vadEnd).Microseconds())/1000)
 	r.workers.Add(1)
 	go func() {
 		defer r.workers.Done()
 		start := time.Now()
-		ctx, cancel := context.WithTimeout(s.ctx, 10*time.Second)
+		// Final decoding is native CPU work and can legitimately exceed ten
+		// seconds while already accepted audio is drained. Keep it bounded by
+		// the same provider-scale deadline used elsewhere in the runtime.
+		ctx, cancel := context.WithTimeout(s.ctx, 2*time.Minute)
 		defer cancel()
 		result, err := stream.Finalize(ctx)
+		log.Printf("Nemotron Engine finalize response: session=%s turn=%s epoch=%d duration_ms=%.2f speech_end_ms=%.2f err=%v", s.id, turn, epoch, float64(time.Since(start).Microseconds())/1000, float64(time.Since(vadEnd).Microseconds())/1000, err)
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		if s.streaming != r || r.stream != stream || r.epoch != epoch || r.turnID != turn || s.input.turnID != turn {
@@ -112,11 +119,15 @@ func (s *Session) beginStreamingFinalizeLocked(reason string) bool {
 		}
 		log.Printf("Nemotron final: session=%s turn=%s finalization_ms=%.2f", s.id, turn, float64(time.Since(start).Microseconds())/1000)
 		if r.frozen != "" && strings.TrimSpace(result.Text) != r.frozen {
+			log.Printf("Nemotron speculation mismatch: session=%s turn=%s", s.id, turn)
 			s.invalidateSpeculationLocked("transcript_mismatch")
+		} else if r.frozen != "" {
+			log.Printf("Nemotron speculation transcript match: session=%s turn=%s", s.id, turn)
 		}
 		r.stream = nil
 		_ = stream.Close()
 		s.commitTurnReadyLocked(reason, result)
+		log.Printf("Nemotron transcript commit: session=%s turn=%s speech_end_ms=%.2f", s.id, turn, float64(time.Since(vadEnd).Microseconds())/1000)
 	}()
 	return true
 }

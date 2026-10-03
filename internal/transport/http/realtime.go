@@ -770,6 +770,9 @@ func (s *Server) synthesizeSpeechChunk(
 	voice string,
 	speed float64,
 ) error {
+	if elapsed, ok := session.StreamingSpeechEndElapsed(); ok {
+		log.Printf("Nemotron TTS start: session=%s generation=%s sequence=%d speech_end_ms=%.2f", session.ID(), generationID, chunk.Sequence, float64(elapsed.Microseconds())/1000)
+	}
 	log.Printf(
 		"AquesTalk input: generation=%s sequence=%d bytes=%d",
 		generationID,
@@ -958,6 +961,11 @@ func (s *Server) synthesizeSpeechChunk(
 		if err := writer.AudioDelta(ctx, delta, audioData); err != nil {
 			return err
 		}
+		if chunk.Sequence == 0 && audioSequence == 0 {
+			if elapsed, ok := session.StreamingSpeechEndElapsed(); ok {
+				log.Printf("Nemotron first PCM sent: session=%s generation=%s speech_end_ms=%.2f", session.ID(), generationID, float64(elapsed.Microseconds())/1000)
+			}
+		}
 
 		if len(audioData)%bytesPerFrame != 0 {
 			return fmt.Errorf(
@@ -1025,6 +1033,9 @@ func sendRealtimeError(
 }
 
 func (s *Server) startLLMGeneration(inputCtx context.Context, session *realtime.Session, writer *realtimeWriter, userText string, textMode ...bool) {
+	if elapsed, ok := session.StreamingSpeechEndElapsed(); ok {
+		log.Printf("Nemotron normal LLM start: session=%s speech_end_ms=%.2f", session.ID(), float64(elapsed.Microseconds())/1000)
+	}
 	textOnly := len(textMode) > 0 && textMode[0]
 	id, ctx, pipeline, err := session.StartConversationResponse(inputCtx, userText, textOnly)
 	if err != nil {
@@ -1074,6 +1085,7 @@ func (s *Server) runLLMGeneration(session *realtime.Session, writer *realtimeWri
 
 func (s *Server) consumeLLMStream(session *realtime.Session, writer *realtimeWriter, ctx context.Context, generationID string, pipeline *speech.Pipeline, stream llm.Stream) {
 	completed := false
+	firstDelta := true
 	defer func() {
 		if !completed && ctx.Err() == nil {
 			s.cancelFailedGeneration(session, writer, generationID)
@@ -1111,6 +1123,12 @@ func (s *Server) consumeLLMStream(session *realtime.Session, writer *realtimeWri
 		}
 		if delta.Text == "" {
 			continue
+		}
+		if firstDelta {
+			firstDelta = false
+			if elapsed, ok := session.StreamingSpeechEndElapsed(); ok {
+				log.Printf("Nemotron LLM first delta: session=%s generation=%s speculative=false speech_end_ms=%.2f", session.ID(), generationID, float64(elapsed.Microseconds())/1000)
+			}
 		}
 		if err = session.AppendAssistantText(generationID, delta.Text, false); err != nil {
 			return

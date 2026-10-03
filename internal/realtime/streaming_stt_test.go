@@ -28,6 +28,7 @@ func (p *testStreamingProvider) StartStream(context.Context, stt.StreamRequest) 
 type testSTTStream struct {
 	results   chan stt.StreamResult
 	cancelled atomic.Bool
+	budgetNS  atomic.Int64
 	finalText string
 }
 
@@ -39,7 +40,10 @@ func (s *testSTTStream) WritePCM(context.Context, []byte) error {
 	return nil
 }
 func (s *testSTTStream) Results() <-chan stt.StreamResult { return s.results }
-func (s *testSTTStream) Finalize(context.Context) (*stt.Result, error) {
+func (s *testSTTStream) Finalize(ctx context.Context) (*stt.Result, error) {
+	if deadline, ok := ctx.Deadline(); ok {
+		s.budgetNS.Store(int64(time.Until(deadline)))
+	}
 	text := s.finalText
 	if text == "" {
 		text = "stream transcript"
@@ -105,6 +109,9 @@ func TestStreamingFastPathWaitsForVADEndAndCommit(t *testing.T) {
 	}
 	if u.SpeculationKey == nil {
 		t.Fatal("matching final transcript did not preserve promotion candidate")
+	}
+	if budget := time.Duration(p.stream.budgetNS.Load()); budget < time.Minute {
+		t.Fatalf("native finalization budget is too short: %s", budget)
 	}
 }
 

@@ -230,6 +230,10 @@ func (s *stream) WritePCM(ctx context.Context, pcm []byte) error {
 }
 func (s *stream) Results() <-chan stt.StreamResult { return s.results }
 func (s *stream) Finalize(ctx context.Context) (*stt.Result, error) {
+	started := time.Now()
+	if s.p.cfg.Performance {
+		log.Printf("Nemotron finalize enqueue: stream=%d epoch=%d", s.id, s.epoch)
+	}
 	select {
 	case s.write <- nil:
 	case <-ctx.Done():
@@ -239,8 +243,14 @@ func (s *stream) Finalize(ctx context.Context) (*stt.Result, error) {
 	}
 	select {
 	case r := <-s.final:
+		if s.p.cfg.Performance {
+			log.Printf("Nemotron finalize completed: stream=%d epoch=%d duration_ms=%.2f err=%v", s.id, s.epoch, float64(time.Since(started).Microseconds())/1000, r.err)
+		}
 		return r.result, r.err
 	case <-ctx.Done():
+		if s.p.cfg.Performance {
+			log.Printf("Nemotron finalize context ended: stream=%d epoch=%d duration_ms=%.2f err=%v", s.id, s.epoch, float64(time.Since(started).Microseconds())/1000, ctx.Err())
+		}
 		return nil, ctx.Err()
 	case <-s.ctx.Done():
 		return nil, context.Canceled
@@ -264,7 +274,17 @@ func (s *stream) writeLoop() {
 		select {
 		case pcm := <-s.write:
 			if pcm == nil {
-				_ = s.p.send(msgFinalize, s.id, nil)
+				started := time.Now()
+				if s.p.cfg.Performance {
+					log.Printf("Nemotron finalize request send start: stream=%d epoch=%d", s.id, s.epoch)
+				}
+				err := s.p.send(msgFinalize, s.id, nil)
+				if s.p.cfg.Performance {
+					log.Printf("Nemotron finalize request send end: stream=%d epoch=%d duration_ms=%.2f err=%v", s.id, s.epoch, float64(time.Since(started).Microseconds())/1000, err)
+				}
+				if err != nil {
+					s.deliverError(err)
+				}
 				return
 			}
 			if err := s.p.send(msgPCM, s.id, pcm); err != nil {
@@ -347,6 +367,9 @@ func (p *Provider) dispatch(w wireResult) {
 	}
 	result := stt.Result{Text: w.text}
 	if w.typeID == msgFinal {
+		if p.cfg.Performance {
+			log.Printf("Nemotron Engine finalize response receive: stream=%d epoch=%d revision=%d tokens=%d processed_samples=%d queued_samples=%d", s.id, s.epoch, w.revision, w.tokens, w.processed, w.queued)
+		}
 		if s.streaming {
 			select {
 			case s.results <- stt.StreamResult{Result: result, StreamID: s.id, Epoch: s.epoch, Revision: w.revision, TokenCount: w.tokens, ProcessedSamples: w.processed, QueuedSamples: w.queued, WorkerLag: time.Duration(w.queued) * time.Second / 16000, Final: true}:

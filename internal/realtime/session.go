@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
 	"github.com/uthuyomi/yukkuri-realtime-engine/internal/conversation"
@@ -59,6 +60,7 @@ type streamingSTTRuntime struct {
 	turnID     string
 	latest     *stt.StreamResult
 	frozen     string
+	vadEnd     time.Time
 	finalizing bool
 	workers    sync.WaitGroup
 }
@@ -378,4 +380,15 @@ func (s *Session) InputAudioBytes() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.inputAudioBuffer.Len()
+}
+
+// StreamingSpeechEndElapsed is internal Nemotron performance instrumentation.
+func (s *Session) StreamingSpeechEndElapsed() (time.Duration, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.streaming == nil || s.streaming.vadEnd.IsZero() ||
+		s.responseTurn == "" || s.responseTurn != s.streaming.turnID {
+		return 0, false
+	}
+	return time.Since(s.streaming.vadEnd), true
 }
