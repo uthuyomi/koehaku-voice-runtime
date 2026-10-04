@@ -8,6 +8,7 @@ Source of truth: `cmd/engine/main.go`, `internal/providers/stt/whispercpp/config
 | --- | --- | --- | --- | --- | --- |
 | `OPENAI_API_KEY` | External LLM credential / 外部LLM資格情報 | empty / 空 | Nonempty for conversation / 会話に必要 | `(set privately / 非公開で設定)` | secret / 秘密 |
 | `OPENAI_MODEL` | LLM model identifier / モデル識別子 | gpt-5.6-luna | Provider account must support it / アカウントで利用可能なもの | `gpt-5.6-luna` | no / なし |
+| `STT_PROVIDER` | STT implementation | whisper | whisper, nemotron | `nemotron` | no |
 | `STT_DEVICE` | Requested backend / 要求backend | auto | auto, cpu, cuda | `cpu` | no / なし |
 | `STT_RUNTIME` | Worker mode / worker方式 | persistent | persistent, process | `persistent` | no / なし |
 | `STT_MODEL` | Model filename identifier / モデル名 | small | tiny, base, small, medium, large-v1/v2/v3, large-v3-turbo; optional .en | `small` | no / なし |
@@ -19,6 +20,15 @@ Source of truth: `cmd/engine/main.go`, `internal/providers/stt/whispercpp/config
 | `STT_BEST_OF` | Search candidates / 探索候補 | 5 | 1–16 | `5` | no / なし |
 | `STT_BEAM_SIZE` | Beam search width / beam幅 | 5 | 1–16 | `5` | no / なし |
 | `STT_QUEUE_CAPACITY` | Admitted requests including active / 実行中込みの受入数 | 8 | 1–64 | `8` | no / なし |
+| `STT_OPENVINO_DEVICE` | Optional whisper.cpp OpenVINO device | empty | Runtime-supported identifier | `CPU` | no |
+| `NEMOTRON_WORKER_EXECUTABLE` | Nemotron worker executable | empty | Existing local path | `runtime/nemotron/worker.exe` | local path |
+| `NEMOTRON_ENCODER` | Nemotron encoder graph | empty | Existing local path | `runtime/nemotron/encoder.int8.onnx` | local path |
+| `NEMOTRON_DECODER` | Nemotron decoder graph | empty | Existing local path | `runtime/nemotron/decoder.int8.onnx` | local path |
+| `NEMOTRON_JOINER` | Nemotron joiner graph | empty | Existing local path | `runtime/nemotron/joiner.int8.onnx` | local path |
+| `NEMOTRON_TOKENS` | Nemotron tokens file | empty | Existing local path | `runtime/nemotron/tokens.txt` | local path |
+| `NEMOTRON_THREADS` | Nemotron inference threads | 2 | Positive integer | `2` | no |
+| `NEMOTRON_LANGUAGE` | Nemotron language mode | auto | Worker-supported value | `auto` | no |
+| `NEMOTRON_PERFORMANCE` | Nemotron performance diagnostics | false | Go ParseBool | `true` | no |
 | `TURN_DETECTOR_URL` | Smart Turn endpoint / 判定先 | http://127.0.0.1:8766/predict | Loopback HTTP only; no credentials/query/fragment / loopback HTTPのみ | `http://127.0.0.1:8766/predict` | local endpoint / ローカル接続先 |
 | `TURN_MIN_DELAY` | Earliest endpoint check / 最小待機 | 300ms | Go duration > 0; <= TURN_MAX_DELAY | `300ms` | no / なし |
 | `TURN_MAX_DELAY` | Endpoint upper delay / 最大待機 | 2500ms | Go duration >= TURN_MIN_DELAY | `2500ms` | no / なし |
@@ -29,7 +39,7 @@ Source of truth: `cmd/engine/main.go`, `internal/providers/stt/whispercpp/config
 | `SPECULATION_TIMEOUT` | Candidate lifetime / 候補の寿命 | 45s | Go duration > 0 and <= 2m | `45s` | no / なし |
 | `SPECULATION_COOLDOWN` | Attempt spacing / 試行間隔 | 2s | Go duration >= 0 | `2s` | no / なし |
 | `API_ALLOWED_ORIGINS` | Extra exact browser origins / 追加の完全一致Origin | empty / 空 | Comma-separated; no wildcard expansion / カンマ区切り | `http://localhost:8080` | trust boundary / 信頼境界 |
-| `YUKKURI_ENGINE_URL` | CLI/example base URL / CLI・exampleの接続先 | http://127.0.0.1:8765 | HTTP(S), no credentials/query/fragment / 資格情報など不可 | `http://127.0.0.1:8765` | endpoint / 接続先 |
+| `KOEHAKU_ENGINE_URL` | CLI/example base URL / CLI・exampleの接続先 | http://127.0.0.1:8765 | HTTP(S), no credentials/query/fragment / 資格情報など不可 | `http://127.0.0.1:8765` | endpoint / 接続先 |
 
 ## Resolution and startup behavior
 
@@ -39,7 +49,7 @@ The default executable is `whisper-server.exe` in persistent mode and `whisper-c
 
 `cpu` never probes GPU; `cuda` never falls back to CPU. `auto` validates CUDA loading/inference and may initialize CPU instead. A CUDA failure during inference fails that request; auto switches on the next request. Device selection never changes the model. Invalid STT configuration disables STT. Invalid turn/interruption/speculation configuration terminates startup.
 
-`YUKKURI_ENGINE_URL` is for CLI/examples, overridden by CLI `--url`; SDKs use their constructor. It is commented in `.env.example` and is not the Engine bind address.
+`KOEHAKU_ENGINE_URL` is for CLI/examples, overridden by CLI `--url`; SDKs use their constructor. The former `YUKKURI_ENGINE_URL` remains a lower-priority compatibility alias. It is not the Engine bind address.
 
 ## Configuration that is not an environment variable
 
@@ -53,4 +63,4 @@ Conversation defaults: 50 items / 256 KiB, context 20 items / 48 KiB. Speculatio
 
 No-Origin native clients, same-origin and HTTP(S) loopback origins are allowed by default. Additional origins are exact matches, without wildcard expansion or credential CORS. Origin is not authentication.
 
-Opt-in test variables: `TURN_DETECTOR_TEST_URL`, `WHISPER_CANCEL_TEST_EXE` / `WHISPER_CANCEL_TEST_MODEL`, `WHISPER_RUNTIME_TEST_EXE` / `WHISPER_RUNTIME_TEST_MODEL`. `YUKKURI_TEST_*` controls internal fake workers, not public configuration.
+Opt-in test variables: `TURN_DETECTOR_TEST_URL`, `WHISPER_CANCEL_TEST_EXE` / `WHISPER_CANCEL_TEST_MODEL`, `WHISPER_RUNTIME_TEST_EXE` / `WHISPER_RUNTIME_TEST_MODEL`. `KOEHAKU_TEST_*` controls internal fake workers, not public configuration.

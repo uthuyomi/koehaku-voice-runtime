@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
 )
 
 type Engine struct {

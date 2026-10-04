@@ -13,16 +13,16 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel/multisignal"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm/openai"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/nemotron"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/whispercpp"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts/aquestalk"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection/smartturn"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
-	httptransport "github.com/uthuyomi/yukkuri-realtime-engine/internal/transport/http"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel/multisignal"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm/openai"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/nemotron"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/whispercpp"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts/aquestalk"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection/smartturn"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
+	httptransport "github.com/uthuyomi/koehaku-voice-runtime/internal/transport/http"
 )
 
 func loadEnvironment() {
@@ -35,7 +35,7 @@ func loadEnvironment() {
 func main() {
 	loadEnvironment()
 
-	log.Println("Yukkuri Realtime Engine starting...")
+	log.Println("Koehaku Voice Runtime starting...")
 	engineContext, stopSignals := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stopSignals()
 
@@ -281,6 +281,6 @@ func main() {
 	}
 
 	log.Println(
-		"Yukkuri Realtime Engine stopped",
+		"Koehaku Voice Runtime stopped",
 	)
 }

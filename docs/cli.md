@@ -1,25 +1,25 @@
-# CLI
+﻿# CLI
 
-The `yukkuri` CLI is shipped with the Python SDK. It reuses the SDK's HTTP, WebSocket, error, timeout and WAV handling instead of maintaining another protocol implementation. This avoids new Go client transport code; distribution requires Python 3.11+, not a standalone binary. Speaker/microphone system dependencies are not included.
+The `koehaku` CLI is shipped with the Python SDK. It reuses the SDK's HTTP, WebSocket, error, timeout and WAV handling instead of maintaining another protocol implementation. This avoids new Go client transport code; distribution requires Python 3.11+, not a standalone binary. Speaker/microphone system dependencies are not included.
 
 ```powershell
 python -m pip install -e ./sdk/python
-yukkuri --help
-yukkuri health
-yukkuri capabilities
-yukkuri speak "こんにちは" --output hello.wav
-yukkuri transcribe input.wav
-yukkuri realtime
+koehaku --help
+koehaku health
+koehaku capabilities
+koehaku speak "縺薙ｓ縺ｫ縺｡縺ｯ" --output hello.wav
+koehaku transcribe input.wav
+koehaku realtime
 ```
 
-If Python's Scripts directory isn't on PATH, use `python -m yukkuri_realtime` in place of `yukkuri`. The installed console entry point and module invoke the same function.
+If Python's Scripts directory isn't on PATH, use `python -m koehaku_realtime` in place of `koehaku`. The installed console entry point and module invoke the same function. The former `yukkuri` command remains a compatibility alias.
 
-URL precedence: explicit `--url` → `YUKKURI_ENGINE_URL` → `http://127.0.0.1:8765`. `--url` is accepted before or after the subcommand. SDK constructors use their explicit/default URL; CLI is the environment-aware layer. No .env loading or credentials are added.
+URL precedence: explicit `--url` 竊・`KOEHAKU_ENGINE_URL` 竊・`http://127.0.0.1:8765`. `--url` is accepted before or after the subcommand. SDK constructors use their explicit/default URL; CLI is the environment-aware layer. No .env loading or credentials are added.
 
 ```powershell
-yukkuri --url http://127.0.0.1:8765 health
-yukkuri speak "こんにちは" --voice f1 --speed 1.0 --output hello.wav
-yukkuri --timeout 150 transcribe input.wav
+koehaku --url http://127.0.0.1:8765 health
+koehaku speak "縺薙ｓ縺ｫ縺｡縺ｯ" --voice f1 --speed 1.0 --output hello.wav
+koehaku --timeout 150 transcribe input.wav
 ```
 
 Global `--timeout` (seconds, default 130) goes before the subcommand and controls HTTP/operation waits. Connect and close have the SDK's separate 10s/5s budgets. Ctrl+C exits 130 and async cleanup cancels work; normal success exits 0; file/format/network/API failures exit 1; argparse usage errors exit 2. Errors go to stderr with stable code, safe message and available correlation IDs. No raw provider body or traceback is dumped.

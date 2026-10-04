@@ -66,7 +66,7 @@ func TestErrorSanitization(t *testing.T) {
 }
 func TestPublishedSchemaMatchesCode(t *testing.T) {
 	schemas := map[string]any{"client-events.schema.json": ClientSchema(), "server-event.schema.json": map[string]any{
-		"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "Yukkuri v1 server event envelope", "type": "object",
+		"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "Koehaku v1 server event envelope", "type": "object",
 		"required":             []string{"type", "event_id", "session_id", "timestamp", "data"},
 		"properties":           map[string]any{"type": map[string]string{"type": "string"}, "event_id": map[string]string{"type": "string"}, "session_id": map[string]string{"type": "string"}, "related_event_id": map[string]string{"type": "string"}, "generation_id": map[string]string{"type": "string"}, "timestamp": map[string]string{"type": "string", "format": "date-time"}, "data": map[string]string{"type": "object"}},
 		"additionalProperties": true,

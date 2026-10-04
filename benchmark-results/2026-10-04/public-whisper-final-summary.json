@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-04",
+  "provider": "whisper",
+  "configuration": {
+    "model": "small",
+    "device": "cpu",
+    "threads": 4,
+    "best_of": 5,
+    "beam_size": 5,
+    "language": "auto",
+    "persistent": true
+  },
+  "historical_failure": {
+    "completed_turns": 19,
+    "requested_turns": 30,
+    "cause": "speculation lifetime cancelled committed snapshot STT, terminating the persistent server and causing model reload plus duplicate inference"
+  },
+  "post_fix_30": {
+    "completed_turns": 30,
+    "requested_turns": 30,
+    "final_asr_seconds": {
+      "mean": 27.668,
+      "p50": 20.886,
+      "p95": 44.606,
+      "max": 70.66
+    },
+    "first_render_seconds": {
+      "mean": 28.648,
+      "p50": 21.687,
+      "p95": 45.627,
+      "max": 72.491
+    },
+    "underruns": 0,
+    "external_failures": 0
+  },
+  "post_fix_100": {
+    "completed_turns": 100,
+    "requested_turns": 100,
+    "final_asr_seconds": {
+      "mean": 35.456,
+      "p50": 34.947,
+      "p95": 47.159,
+      "max": 78.007
+    },
+    "first_render_seconds": {
+      "mean": 36.686,
+      "p50": 36.544,
+      "p95": 48.473,
+      "max": 80.968
+    },
+    "groups_final_asr_mean_seconds": {
+      "first25": 32.487,
+      "middle50": 37.659,
+      "last25": 34.017
+    },
+    "groups_first_render_mean_seconds": {
+      "first25": 33.645,
+      "middle50": 38.946,
+      "last25": 35.206
+    },
+    "speculation": {
+      "promoted": 99,
+      "mismatched": 1
+    },
+    "underruns": 0,
+    "external_failures": 0,
+    "speculation_timeout_cancellations": 0,
+    "continue_resume_cancellations": 1,
+    "persistent_server_restarts": 1
+  },
+  "resources": {
+    "samples": 174,
+    "whisper_server_working_set_mib": {
+      "first": 765.4,
+      "last": 771.7
+    },
+    "whisper_server_private_mib": {
+      "first": 1255.7,
+      "last": 1263.2
+    },
+    "whisper_server_threads_max": 65,
+    "whisper_server_handles_max": 194,
+    "engine_working_set_mib": {
+      "first": 64.2,
+      "last": 40.2
+    },
+    "engine_private_mib": {
+      "first": 57.8,
+      "last": 64.6
+    }
+  },
+  "accuracy": {
+    "requests": 20,
+    "japanese_cer": 0.11956521739130435,
+    "english_wer": 0.1,
+    "request_final_seconds": {
+      "mean": 22.275,
+      "p50": 20.734,
+      "p95": 30.085,
+      "max": 31.55
+    }
+  }
+}

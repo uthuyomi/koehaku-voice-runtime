@@ -3,7 +3,7 @@ package httptransport
 import (
 	"log"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 func (s *Server) consumeInputUpdates(session *realtime.Session, writer *realtimeWriter) {

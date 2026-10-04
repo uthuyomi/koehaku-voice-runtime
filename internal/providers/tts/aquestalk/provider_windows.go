@@ -7,14 +7,17 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"runtime"
 	"sort"
 	"strings"
+	"sync"
 	"syscall"
+	"time"
 	"unsafe"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
 )
 
 const (
@@ -39,6 +42,26 @@ type Provider struct {
 	voices       map[string]*voice
 	defaultVoice string
 	kanji2Koe    *kanji2Koe
+	nativeMu     sync.Mutex
+}
+
+// SynthesisError preserves the native inputs for an explicitly enabled,
+// privacy-controlled replay artifact. Error() deliberately excludes them.
+type SynthesisError struct {
+	OriginalText  string
+	ConvertedText string
+	Voice         string
+	Speed         int
+	NativeCode    int32
+}
+
+func (e *SynthesisError) Error() string {
+	return fmt.Sprintf("AquesTalk voice %q synthesis failed with error code %d", e.Voice, e.NativeCode)
+}
+
+func (e *SynthesisError) SynthesisDiagnostic() tts.SynthesisDiagnostic {
+	return tts.SynthesisDiagnostic{OriginalText: e.OriginalText, ConvertedText: e.ConvertedText,
+		Voice: e.Voice, Speed: e.Speed, NativeCode: e.NativeCode}
 }
 
 type voice struct {
@@ -233,6 +256,8 @@ func (p *Provider) Synthesize(
 	ctx context.Context,
 	req tts.Request,
 ) (*tts.Stream, error) {
+	totalStart := time.Now()
+	diagnostic := strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true")
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -270,9 +295,18 @@ func (p *Provider) Synthesize(
 		)
 	}
 
+	// AqKanji2Koe owns a shared handle and AquesTalk uses DLL-global native
+	// state. Calls across generations/sessions must not overlap.
+	p.nativeMu.Lock()
+	defer p.nativeMu.Unlock()
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	speechText := req.Text
 
 	if p.kanji2Koe != nil {
+		convertStart := time.Now()
 		converted, err := p.kanji2Koe.Convert(req.Text)
 		if err != nil {
 			return nil, fmt.Errorf(
@@ -282,6 +316,12 @@ func (p *Provider) Synthesize(
 		}
 
 		speechText = converted
+		if diagnostic {
+			log.Printf("AquesTalk diagnostic: stage=kanji2koe input_bytes=%d output_bytes=%d duration_ms=%.3f", len([]byte(req.Text)), len([]byte(speechText)), float64(time.Since(convertStart).Microseconds())/1000)
+		}
+	}
+	if strings.TrimSpace(speechText) == "" {
+		return nil, tts.ErrNoSpeech
 	}
 
 	koe, err := syscall.BytePtrFromString(speechText)
@@ -294,6 +334,7 @@ func (p *Provider) Synthesize(
 
 	var size int32
 
+	nativeStart := time.Now()
 	wavPtr, _, _ := v.synthe.Call(
 		uintptr(unsafe.Pointer(koe)),
 		uintptr(speed),
@@ -301,13 +342,11 @@ func (p *Provider) Synthesize(
 	)
 
 	runtime.KeepAlive(koe)
+	nativeDuration := time.Since(nativeStart)
 
 	if wavPtr == 0 {
-		return nil, fmt.Errorf(
-			"AquesTalk voice %q synthesis failed with error code %d",
-			voiceName,
-			size,
-		)
+		return nil, &SynthesisError{OriginalText: req.Text, ConvertedText: speechText,
+			Voice: voiceName, Speed: speed, NativeCode: size}
 	}
 
 	if size <= 0 {
@@ -328,6 +367,9 @@ func (p *Provider) Synthesize(
 	data := append([]byte(nil), wav...)
 
 	v.freeWave.Call(wavPtr)
+	if diagnostic {
+		log.Printf("AquesTalk diagnostic: stage=complete voice=%s input_bytes=%d symbol_bytes=%d wav_bytes=%d native_ms=%.3f total_ms=%.3f", voiceName, len([]byte(req.Text)), len([]byte(speechText)), len(data), float64(nativeDuration.Microseconds())/1000, float64(time.Since(totalStart).Microseconds())/1000)
+	}
 
 	return &tts.Stream{
 		Format: tts.AudioFormat{
@@ -343,6 +385,8 @@ func (p *Provider) Close() {
 	if p == nil {
 		return
 	}
+	p.nativeMu.Lock()
+	defer p.nativeMu.Unlock()
 
 	if p.kanji2Koe != nil {
 		p.kanji2Koe.Close()

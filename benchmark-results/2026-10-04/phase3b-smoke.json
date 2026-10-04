@@ -1,0 +1,88 @@
+{
+  "schema": "nemotron-soak-v1",
+  "mode": "max-throughput",
+  "started_at": "2026-10-03T23:25:51Z",
+  "configuration": {
+    "threads": 2,
+    "language": "auto",
+    "provider": "cpu",
+    "decoding_method": "greedy_search",
+    "chunk_ms": 20,
+    "early_stop_ratio": 1.3
+  },
+  "worker_ready": "NEMOTRON_WORKER_READY port=63479 model_load_ms=4420",
+  "hardware": {
+    "cpu_frequency": "unavailable",
+    "temperature": "unavailable",
+    "power": "unavailable",
+    "throttling": "unavailable"
+  },
+  "turns": [
+    {
+      "utterance_index": 1,
+      "fixture": "runtime/phase3-short-ja.wav",
+      "audio_duration_ms": 2195.0,
+      "accepted_samples": 35120,
+      "processed_samples": 35120,
+      "queued_samples": 0,
+      "queued_audio_ms": 0.0,
+      "first_partial_ms": null,
+      "finalize_ms": 1683.15930000972,
+      "final_asr_ms": 1683.1638000003295,
+      "decode_count": 5,
+      "decode_calls_ms": [
+        253.616,
+        308.79,
+        287.075,
+        370.864,
+        455.349
+      ],
+      "decode_p50_ms": 308.79,
+      "decode_p95_ms": 370.864,
+      "decode_max_ms": 455.349,
+      "scheduling_gap_p50_ms": 0.0881,
+      "scheduling_gap_p95_ms": 0.1386,
+      "throughput_ratio": 1.30493,
+      "process_before": {
+        "available": true,
+        "working_set_bytes": 759156736,
+        "private_bytes": 746655744,
+        "handles": 152,
+        "threads": 8,
+        "cpu_seconds": 5.0625
+      },
+      "process_after": {
+        "available": true,
+        "working_set_bytes": 795856896,
+        "private_bytes": 819519488,
+        "handles": 154,
+        "threads": 8,
+        "cpu_seconds": 11.6875
+      },
+      "text_length": 10,
+      "worker_log": [
+        "Nemotron decode call: id=1 index=1 stage=pcm ms=253.616",
+        "Nemotron decode call: id=1 index=2 stage=pcm ms=308.79",
+        "Nemotron decode call: id=1 index=3 stage=pcm ms=287.075",
+        "Nemotron inputFinished end: id=1 ms=0.0432",
+        "Nemotron decode call: id=1 index=4 stage=finalize ms=370.864",
+        "Nemotron decode call: id=1 index=5 stage=finalize ms=455.349",
+        "Nemotron remaining decode loop end: id=1 calls=2 ms=826.457",
+        "Nemotron final result extraction end: id=1 ms=0.0159 tokens=11",
+        "Nemotron decode: id=1 count=5 p50_ms=308.79 p95_ms=370.864 max_ms=455.349",
+        "Nemotron throughput: id=1 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=1682.08 ratio=1.30493 pcm_commands=1 accept_calls=1 queue_high_watermark_samples=35120 scheduling_gap_p50_ms=0.0881 scheduling_gap_p95_ms=0.1386 scheduling_gap_max_ms=2.178",
+        "Nemotron worker finalize response send: id=1 send_ms=0.1138 total_ms=828.995"
+      ]
+    }
+  ],
+  "early_stop": null,
+  "finished_at": "2026-10-03T23:25:53Z",
+  "worker_final": {
+    "available": true,
+    "working_set_bytes": 795856896,
+    "private_bytes": 819519488,
+    "handles": 154,
+    "threads": 8,
+    "cpu_seconds": 11.90625
+  }
+}

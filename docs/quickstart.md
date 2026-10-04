@@ -91,9 +91,9 @@ Use a CUDA Toolkit/MSVC pair that supports your GPU; `75` is the script's GTX 16
 ```powershell
 python -m venv .venv
 ./.venv/Scripts/python.exe -m pip install -e ./sdk/python
-./.venv/Scripts/python.exe -m yukkuri_realtime health
-./.venv/Scripts/python.exe -m yukkuri_realtime capabilities
-./.venv/Scripts/python.exe -m yukkuri_realtime realtime
+./.venv/Scripts/python.exe -m koehaku_realtime health
+./.venv/Scripts/python.exe -m koehaku_realtime capabilities
+./.venv/Scripts/python.exe -m koehaku_realtime realtime
 ```
 
 The last command needs LLM; `speak` needs TTS; `transcribe` needs STT. Health needs no provider. API integration tests use fake providers and need no paid key/proprietary files/models: [contributing](../CONTRIBUTING.md). These instructions were checked against source and provider-free build/package tests; external downloads, CUDA and real-microphone setup were not repeated in Step 10.

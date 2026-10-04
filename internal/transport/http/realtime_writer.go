@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 type workerGroup struct {

@@ -1,7 +1,7 @@
-{
-  "name": "@yukkuri-realtime/client",
+﻿{
+  "name": "@koehaku-voice/client",
   "version": "0.1.0",
-  "description": "Public API v1 client for Yukkuri Realtime Engine",
+  "description": "Public API v1 client for Koehaku Voice Runtime",
   "type": "module",
   "engines": { "node": ">=22" },
   "files": ["dist", "README.md"],

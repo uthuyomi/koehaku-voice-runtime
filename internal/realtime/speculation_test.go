@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/limited"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/limited"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
 )
 
 type speculativeSTTFunc func(context.Context, stt.Request) (*stt.Result, error)
@@ -191,6 +191,43 @@ func TestSpeculationRunningCommitAdoptsSameWork(t *testing.T) {
 	}
 	if calls.Load() != 1 {
 		t.Fatal("restarted STT")
+	}
+}
+
+func TestSpeculationTimeoutStartsAfterSnapshotSTT(t *testing.T) {
+	release := make(chan struct{})
+	c := specConfig()
+	c.Timeout = 25 * time.Millisecond
+	s, gate := specSession(t, func(ctx context.Context, _ stt.Request) (*stt.Result, error) {
+		select {
+		case <-release:
+			return &stt.Result{Text: "slow but valid"}, nil
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}, goodSpecLLM(), c)
+	say(t, s)
+	w := specWork(s)
+	close(gate)
+	u := nextCommit(t, s)
+	result := make(chan *Promotion, 1)
+	go func() { result <- s.PromoteSpeculation(u.Context, *u.SpeculationKey) }()
+
+	// The speculation optimization timeout must not cancel the one STT result
+	// that the committed turn is waiting to adopt.
+	time.Sleep(2 * c.Timeout)
+	if w.ctx.Err() != nil {
+		t.Fatal("snapshot STT was cancelled by the LLM speculation timeout")
+	}
+	close(release)
+	select {
+	case p := <-result:
+		if p == nil || p.Transcript.Text != "slow but valid" {
+			t.Fatal("slow snapshot was not adopted")
+		}
+		p.Stream.Close()
+	case <-time.After(time.Second):
+		t.Fatal("promotion blocked")
 	}
 }
 
@@ -502,7 +539,7 @@ func TestSpeculationPromotionChecksDeadlineUnderLock(t *testing.T) {
 	u := nextCommit(t, s)
 	s.mu.Lock()
 	w.timer.Stop()
-	w.started = time.Now().Add(-time.Minute)
+	w.deadline = time.Now().Add(-time.Minute)
 	s.mu.Unlock()
 	if s.PromoteSpeculation(u.Context, *u.SpeculationKey) != nil {
 		t.Fatal("expired work promoted before timer callback")

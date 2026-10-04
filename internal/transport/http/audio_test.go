@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/audio"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 type longAudioTTS struct{}

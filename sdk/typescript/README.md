@@ -1,4 +1,4 @@
-# @yukkuri-realtime/client
+﻿# @koehaku-voice/client
 
 Public API v1 SDK for modern browsers and Node.js 22+. ESM with TypeScript declarations, no runtime dependencies.
 

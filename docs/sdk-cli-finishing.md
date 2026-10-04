@@ -42,13 +42,13 @@ Examples / fixture / docs:
 
 ## 3. TypeScript SDK architecture
 
-`@yukkuri-realtime/client` 0.1.0。HTTP client、共有Session、RealtimeSession/TranscriptionSession、wire types、typed errors、WAV parserをcoreへ分離した。fetch/WebSocket/AbortControllerを使い、runtime依存は0。buildのみTypeScript 5.9.3をlockした。
+`@koehaku-voice/client` 0.1.0。HTTP client、共有Session、RealtimeSession/TranscriptionSession、wire types、typed errors、WAV parserをcoreへ分離した。fetch/WebSocket/AbortControllerを使い、runtime依存は0。buildのみTypeScript 5.9.3をlockした。
 
 ESM + declarationをdistへ出力し、exportsはroot、browser、Worklet assetに限定する。内部wire helperをpackage subpathとして公開しない。client event構造型は既存JSON Schemaから生成し、通常テストでdriftを検出する。server eventはknown unionとunknown envelopeを区別し、schemaが状態機械の完全仕様とは仮定しない。
 
 ## 4. TypeScript public API
 
-YukkuriClientのhealth/capabilities/speak/transcribe/realtime.connect/transcription.connectを提供。RealtimeSessionはsendText/startAudioInput/sendAudio/commitInput/cancelInput/stopAudioInput/cancelGeneration/ackPlayed/close。TranscriptionSessionはstart/sendAudio/commit/cancel/close。
+KoehakuClientのhealth/capabilities/speak/transcribe/realtime.connect/transcription.connectを提供。RealtimeSessionはsendText/startAudioInput/sendAudio/commitInput/cancelInput/stopAudioInput/cancelGeneration/ackPlayed/close。TranscriptionSessionはstart/sendAudio/commit/cancel/close。
 
 Generationはserver ID、done promise、cancelを持つ。通常利用でgeneration.create、metadata/binary pairing、credit arithmeticを要求しない。advancedなsendEvent/raw event/credit snapshotも利用可能。
 
@@ -78,7 +78,7 @@ HTTPはHTTPX 0.28系以降1未満、WSはwebsockets 15〜17系。保守されて
 
 ## 9. Python public API
 
-YukkuriClient.health/capabilities/speak/transcribe、realtime.connect/transcription.connect。Sessionはasync context manager、synchronous callback登録、bounded raw-event async iteratorを提供。RealtimeSessionはsend_text/start_audio_input/send_audio/commit_input/cancel_input/stop_audio_input/cancel_generation/ack_played/close。TranscriptionSessionはstart/send_audio/commit/cancel/close。
+KoehakuClient.health/capabilities/speak/transcribe、realtime.connect/transcription.connect。Sessionはasync context manager、synchronous callback登録、bounded raw-event async iteratorを提供。RealtimeSessionはsend_text/start_audio_input/send_audio/commit_input/cancel_input/stop_audio_input/cancel_generation/ack_played/close。TranscriptionSessionはstart/send_audio/commit/cancel/close。
 
 SpeechAudio/Transcript/AudioPacket/AudioFormatはdataclass、Capabilities/RealtimeEventは型定義。Generation.wait_done/cancelで世代ID管理を隠す。
 
@@ -88,13 +88,13 @@ Pythonはasync canonical。同期APIからイベントループを再入させ�
 
 ## 11. CLI architecture
 
-Python SDK上にargparse CLIを実装し、console_scriptsのyukkuriとpython -m yukkuri_realtimeを同じentryへ接続した。別Go clientや別wire parserを増やさない選択。Python環境が必要で、single binary配布ではない。
+Python SDK上にargparse CLIを実装し、console_scriptsのyukkuriとpython -m koehaku_realtimeを同じentryへ接続した。別Go clientや別wire parserを増やさない選択。Python環境が必要で、single binary配布ではない。
 
 ## 12. CLI commands
 
 health、capabilities、speak TEXT --output FILE、transcribe FILE.wav、realtimeを実装。realtimeはstdin text → streaming textの複数turn。speakはWAV保存のみで、cross-platform speaker依存を加えない。
 
-WAVのRIFF/chunks/PCM16/mono/16kHzを検証してdechunkし、非対応formatを変換したふりをしない。URLは--url → YUKKURI_ENGINE_URL → defaultの優先順。exitは成功0、API/file/network error1、usage2、Ctrl+C130。
+WAVのRIFF/chunks/PCM16/mono/16kHzを検証してdechunkし、非対応formatを変換したふりをしない。URLは--url → KOEHAKU_ENGINE_URL → defaultの優先順。exitは成功0、API/file/network error1、usage2、Ctrl+C130。
 
 ## 13. Capabilities handling
 
@@ -102,7 +102,7 @@ HTTP discoveryを30秒TTLでcacheし、refreshを明示提供。socket初回sess
 
 ## 14. Error model
 
-両SDKにYukkuriErrorを用意。HTTP/WS共通code/message/recoverableと、取得可能なrequest/event/related/generation IDを保持する。非JSON HTTP body、ネットワーク例外、Go raw provider errorは直接throwしない。local protocol/connection/cancel/timeout/incomplete_audio等を区別した。
+両SDKにKoehakuErrorを用意。HTTP/WS共通code/message/recoverableと、取得可能なrequest/event/related/generation IDを保持する。非JSON HTTP body、ネットワーク例外、Go raw provider errorは直接throwしない。local protocol/connection/cancel/timeout/incomplete_audio等を区別した。
 
 ## 15. Event model
 
@@ -146,7 +146,7 @@ Python: pip install -e、pip wheel --no-deps。tests/package_smoke.pyはwheelを
 
 ## 22. Local install
 
-TypeScriptはbuild済みlocal pathまたはtgzをアプリへnpm install。Pythonはpip install -e ./sdk/python。WindowsでScriptsがPATH外の場合はpython -m yukkuri_realtimeが使える。今回の環境でもこのmodule起動を検証した。
+TypeScriptはbuild済みlocal pathまたはtgzをアプリへnpm install。Pythonはpip install -e ./sdk/python。WindowsでScriptsがPATH外の場合はpython -m koehaku_realtimeが使える。今回の環境でもこのmodule起動を検証した。
 
 ## 23. Examples
 

@@ -23,6 +23,7 @@ type FlowSnapshot struct {
 	Explicit                                        bool
 	WaitDuration                                    time.Duration
 	WaitCount                                       int64
+	CreditUpdates                                   int64
 }
 
 // FlowController owns no PCM and never holds its mutex while waiting. One
@@ -68,6 +69,7 @@ func (f *FlowController) Update(c Credit) error {
 	f.state.Capacity = c.Capacity
 	f.state.Received = c.Received
 	f.state.Played = c.Played
+	f.state.CreditUpdates++
 	f.signalLocked()
 	return nil
 }

@@ -1,6 +1,6 @@
 # TypeScript SDK
 
-`@yukkuri-realtime/client` 0.1.0 is a Public API v1 client. It supports modern browsers and Node.js 22+, uses ESM and includes declarations. No runtime dependency is required: core uses fetch, WebSocket, AbortController and typed arrays. Node's built-in WebSocket is available in [Node 22](https://nodejs.org/download/release/v22.15.0/docs/api/globals.html). Electron main can use the Node target; renderer uses the browser target and the Engine's Origin policy.
+`@koehaku-voice/client` 0.1.0 is a Public API v1 client. It supports modern browsers and Node.js 22+, uses ESM and includes declarations. No runtime dependency is required: core uses fetch, WebSocket, AbortController and typed arrays. Node's built-in WebSocket is available in [Node 22](https://nodejs.org/download/release/v22.15.0/docs/api/globals.html). Electron main can use the Node target; renderer uses the browser target and the Engine's Origin policy.
 
 ## Build and local installation
 
@@ -14,13 +14,13 @@ npm test
 npm pack
 ```
 
-No npm publication is performed. In an application, run `npm install /path/to/yukkuri-realtime-engine/sdk/typescript` after building it, or install the generated `.tgz`. The package includes dist JS, declarations and the Worklet asset. Source/test/build tooling is not needed at runtime. If your application's bundler moves assets, copy the exported `@yukkuri-realtime/client/audio-worklet.js` and pass its deployed URL to the player.
+No npm publication is performed. In an application, run `npm install /path/to/koehaku-voice-runtime/sdk/typescript` after building it, or install the generated `.tgz`. The package includes dist JS, declarations and the Worklet asset. Source/test/build tooling is not needed at runtime. If your application's bundler moves assets, copy the exported `@koehaku-voice/client/audio-worklet.js` and pass its deployed URL to the player.
 
 Exports: package root for core, `/browser` for optional browser helpers, `/audio-worklet.js` for the Worklet asset. There is no redundant `/node` implementation: Node and browser share the same core. CommonJS consumers can use dynamic `import()`; a CJS bundle is not supplied.
 
 ```ts
-import {YukkuriClient} from '@yukkuri-realtime/client';
-const client = new YukkuriClient({baseUrl: 'http://127.0.0.1:8765'});
+import {KoehakuClient} from '@koehaku-voice/client';
+const client = new KoehakuClient({baseUrl: 'http://127.0.0.1:8765'});
 await client.health();
 const audio = await client.speak('ゆっくりしていってね');
 // audio.audio: Uint8Array; audio.format; audio.contentType; audio.requestId
@@ -32,7 +32,7 @@ const audio = await client.speak('ゆっくりしていってね');
 
 `await client.capabilities()` caches discovery for 30 seconds by default. `capabilities({refresh:true})` bypasses the cache; `capabilitiesTTLms` changes the TTL. Each connection also validates session.created's version/capabilities. TTS, STT and conversation calls check required configured feature versions; audio conversation requires credit-v1. Missing optional features do not prevent text-only connections.
 
-`YukkuriError` unifies HTTP/WS errors: `code`, `message`, `recoverable`, `requestId`, `eventId`, `relatedEventId`, `generationId`. For WS, requestId identifies the HTTP handshake; relatedEventId identifies the individual operation. Network errors never dump raw server bodies. Local codes include `connection_error`, `connection_closed`, `unsupported_protocol`, `protocol_error`, `cancelled`, `incomplete_audio`, `microphone_error`; server codes retain their v1 meaning. Unknown server events are delivered to `event` and otherwise ignored.
+`KoehakuError` unifies HTTP/WS errors: `code`, `message`, `recoverable`, `requestId`, `eventId`, `relatedEventId`, `generationId`. For WS, requestId identifies the HTTP handshake; relatedEventId identifies the individual operation. Network errors never dump raw server bodies. Local codes include `connection_error`, `connection_closed`, `unsupported_protocol`, `protocol_error`, `cancelled`, `incomplete_audio`, `microphone_error`; server codes retain their v1 meaning. Unknown server events are delivered to `event` and otherwise ignored.
 
 ## Realtime
 
@@ -89,7 +89,7 @@ Keep generation IDs attached to external playback. Output device frames must be 
 ## Browser voice
 
 ```ts
-import {BrowserAudioPlayer, BrowserMicrophone, sileroVoiceFactory} from '@yukkuri-realtime/client/browser';
+import {BrowserAudioPlayer, BrowserMicrophone, sileroVoiceFactory} from '@koehaku-voice/client/browser';
 // Inside a click handler, resume context BEFORE network waits (autoplay policy).
 const context = new AudioContext();
 await context.resume();

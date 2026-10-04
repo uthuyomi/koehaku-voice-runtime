@@ -7,7 +7,8 @@ class Session {
   state='active'; generation=undefined; listeners={}; sent=[]; acks=[]; interruptionTimeoutMs=1500;
   on(n,f){(this.listeners[n]??=[]).push(f);return()=>this.listeners[n]=this.listeners[n].filter(x=>x!==f);}
   emit(n,v){for(const f of this.listeners[n]??[])f(v);}
-  sendEvent(e){this.sent.push(e);}ackPlayed(n,g){this.acks.push([n,g]);}cancelGeneration(){}
+  sendEvent(e){this.sent.push(e);}ackPlayed(n,g){this.acks.push([n,g,true]);}
+  ackRendered(n,g,final=false){this.acks.push([n,g,final]);}flushPlayback(){}cancelGeneration(){}
   startAudioInput(){this.sent.push({type:'start'});}stopAudioInput(){this.sent.push({type:'stop'});}
   async sendAudio(pcm){this.sent.push({type:'pcm',pcm});}
 }
@@ -21,16 +22,27 @@ test('browser canonical ring/resampler reports only rendered source frames; paus
   const s=new Session(), player=await BrowserAudioPlayer.create(s,{context:context()});
   s.generation={id:'g'};s.emit('generationStarted',s.generation);
   s.emit('event',{type:'response.audio.chunk.started',generation_id:'g',data:{sample_rate:16000}});
-  s.emit('audio',{generationId:'g',pcm:new Uint8Array(3200),metadata:{sample_rate:16000,source_frames:1600,source_start_frame:0,speech_sequence:0,audio_sequence:0}});
+  s.emit('audio',{generationId:'g',pcm:new Uint8Array(10000),metadata:{sample_rate:16000,source_frames:5000,source_start_frame:0,speech_sequence:0,audio_sequence:0}});
   assert.ok(s.acks.every(([n])=>n===0));
   const p=player.node.processor; p.process([],[[new Float32Array(480)]]); assert.equal(p.sourceProgress(),160);
   const token=player.pause('pause1');const before=p.sourceProgress();p.process([],[[new Float32Array(480)]]);assert.equal(p.sourceProgress(),before);
   assert.ok(s.sent.some(e=>e.type==='playback.paused'&&e.data.played_source_frames===before));
   s.emit('event',{type:'interruption.recovered',generation_id:'old',data:{interruption_id:'pause1'}});assert.equal(p.paused,true);
   s.emit('event',{type:'interruption.recovered',generation_id:'g',data:{interruption_id:'pause1'}});assert.equal(p.paused,false);
-  s.emit('event',{type:'generation.done',generation_id:'g',data:{source_frames:1600}});
-  for(let i=0;i<20;i++)p.process([],[[new Float32Array(480)]]);
-  assert.equal(s.acks.at(-1)[0],1600);await player.close();
+  s.emit('event',{type:'generation.done',generation_id:'g',data:{source_frames:5000}});
+  for(let i=0;i<40;i++)p.process([],[[new Float32Array(480)]]);
+  assert.equal(s.acks.at(-1)[0],5000);await player.close();
+});
+test('worklet does not start from a lone 32ms packet before initial delivery catches up',async()=>{
+  const s=new Session(),player=await BrowserAudioPlayer.create(s,{context:context()}),p=player.node.processor;
+  s.generation={id:'g'};s.emit('generationStarted',s.generation);
+  s.emit('event',{type:'response.audio.chunk.started',generation_id:'g',data:{sample_rate:8000}});
+  s.emit('audio',{generationId:'g',pcm:new Uint8Array(512),metadata:{sample_rate:8000,source_frames:256,source_start_frame:0,speech_sequence:0,audio_sequence:0}});
+  for(let i=0;i<110;i++)p.process([],[[new Float32Array(128)]]);
+  assert.equal(p.started,false);assert.equal(p.underruns,0);assert.equal(p.sourceProgress(),0);
+  s.emit('audio',{generationId:'g',pcm:new Uint8Array(32000),metadata:{sample_rate:8000,source_frames:16000,source_start_frame:256,speech_sequence:0,audio_sequence:1}});
+  p.process([],[[new Float32Array(128)]]);
+  assert.equal(p.started,true);assert.equal(p.underruns,0);await player.close();
 });
 test('microphone constraints, continuous PCM, VAD, stop releases tracks',async()=>{
   const s=new Session();let callbacks,stopped=0,destroyed=0,constraints;

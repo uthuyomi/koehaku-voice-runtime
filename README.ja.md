@@ -1,180 +1,86 @@
-# Yukkuri Realtime Engine
+# Koehaku Voice Runtime
 
-会話AI向けのセルフホスト型リアルタイム音声ランタイムです。STT・LLM・TTSの周囲で、ターン、割り込み、生成、再生の進行を管理し、日本語の音声アプリケーションをサンプルとして提供します。
+AIのための、オープンソースでローカルファーストなリアルタイム音声ランタイムです。
+
+Koehaku（コエハク）は「声」と「拍」を組み合わせた名前で、リアルタイム会話に必要な発話タイミング、応答、割り込み、会話の流れを表します。
 
 [English](README.md) | 日本語
 
-[![Release v0.1.0](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/uthuyomi/yukkuri-realtime-engine/releases/tag/v0.1.0)
-[![Quality](https://github.com/uthuyomi/yukkuri-realtime-engine/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/uthuyomi/yukkuri-realtime-engine/actions/workflows/quality.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+Koehaku Voice Runtime は、セルフホスト型のリアルタイム音声会話ランタイムです。マイク PCM、STT、ターン判定、投機的・ストリーミング LLM、発話チャンク化、TTS、再生フィードバックを一つのセッションライフサイクルとして扱います。
 
-**公開リリース：[v0.1.0](https://github.com/uthuyomi/yukkuri-realtime-engine/releases/tag/v0.1.0)** · Public API **v1** · エンジンは **Windows x64** · ローカル開発向けの初期リリースです。
+現在は既存の whisper.cpp 経路と、Nemotron 3.5 Streaming ASR 専用 Fast Path を提供します。STT、LLM、ターン判定、TTS はそれぞれ provider 境界を維持しています。サンプル構成は外部の OpenAI 互換 LLM サービスと、別途入手する AquesTalk 資産を使います。プロプライエタリ資産、モデル、認証情報は同梱しません。
 
-[起動手順](docs/quickstart.ja.md) · [アーキテクチャ](docs/architecture.ja.md) · [SDK](#sdk) · [ドキュメント](#ドキュメント)
+## 実行フロー
 
-クライアントが実際に再生した内容を会話状態に反映し、発話開始時には応答を一時停止、割り込み判定に応じて復帰またはキャンセルします。HTTP/WebSocket APIとTypeScript/Python SDKから、このセッションのライフサイクルを利用できます。
-
-標準構成はローカルのwhisper.cpp・Smart Turn・AquesTalkと、**外部のOpenAI LLMサービス**を組み合わせます。各providerは別々のGo interfaceを持ちますが、ランタイムのセルフホストは構成全体のローカル動作を意味しません。AQUEST資産・モデル・認証情報は別途用意します。
-
-## デモ
-
-Browser Voiceの実録デモは、所有者が後日追加します。[providerの設定](docs/quickstart.ja.md)後に[ブラウザサンプル](examples/typescript/browser-voice/README.md)を起動できます。
-
-<!-- 所有者が確認したBrowser Voiceの実録デモで置き換えてください。実在するメディアだけをリンクしてください。 -->
-
-## 主な機能
-
-- **リアルタイムの対話：** クライアントVAD、Smart Turnと動的な発話終了判定、barge-in、誤割り込みからの復帰、ヒューリスティックな相づち処理。
-- **生成のライフサイクル：** 上限付きの先行STT/LLM生成、commit判定後のpromotion、generation単位のキャンセル、複数ターンの会話状態。
-- **音声ランタイム：** 意味単位の音声分割、PCM配信、source frame基準のcredit-v1フロー制御、再生状況を反映する履歴、AudioWorkletクライアント。
-- **連携：** HTTP/WebSocket Public API v1、TypeScript SDK、Python SDK/CLI、ブラウザサンプル、session/generation IDで相関できるイベント。
-
-## アーキテクチャ
-
-```mermaid
-flowchart TD
-  Mic["Client microphone + VAD"] --> Input
-  subgraph Runtime["Realtime session runtime"]
-    Input["PCM input / endpointing"] <--> Turn["Smart Turn sidecar"]
-    Input --> STT["whisper.cpp / final STT"]
-    STT --> Conv["Conversation / generation lifecycle"]
-    Conv --> LLM["LLM stream"]
-    LLM --> Speech["Speech chunks / normalization"]
-    Speech --> TTS["TTS provider"]
-    TTS --> PCM["PCM / credit-v1 / playback timeline"]
-    Input -.-> Spec["Speculative STT + LLM buffer"]
-    Spec -.->|commit barrier / promotion| Conv
-    Input -.-> Interrupt["Interruption / backchannel decision"]
-    Interrupt -.->|cancel or recover| Conv
-    Interrupt -.->|pause or resume| PCM
-  end
-  PCM --> Player["Client AudioWorklet / playback"]
-  Player -->|source-frame ACK| PCM
-  PCM -->|played history| Conv
+```text
+マイク -> VAD / PCM -> STT -> Smart Turn -> 会話の確定
+                                |                |
+                                +-> 投機実行 ----+-> ストリーミング LLM
+                                                   -> 発話チャンク
+                                                   -> TTS -> PCM
+                                                   -> AudioWorklet
 ```
 
-実線は主な音声経路と再生状況のフィードバック、点線は並行する先行生成と割り込み制御です。先行生成はpromotion前にtextや音声を公開できません。providerのノードは連携境界を示し、単一プロセスを意味しません。[詳しいアーキテクチャ](docs/architecture.ja.md)。
+リアルタイム経路は barge-in、generation 単位のキャンセル、古いイベントの隔離、上限付き音声キュー、`credit-v1` 再生フロー制御、実際の再生を反映した会話履歴に対応します。Smart Turn が確定判断の権限を持ち、投機結果は promotion 前に公開されません。
 
 ## クイックスタート
 
-エンジンの主な対象は**Windows x64**です。`go.mod`の指定はGo **1.27.1**。SDK/CLIにはPython 3.11以上、固定依存のSmart TurnセットアップにはPython 3.13を使用します。ブラウザ／TypeScript SDKにはNode 22以上が必要です。プロプライエタリ資産とモデルは同梱していません。
-
-clone後、provider資産なしでもビルドできます。
+Engine の対象は Windows x64 です。ビルドには [`go.mod`](go.mod) 記載の Go、Browser Voice 開発には Node.js、Smart Turn と Python SDK には Python が必要です。runtime、モデル、AquesTalk/AqKanji2Koe 資産、API 認証情報はローカルで用意してください。
 
 ```powershell
-git clone https://github.com/uthuyomi/yukkuri-realtime-engine.git
-cd yukkuri-realtime-engine
+git clone https://github.com/uthuyomi/koehaku-voice-runtime.git
+cd koehaku-voice-runtime
+Copy-Item .env.example .env
 go build -o dist/engine.exe ./cmd/engine
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
-# 音声会話にはローカルproviderとOPENAI_API_KEYの設定が必要です。
-go run ./cmd/engine
 ```
 
-TTS/STT/LLMが未設定なら対応サービスを無効にします。STTの起動確認には時間がかかる場合があります。初期化後の`/health`はプロセスの生存確認であり、providerの準備完了を保証しません。`http://127.0.0.1:8765/v1/capabilities`を確認してください。
-
-**音声会話の手順は[Quickstart EN](docs/quickstart.md) / [日本語](docs/quickstart.ja.md)**を参照してください。AquesTalk/AqKanji2Koeの別途入手、whisper.cppのビルドとモデル取得、Smart Turnの起動、外部LLMの設定が必要です。
-
-## Browser Voice Demo
-
-provider設定後、Smart Turnとエンジンを起動したまま、リポジトリルートで実行します。
+`.env` で provider を設定し、開発 launcher を実行します。
 
 ```powershell
-npm --prefix sdk/typescript ci
-npm --prefix sdk/typescript run build
-python -m http.server 8080 --bind 127.0.0.1
+./scripts/dev.ps1 whisper
+./scripts/dev.ps1 nemotron
 ```
 
-<http://127.0.0.1:8080/examples/typescript/browser-voice/>を開き、「接続」「マイク開始」を押してマイクを許可します。テキスト入力も利用できます。Silero/ONNX資産は固定バージョンのCDNから取得します。開発用HTTPサーバーはローカルファイルを含むcheckout全体を配信するため、loopback以外に公開しないでください。
+launcher は Engine、Smart Turn sidecar、Browser Voice server を起動します。Nemotron worker を二重起動せず、persistent worker の管理は Engine に任せます。Browser Voice は `http://127.0.0.1:8080/examples/typescript/browser-voice/` です。Ctrl+C を一度押すと launcher 所有の process tree を終了します。
 
-会話・計測履歴はページ内メモリに保持します。エンジン再接続後も残りますが、ページ再読み込みで消えます。未計測は`—`とし、サーバー時間やPCM受信時間を可聴時間として表示しません。
+[クイックスタート](docs/quickstart.ja.md)、[設定](docs/configuration.ja.md)、[Provider](docs/providers.ja.md)、[トラブルシューティング](docs/troubleshooting.ja.md)も参照してください。
 
-## API
+## 公開インターフェース
 
-| Endpoint | 用途 |
-| --- | --- |
-| `GET /health` | HTTPプロセスの生存確認 |
-| `GET /v1/capabilities` | 設定済み機能・形式・上限 |
-| `POST /v1/audio/speech` | 単独の音声合成 |
-| `WS /v1/realtime` | 会話／クライアント提供応答 |
-| `WS /v1/transcription` | 確定文字起こし |
+- `GET /health`
+- `GET /v1/capabilities`
+- `POST /v1/audio/speech`
+- `WS /v1/realtime`
+- `WS /v1/transcription`
+- [TypeScript SDK](sdk/typescript/README.md)
+- [Python SDK](sdk/python/README.md)
 
-[HTTP API](docs/api.md) · [Protocol EN](docs/realtime-protocol.md) / [日本語](docs/realtime-protocol.ja.md) · [エラー](docs/errors.md)
+互換性は [API](docs/api.md)、[Realtime protocol](docs/realtime-protocol.ja.md)、[Protocol versioning](docs/protocol-versioning.md)に記載しています。
 
-## SDK
+## ベンチマーク
 
-TypeScript：ローカルSDKをビルドし、アプリに`./sdk/typescript`をインストールします。
+公開ベンチマークでは両 STT provider に同じ生成済み二言語コーパスと公開 transcription WebSocket を使用します。精度、確定遅延、全経路 TTFA、安定性、リソースを区別して報告します。生成音声は再現可能な試験入力であり、実マイク受入試験の代替ではありません。
 
-```ts
-import {YukkuriClient} from '@yukkuri-realtime/client';
-const client = new YukkuriClient({baseUrl: 'http://127.0.0.1:8765'});
-const session = await client.realtime.connect();
-session.on('textDelta', e => console.log(e.delta));
-try { await (await session.sendText('こんにちは', {output: 'text'})).done; }
-finally { await session.close(); }
-```
+- [Whisper と Nemotron の比較](docs/ja/benchmarks/whisper-vs-nemotron.md)
+- [測定方法](docs/benchmarks/methodology.ja.md)
+- [Phase 3/3B 技術調査](docs/benchmarks/realtime-performance-investigation-2026-10-04.md)
+- [機械可読な結果](benchmark-results/2026-10-04/)
 
-Python：`python -m pip install -e ./sdk/python`でインストールします。
+確立済みの Nemotron Phase 3B 100-turn 試験は 100/100 turn を完了し、worker/provider error、queue overflow、音声 drop、再生 failure、AquesTalk error、AudioWorklet underrun はすべて 0 でした。Final ASR は mean 1.019 s / p50 0.915 s / p95 1.813 s / max 3.317 s、first render は mean 1.831 s / p50 1.594 s / p95 3.327 s / max 4.680 s です。この値は文書記載の端末、モデル、fixture、定義に限定され、first render は実マイクから実スピーカーまでの可聴 TTFA ではありません。
 
-```python
-import asyncio
-from yukkuri_realtime import YukkuriClient
-
-async def main():
-    async with YukkuriClient() as client:
-        async with await client.realtime.connect() as session:
-            session.on('text_delta', lambda e: print(e['delta'], end=''))
-            generation = await session.send_text('こんにちは')
-            await generation.wait_done(timeout=130)
-
-asyncio.run(main())
-```
-
-同じPython環境でCLIを利用できます。
+## 開発
 
 ```powershell
-python -m yukkuri_realtime health
-python -m yukkuri_realtime capabilities
-python -m yukkuri_realtime speak "こんにちは" --output hello.wav
-python -m yukkuri_realtime transcribe input.wav
-python -m yukkuri_realtime realtime
+go test ./...
+go build ./cmd/engine
+npm --prefix sdk/typescript test
+py -3.12 -m unittest discover -s sdk/python/tests
 ```
 
-[TypeScript](docs/typescript-sdk.md) · [Python](docs/python-sdk.md) · [CLI](docs/cli.md)。CLIのrealtimeはテキスト入出力です。生成完了はスピーカーの再生完了ではありません。npm/PyPIでの公開は前提にしていません。
+ランタイム変更前に [CONTRIBUTING.md](CONTRIBUTING.md) を確認してください。Coding agent 用の正本は英語の [AGENTS.md](AGENTS.md)、日本語の補助資料は [AI 保守ガイド](docs/ja/ai-maintenance-guide.md) です。
 
-## Providers
+## ライセンスとセキュリティ
 
-現在の実装はAquesTalk＋AqKanji2Koe（Windows DLL）、whisper.cppの常駐／プロセス方式、OpenAI Responsesストリーミング、Smart Turn v3.2 CPUサイドカー、multisignal方式の日本語相づちヒューリスティックです。[EN](docs/providers.md) / [日本語](docs/providers.ja.md)
+プロジェクト独自のコードと文書は [MIT License](LICENSE) の対象です。第三者 runtime、モデル、プロプライエタリ音声資産には個別の条件があります。[Third-party notices](THIRD_PARTY_NOTICES.md) を確認してください。`.env`、認証情報、モデル、runtime binary、AQUEST 資産を commit しないでください。脆弱性の報告方法は [SECURITY.md](SECURITY.md) に記載しています。
 
-## 性能
-
-ユーザー報告の初期実マイク観測：**GTX 1660 6GB**、whisper.cpp **CUDA / small / persistent**、**完了4ターン**。Server TTFAはp50 **2.11秒**、p95 **2.40秒**、min **2.09秒**、max **2.40秒**。割り込みターンは除外しています。極めて少数の観測で、**管理されたベンチマークではありません**。リリース準備中に独立した再測定は行っていません。Server TTFAは可聴時間を保証しません。[定義・出典・丸め値の注意 EN](docs/performance.md) / [日本語](docs/performance.ja.md)
-
-## ドキュメント
-
-| 項目 | English | 日本語 |
-| --- | --- | --- |
-| アーキテクチャ | [EN](docs/architecture.md) | [JA](docs/architecture.ja.md) |
-| 起動手順 | [EN](docs/quickstart.md) | [JA](docs/quickstart.ja.md) |
-| 設定 | [EN](docs/configuration.md) | [JA](docs/configuration.ja.md) |
-| Protocol | [EN](docs/realtime-protocol.md) | [JA](docs/realtime-protocol.ja.md) |
-| Providers | [EN](docs/providers.md) | [JA](docs/providers.ja.md) |
-| 性能 | [EN](docs/performance.md) | [JA](docs/performance.ja.md) |
-| トラブルシューティング | [EN](docs/troubleshooting.md) | [JA](docs/troubleshooting.ja.md) |
-
-[TypeScript SDK](docs/typescript-sdk.md) · [Python SDK](docs/python-sdk.md) · [CLI](docs/cli.md)
-
-[開発・テスト](CONTRIBUTING.md) · [セキュリティ](SECURITY.md) · [変更履歴](CHANGELOG.md) · [リリース準備報告](docs/release-quality.md)
-
-## 現状と制限
-
-- 標準エンジン実行ファイルはWindows専用です。core／SDKの移植可能なテストはLinux/macOS版エンジンのビルド対応を意味しません。
-- 認証、永続的な会話、自動再接続、replay、session復元はありません。認証のないサービスはloopbackで利用してください。
-- STTは確定結果のみです。キャンセルで常駐workerを終了・再ロードするため、次の要求はウォーム状態の速度を失う場合があります。
-- 相づち判定はヒューリスティックで、短い訂正は曖昧になる場合があります。ブラウザAEC/NSとVADは端末条件に依存します。
-- AquesTalkは同期ネイティブ呼び出しで、Go contextでは強制中断できません。Windowsのnative pointer境界には記録済みの`go vet`警告があります。
-- 再生の線形リサンプラーは帯域制限型の高品質変換ではありません。可聴開始とTTS開始時刻は未計測です。
-- 会話／先行生成の観測イベントはbest effortです。メタデータ欠落時はブラウザの相関や統計が不完全になる場合があります。
-
-## ライセンス
-
-Yukkuri Realtime Engine独自のコードとプロジェクト作成文書には、別途記載のあるものを除き、MIT Licenseが適用されます。[LICENSE](LICENSE)を参照してください。第三者の依存ソフトウェア・資産には、それぞれのライセンスと条件が適用されます。AquesTalk/AqKanji2KoeはAQUESTのプロプライエタリソフトウェアで、本プロジェクトのMITの対象外です。資産と必要な利用許諾はAQUESTから別途取得してください。
+現在はローカルで公開前レビュー中です。version、tag、release、公開操作は所有者が決定します。

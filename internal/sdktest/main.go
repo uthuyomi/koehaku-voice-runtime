@@ -12,11 +12,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
-	httptransport "github.com/uthuyomi/yukkuri-realtime-engine/internal/transport/http"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
+	httptransport "github.com/uthuyomi/koehaku-voice-runtime/internal/transport/http"
 )
 
 type speech struct{}

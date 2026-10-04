@@ -11,17 +11,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/conversation"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel/multisignal"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/limited"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/conversation"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel/multisignal"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/limited"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 type Server struct {

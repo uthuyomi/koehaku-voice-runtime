@@ -9,6 +9,7 @@ export class BrowserAudioPlayer {
   private disposed = false;
   private constructor(readonly session: RealtimeSession, readonly context: AudioContext, readonly node: AudioWorkletNode, private ownsContext: boolean) {
     const post = (value: unknown) => node.port.postMessage(value);
+    const playback = session as unknown as {ackRendered(played: number, generation?: string, final?: boolean): void; flushPlayback(generation?: string): void};
     this.off.push(session.on('generationStarted', g => { this.clearPause(); post({type: 'generation', generationId: g.id}); }),
       session.on('audio', packet => {
         const samples = new Float32Array(packet.pcm.length / 2);
@@ -32,8 +33,9 @@ export class BrowserAudioPlayer {
       if (this.disposed || session.state !== 'active' || m.generationId !== session.generation?.id) return;
       try {
         // Worklet receipt is not playback. Only native rendered source positions advance ACK.
-        if (['playback.credit', 'playback.progress', 'playback.completed', 'playback.paused'].includes(m.type))
-          session.ackPlayed(m.playedSourceFrames, m.generationId);
+        if (m.type === 'playback.progress') playback.ackRendered(m.playedSourceFrames, m.generationId);
+        if (m.type === 'playback.completed' || m.type === 'playback.paused')
+          playback.ackRendered(m.playedSourceFrames, m.generationId, true);
         if (m.type === 'playback.paused') session.sendEvent({type: 'playback.paused', generation_id: m.generationId,
           data: {interruption_id: m.interruptionId, played_source_frames: m.playedSourceFrames}});
         if (m.type === 'playback.overflow') session.sendEvent({type: 'playback.overflow', generation_id: m.generationId});
@@ -68,6 +70,7 @@ export class BrowserAudioPlayer {
   private clearPause(): void { clearTimeout(this.watchdog); this.pauseToken = undefined; }
   async close(): Promise<void> {
     if (this.disposed) return; this.disposed = true; this.clearPause(); this.off.forEach(fn => fn());
+    (this.session as unknown as {flushPlayback(generation?: string): void}).flushPlayback();
     this.node.port.postMessage({type: 'clear'}); this.node.port.onmessage = null; this.node.disconnect(); this.node.port.close();
     if (this.ownsContext) await this.context.close();
   }

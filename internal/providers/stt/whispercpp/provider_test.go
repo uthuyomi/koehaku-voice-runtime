@@ -8,17 +8,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 // The test binary acts as a long-running whisper-cli child, exercising the
 // provider's real exec.CommandContext/Run path without loading a model.
 func TestMain(m *testing.M) {
-	if os.Getenv("YUKKURI_TEST_STT_SERVER") != "" {
+	if os.Getenv("KOEHAKU_TEST_STT_SERVER") != "" {
 		runTestServer()
 		os.Exit(0)
 	}
-	if marker := os.Getenv("YUKKURI_TEST_WHISPER_CHILD"); marker != "" {
+	if marker := os.Getenv("KOEHAKU_TEST_WHISPER_CHILD"); marker != "" {
 		for i, arg := range os.Args {
 			if arg == "-f" && i+1 < len(os.Args) {
 				_ = os.WriteFile(marker, []byte(os.Args[i+1]), 0600)
@@ -40,7 +40,7 @@ func TestTranscribeCancellationReapsChildAndRemovesWAV(t *testing.T) {
 		t.Fatal(err)
 	}
 	marker := filepath.Join(dir, "started")
-	t.Setenv("YUKKURI_TEST_WHISPER_CHILD", marker)
+	t.Setenv("KOEHAKU_TEST_WHISPER_CHILD", marker)
 	p, err := New(Config{Executable: exe, Model: model})
 	if err != nil {
 		t.Fatal(err)

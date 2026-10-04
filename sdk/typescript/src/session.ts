@@ -41,7 +41,8 @@ export class Session {
   private input = false;
   protected continuousInput = false;
   private terminal?: YukkuriError;
-  private audio?: {id: string; rate: number; received: number; played: number; capacity: number; chunk: number; packet: number};
+  private audio?: {id: string; rate: number; received: number; played: number; capacity: number; chunk: number; packet: number;
+    creditedReceived: number; creditedPlayed: number; progressedPlayed: number};
   constructor(protected client: YukkuriClient, readonly transcriptionOnly = false) {}
   on<K extends keyof SessionEvents>(name: K, listener: (value: SessionEvents[K]) => void): () => void {
     const set = this.listeners.get(name) ?? new Set(); this.listeners.set(name, set); set.add(listener);
@@ -123,6 +124,7 @@ export class Session {
       }
       case 'generation.created':
         if (!gen) throw failure('protocol_error', 'Generation ID is missing.');
+        this.flushPlayback();
         this.generation?.complete('cancelled'); this.audio = undefined;
         this.generation = new Generation(gen, this); this.emit('generationStarted', this.generation); break;
       case 'generation.cancelled':
@@ -144,7 +146,8 @@ export class Session {
         if (gen !== this.generation?.id || this.generation.state === 'cancelled') break;
         if (e.data.channels !== 1 || e.data.bits_per_sample !== 16 || !Number.isInteger(e.data.sample_rate) ||
           Number(e.data.sample_rate) < 1000 || Number(e.data.sample_rate) > 192000) throw failure('protocol_error', 'Unsupported output format.');
-        if (!this.audio) { this.audio = {id: gen, rate: Number(e.data.sample_rate), received: 0, played: 0, capacity: Number(e.data.sample_rate) * 2, chunk: -1, packet: -1}; this.credit(); }
+        if (!this.audio) { this.audio = {id: gen, rate: Number(e.data.sample_rate), received: 0, played: 0, capacity: Number(e.data.sample_rate) * 2,
+          chunk: -1, packet: -1, creditedReceived: -1, creditedPlayed: -1, progressedPlayed: -1}; this.credit(); }
         else if (this.audio.rate !== e.data.sample_rate) throw failure('protocol_error', 'Source rate changed within generation.');
         break;
       case 'response.audio.delta':
@@ -169,7 +172,6 @@ export class Session {
       throw failure('protocol_error', 'PCM source position or packet sequence mismatch.');
     a.received += d.source_frames; a.chunk = d.speech_sequence; a.packet = d.audio_sequence;
     if (a.received - a.played > a.capacity) throw failure('resource_limit', 'Audio exceeded the playback window.');
-    this.credit(); // Receipt is NOT playback.
     this.emit('audio', {generationId: a.id, pcm, metadata: d, format: {encoding: 'pcm_s16le', sample_rate: a.rate, channels: 1}});
   }
   private fatal(error: YukkuriError): void {
@@ -221,22 +223,41 @@ export class Session {
   cancelInput(): void { this.sendEvent({type: 'input_audio.cancel'}); this.input = this.continuousInput; }
   stopAudioInput(): void { this.sendEvent({type: 'input_audio.stop'}); this.input = false; this.continuousInput = false; }
   cancelGeneration(generationId = this.generation?.id): void {
-    if (generationId) this.sendEvent({type: 'generation.cancel', generation_id: generationId});
+    if (generationId) { this.flushPlayback(generationId); this.sendEvent({type: 'generation.cancel', generation_id: generationId}); }
   }
   playbackSnapshot(): CreditSnapshot | undefined {
     const a = this.audio; return a && {capacity_source_frames: a.capacity, received_source_frames: a.received, played_source_frames: a.played, buffered_source_frames: a.received - a.played};
   }
   ackPlayed(playedSourceFrames: number, generationId = this.generation?.id): void {
+    this.ackRendered(playedSourceFrames, generationId, true);
+  }
+  // BrowserAudioPlayer coalesces regular progress and explicitly flushes terminal positions.
+  private ackRendered(playedSourceFrames: number, generationId = this.generation?.id, final = false): void {
     const a = this.audio;
     if (!a || generationId !== a.id) return;
     if (!Number.isSafeInteger(playedSourceFrames) || playedSourceFrames < 0 || playedSourceFrames > a.received)
       throw failure('invalid_request', 'Playback position must be a received source-frame position.');
     if (playedSourceFrames < a.played) return;
-    a.played = playedSourceFrames; this.credit();
-    this.sendEvent({type: 'playback.progress', generation_id: a.id, data: {played_source_frames: a.played}});
+    a.played = playedSourceFrames;
+    if (this.capabilities.features.audio_flow_control?.version === 'credit-v1') this.credit();
+    if (final || this.capabilities.features.audio_flow_control?.version !== 'credit-v1') this.progress();
   }
   private credit(): void {
-    if (this.audio && this.state === 'active') this.sendEvent({type: 'playback.credit', generation_id: this.audio.id, data: this.playbackSnapshot()!});
+    const a = this.audio;
+    if (!a || this.state !== 'active' || a.creditedReceived === a.received && a.creditedPlayed === a.played) return;
+    this.sendEvent({type: 'playback.credit', generation_id: a.id, data: this.playbackSnapshot()!});
+    a.creditedReceived = a.received; a.creditedPlayed = a.played;
+  }
+  private progress(): void {
+    const a = this.audio;
+    if (!a || this.state !== 'active' || a.progressedPlayed === a.played) return;
+    this.sendEvent({type: 'playback.progress', generation_id: a.id, data: {played_source_frames: a.played}});
+    a.progressedPlayed = a.played;
+  }
+  // Flush the last rendered position before a terminal control event.
+  protected flushPlayback(generationId = this.generation?.id): void {
+    if (!this.audio || generationId !== this.audio.id) return;
+    this.credit(); this.progress();
   }
   close(): Promise<void> {
     if (this.closeTask) return this.closeTask;
@@ -244,6 +265,7 @@ export class Session {
     this.closeTask = (async () => {
       try {
         if (this.state === 'active') {
+          this.flushPlayback();
           const result = this.request('session.close', {}, 'session.closed', {timeoutMs: this.client.options.closeTimeoutMs});
           this.state = 'closing'; await result;
         }
@@ -255,6 +277,7 @@ export class RealtimeSession extends Session {
   async sendText(text: string, options: OperationOptions & {output?: 'text' | 'audio'} = {}): Promise<Generation> {
     this.client.require(this.capabilities, 'conversation');
     if (options.output === 'audio') { this.client.require(this.capabilities, 'tts'); this.client.require(this.capabilities, 'audio_flow_control'); }
+    this.flushPlayback();
     const event = await this.request('input_text.commit', {text, output: options.output ?? 'text'}, 'generation.created', options,
       () => { if (this.state === 'active') void this.close().catch(() => {}); });
     if (this.generation?.id !== event.generation_id) throw failure('invalid_state', 'Generation was superseded.');

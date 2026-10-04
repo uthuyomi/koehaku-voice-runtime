@@ -4,7 +4,7 @@
 
 Do not post exploit details, credentials, audio recordings or proprietary files in a public issue. If this repository's GitHub Security tab offers **Report a vulnerability**, use that private reporting route. Availability has not been verified; no private security email or guaranteed response SLA is established. If private reporting is unavailable, open a minimal issue asking the maintainer to establish a private contact channel, without sensitive details. Do not assume disclosure is authorized by a lack of response.
 
-v0.1.0 is an early release target; there is no published long-term support policy. Reproduce against the current source and state the affected commit and safe diagnostic codes.
+Koehaku is currently a pre-release project; there is no published long-term support policy. Reproduce against the current source and state the affected commit and safe diagnostic codes.
 
 ## Trust and deployment assumptions
 

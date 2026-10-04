@@ -25,6 +25,15 @@ class ReleaseSafety(unittest.TestCase):
     def test_binary_disguised_as_source_is_rejected(self):
         self.assertTrue(check_content("assets/example.txt", b"MZ\0binary"))
 
+    def test_machine_readable_benchmark_has_bounded_larger_limit(self):
+        data = b" " * (2 * 1024 * 1024)
+        self.assertFalse(check_content("benchmark-results/run.json", data))
+        self.assertTrue(check_content("docs/run.json", data))
+
+    def test_documented_demo_media_is_allowed_but_other_binary_is_not(self):
+        self.assertFalse(check_content("docs/assets/demo.mp4", b"MZ\0media"))
+        self.assertTrue(check_content("docs/demo.mp4", b"MZ\0media"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
 )
 
 func TestLocalModelSmoke(t *testing.T) {

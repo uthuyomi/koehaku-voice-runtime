@@ -1,43 +1,47 @@
-# Providers
+# Provider 設定
 
-[English](providers.md) | 日本語
-
-実装は`internal/providers/`にあります。STTは`Transcribe`、LLMは`Generate`／streamの`Recv`、TTSは`Synthesize`、turn検出は`Detect`、相づちは`Classify`を実装します。EngineはTTSを登録し、他の境界はtransportのsetterで接続します。Goによる構成境界であり、公開dynamic-plugin loaderではありません。利用可否は`/v1/capabilities`で確認しますが、設定済みでもremote API／sidecarの成功を保証しません。
+Koehaku Voice Runtime は STT、ターン判定、LLM、TTS を独立した provider 境界として扱います。モデル、実行ファイル、API 認証情報、AquesTalk 資産は同梱しません。共通設定は [設定リファレンス](configuration.ja.md)、起動手順は [クイックスタート](quickstart.ja.md) を参照してください。
 
 ## AquesTalk / AqKanji2Koe
 
-Windows adapterはAquesTalk1 DLLを動的ロードし、AqKanji2Koeで日本語textを変換してmono 8 kHz WAVを返します。既定声種はf1、設定声種はf1/f2/f3/m1/m2/r1/dvd/imd1/jgr。標準起動プログラムは全設定DLLと辞書を必要とします。[配置先](quickstart.ja.md)を参照してください。
+Windows adapter は利用者が用意した AquesTalk1 DLL と AqKanji2Koe DLL・辞書を動的に読み込み、mono 8 kHz WAV を返します。Koehaku はこれらの proprietary asset やライセンスキーを配布しません。利用・再配布条件は AQUEST の製品ページと契約を確認してください。
 
-AquesTalkとAqKanji2Koeは第三者のプロプライエタリソフトウェアです。このリポジトリからDLL、辞書、SDKライブラリ／ヘッダー、キーなどの制限付きSDK資産を再配布しません。各自で取得し、AQUESTの条件に従ってください。独自コードとプロジェクト作成文書の[MIT License](../LICENSE)は、これらの資産の権利を付与せず、AQUESTのライセンスを変更しません。検証済みのソース候補と整理後のローカル到達可能履歴には含まれません。Step 10-DではGitHubの公開mainも置換し、これらの資産が到達不能であることを新規cloneで確認しました。GitHub内部の保存物やキャッシュの消去を保証するものではありません。[リリース報告](release-quality.md)を参照してください。配布元の[AquesTalk製品ページ](https://www.a-quest.com/products/aquestalk.html)、[AqKanji2Koe製品ページ](https://www.a-quest.com/products/aqkanji2koe.html)とそのライセンス案内を確認してください。この文書で個別の法的権利を判断しません。
-
-`speed`は倍率です。省略／0は100%、正数は100倍して整数のpercentに変換し、50〜300%を受け付けます。通常速度は`100`でなく`1.0`です。未知の声種、変換失敗、native合成失敗は情報を制限したgeneration errorになります。変換出力バッファは8192 bytesで、長文や複雑な入力は変換に失敗する場合があります。native呼出しは同期処理で、実行途中のDLL処理をcontext cancelで中断できません。DLLの並行動作は利用者の許諾済みbuildで確認が必要です。
-
-Go設定には`DevKey`、`UsrKey`、`Kanji2KoeDevKey`がありますが、標準実行ファイルは設定せず、対応環境変数も公開していません。秘密はソースやartifactに含めません。資産欠落／不正時はTTSを無効化し、healthやtext会話は独立して利用できます。
+標準の voice は `f1`、標準速度は倍率 `1.0` です。空白のみ、変換後に音声記号が空になる入力、未知の voice、native 合成失敗は安全な generation error になります。通常ログへ会話本文は出しません。明示的なローカル診断に限り `KOEHAKU_TTS_DIAGNOSTIC_DIR` を使用できます。旧 `YUKKURI_TTS_DIAGNOSTIC_DIR` は互換 alias です。
 
 ## whisper.cpp STT
 
-既定は常駐・確定結果のみ・small・日本語です。1つのupstream whisper-serverと直列推論contextをsession間で共有します。process方式は要求ごとにwhisper-cliを使う診断／互換用で、既定ではありません。固定revisionとセットアップは[STT runtime](stt-runtime.md)を参照してください。
+Whisper は既存の final-only 経路を使います。既定 runtime は persistent server で、1つの model/context を共有し推論を直列化します。`process` mode は診断用です。model、language、thread、beam size、best-of は環境設定をそのまま使用し、別 provider への silent fallback は行いません。
 
-| STT_DEVICE | 動作 |
-| --- | --- |
-| auto | CUDAロードと実推論を確認し、初期化失敗なら回収後CPUを試します。要求中のCUDA失敗はその要求を失敗させ、次の要求で切り替えます。 |
-| cpu | CPU実行ファイルと`-ng`を使い、CUDAを試しません。 |
-| cuda | CUDA起動・モデル割当の証拠・実推論成功を必要とします。CPUへfallbackしません。 |
+CPU 上の Whisper 推論は発話によって speculation の既定 lifetime より長くなる場合があります。commit 済み snapshot の STT は正解生成に必要な処理なので、LLM speculation の lifetime とは分離されています。キャンセル、queue 待ち、model reload、推論時間は runtime telemetry で区別します。
 
-device選択でモデルは変えません。`STT_MODEL`は既知のファイル名形式、`STT_MODEL_PATH`は利用者が用意したcustomモデルを選びます。モデルの同梱やEngine起動時の自動取得はありません。実行ファイル／モデル欠落時はSTTを無効化します。cancel／errorでchildを終了・回収し、次の対象要求で再ロードします。初期化失敗後はEngine再起動が必要です。queue／resource上限は[設定](configuration.ja.md)を参照してください。
+## Nemotron Streaming ASR
+
+`STT_PROVIDER=nemotron` は専用 Realtime Streaming Fast Path を有効にします。Engine が localhost の persistent worker を1つ起動し、turn ごとに `OnlineStream` を作成します。Browser からの入力は PCM16 mono 16 kHz です。partial は内部 hint であり、Smart Turn が commit を決めるまで会話履歴へ確定しません。
+
+baseline は Nemotron 3.5 Streaming ASR 0.6B 560 ms INT8、CPU、2 threads、`greedy_search`、language auto です。worker/model/queue の失敗時に Whisper へ silent fallback しません。
+
+```dotenv
+STT_PROVIDER=nemotron
+NEMOTRON_WORKER_EXECUTABLE=C:\path\to\sherpa-onnx-nemotron-worker.exe
+NEMOTRON_ENCODER=C:\path\to\encoder.onnx
+NEMOTRON_DECODER=C:\path\to\decoder.onnx
+NEMOTRON_JOINER=C:\path\to\joiner.onnx
+NEMOTRON_TOKENS=C:\path\to\tokens.txt
+NEMOTRON_THREADS=2
+NEMOTRON_LANGUAGE=auto
+NEMOTRON_PERFORMANCE=true
+```
+
+現在の worker は sherpa-onnx v1.13.8 に project 固有の target と opt-in の ORT no-spinning patch を適用して build します。公開可能な source と手順は [`third_party/sherpa-onnx`](../third_party/sherpa-onnx/README.md) にあります。`SHERPA_ONNX_ORT_DISABLE_SPINNING=1` は Engine が Nemotron child にだけ設定し、他の process や upstream の既定動作には適用しません。
 
 ## Smart Turn
 
-Goの`smartturn`は既定で`http://127.0.0.1:8766/predict`を呼びます。loopback HTTP限定、timeout 3秒、redirect禁止です。CPU ONNXサイドカーは直近最大8秒のPCM16 mono16kから終了確率を返します。STTではなくendpoint判定です。setupはモデルrevision／hashと依存を固定します。既存ライセンス表示は`tools/turn-detector/SMART-TURN-LICENSE`に保持しています。取得モデル・依存には個別の条件があります。
+Smart Turn は STT ではなく endpoint 判定です。既定では loopback の `http://127.0.0.1:8766/predict` を使い、直近最大8秒の PCM16 mono 16 kHz から発話完了確率を返します。Smart Turn を bypass せず、失敗時の既存 endpoint policy と error handling を維持します。model と Python 環境はローカル依存です。
 
-capability設定時に到達確認はしません。停止・busy時には上限付きのendpoint失敗／fallback処理が働きます。ログとsidecar healthを確認してください。VADの責任はクライアントにあります。
+## LLM
 
-## LLMと相づち
+LLM provider は OpenAI-compatible streaming API を利用できます。認証情報は `.env` などのローカル設定で渡し、source、log、benchmark artifact へ保存しません。speculation は private buffer に出力を保持し、final transcript と安全に一致した場合だけ promotion します。
 
-現在のLLM実装はOpenAI Responses SSE（`/responses`）です。`OPENAI_API_KEY`、`OPENAI_MODEL`で設定します。ソースの既定モデルは`gpt-5.6-luna`で、利用者のアカウントで使えるモデルを設定してください。外部providerへ会話内容を送信し、API料金やネットワーク条件はEngine外部の要因です。キーがなければ会話は無効です。`BaseURL`はGo設定であり環境変数ではありません。通常LLM要求はcancelに従いますが、サーバーの固定総応答deadlineはありません。
+## ライセンスと配布
 
-`multisignal-ja-v1`は時間・音響・endpoint確率・任意の意味的証拠を使う相づちヒューリスティックです。音響特徴による復帰は既定onで、無効化できます。学習済み意図認識ではなく、短い訂正は曖昧になる場合があります。復帰では既存PCM／履歴を再開し、真の割り込みではcancelします。
-
-## 第三者のライセンス
-
-whisper.cpp、Smart Turn、Silero VAD/vad-web、ONNX Runtime、coder/websocket、SDK／ブラウザの依存ソフトウェア、取得モデルには、それぞれのライセンスと条件が適用されます。本プロジェクトのMITによって、これらのライセンスを変更するものではありません。
+各 provider の source、runtime、model、voice asset、外部 service はそれぞれ異なる条件を持ちます。[Third-party notices](../THIRD_PARTY_NOTICES.md) を確認してください。Koehaku の MIT License は第三者資産を再許諾しません。

@@ -91,9 +91,9 @@ GPUに対応するCUDA Toolkit/MSVCの組を使います。`75`はGTX 1660向け
 ```powershell
 python -m venv .venv
 ./.venv/Scripts/python.exe -m pip install -e ./sdk/python
-./.venv/Scripts/python.exe -m yukkuri_realtime health
-./.venv/Scripts/python.exe -m yukkuri_realtime capabilities
-./.venv/Scripts/python.exe -m yukkuri_realtime realtime
+./.venv/Scripts/python.exe -m koehaku_realtime health
+./.venv/Scripts/python.exe -m koehaku_realtime capabilities
+./.venv/Scripts/python.exe -m koehaku_realtime realtime
 ```
 
 最後のコマンドはLLM、`speak`はTTS、`transcribe`はSTTが必要です。healthにはproviderは不要です。API結合テストはfake providerを使うため、有料キー・専有資産・モデルは不要です。[開発手順](../CONTRIBUTING.md)を参照してください。起動手順はソースとproviderなしのビルド／パッケージテストで照合しました。Step 10では外部ダウンロード・CUDA・実マイクのセットアップは再実行していません。

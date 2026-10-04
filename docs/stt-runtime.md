@@ -130,7 +130,7 @@ Protocol remains **v1**. No event names, final transcript payload, commit promis
 {"version":"1","available":true,"modes":["commit","final-only"],"runtime":{"backend":"whisper.cpp","requested_device":"auto","selected_device":"cpu","model":"small","persistent":true,"state":"ready","fallback_from":"cuda","fallback_reason":"cuda_initialization_failed"}}
 ```
 
-States include initializing, ready, reload_required, unavailable and closed. `available` signals initial usable service / retry eligibility, not a promise that a worker cannot fail immediately afterwards; reload_required can remain available for lazy recovery. TS/Python SDKs add optional typed discovery metadata only. `yukkuri transcribe` is unchanged. No partial event is added, and final-only clients need no opt-in or change.
+States include initializing, ready, reload_required, unavailable and closed. `available` signals initial usable service / retry eligibility, not a promise that a worker cannot fail immediately afterwards; reload_required can remain available for lazy recovery. TS/Python SDKs add optional typed discovery metadata only. The canonical command is `koehaku transcribe`; the former `yukkuri transcribe` remains a compatibility alias. No partial event is added, and final-only clients need no opt-in or change.
 
 ## Streaming decision and next implementation
 

@@ -8,8 +8,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/audio"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
 )
 
 type InterruptionState string

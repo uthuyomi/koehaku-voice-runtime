@@ -1,0 +1,415 @@
+{
+  "schema": "yukkuri-stt-accuracy-v1",
+  "provider": "nemotron",
+  "methodology": {
+    "endpoint": "WS /v1/transcription",
+    "sample_rate": 16000,
+    "language_mode": "provider configuration",
+    "repeat": 2,
+    "latency": "client commit through final transcript",
+    "accuracy": "first repetition only"
+  },
+  "capabilities": {
+    "protocol_version": "1",
+    "endpoints": {
+      "capabilities": "GET /v1/capabilities",
+      "health": "GET /health",
+      "realtime": "WS /v1/realtime",
+      "speech": "POST /v1/audio/speech",
+      "transcription": "WS /v1/transcription"
+    },
+    "features": {
+      "audio_flow_control": {
+        "version": "credit-v1",
+        "available": true,
+        "modes": [
+          "credit-v1",
+          "legacy-bounded"
+        ]
+      },
+      "backchannel": {
+        "version": "1",
+        "available": true
+      },
+      "conversation": {
+        "version": "1",
+        "available": true,
+        "modes": [
+          "text",
+          "audio-if-tts"
+        ]
+      },
+      "interruption": {
+        "version": "1",
+        "available": true
+      },
+      "realtime_audio": {
+        "version": "1",
+        "available": true
+      },
+      "realtime_input": {
+        "version": "1",
+        "available": true
+      },
+      "speculation": {
+        "version": "1",
+        "available": true
+      },
+      "transcription": {
+        "version": "1",
+        "available": true,
+        "modes": [
+          "commit",
+          "final-only"
+        ],
+        "runtime": {
+          "backend": "sherpa-onnx",
+          "requested_device": "cpu",
+          "selected_device": "cpu",
+          "model": "nemotron-3.5-asr-streaming-0.6b-560ms-int8",
+          "persistent": true,
+          "state": "ready"
+        }
+      },
+      "tts": {
+        "version": "1",
+        "available": true
+      }
+    },
+    "input_audio_formats": [
+      {
+        "encoding": "pcm_s16le",
+        "sample_rate": 16000,
+        "channels": 1
+      }
+    ],
+    "output_audio_formats": [
+      {
+        "encoding": "pcm_s16le",
+        "channels": 1
+      },
+      {
+        "encoding": "wav",
+        "channels": 1
+      }
+    ],
+    "limits": {
+      "audio_queue_ms": 30000,
+      "cleanup_timeout_ms": 2000,
+      "concurrent_stt": 1,
+      "conversation_bytes": 262144,
+      "conversation_item_bytes": 32768,
+      "conversation_items": 50,
+      "credit_wait_timeout_ms": 30000,
+      "http_body_bytes": 1048576,
+      "input_binary_bytes": 65536,
+      "json_bytes": 65536,
+      "legacy_audio_window_ms": 2000,
+      "legacy_turn_seconds": 120,
+      "output_binary_bytes": 16384,
+      "provider_timeout_ms": 120000,
+      "realtime_turn_ms": 120000,
+      "sessions": 64,
+      "speculation_attempts_per_turn": 3,
+      "speculation_delta_bytes": 65536,
+      "speculation_timeout_ms": 45000,
+      "speculation_transcript_bytes": 16384,
+      "stt_admitted_requests": 8,
+      "text_bytes": 32768,
+      "transcript_bytes": 16384,
+      "write_timeout_ms": 10000
+    }
+  },
+  "records": [
+    {
+      "id": "ja-short-weather",
+      "language": "ja",
+      "repeat": 1,
+      "audio_seconds": 2.395,
+      "latency_ms": 1961.54309999838,
+      "rtf": 0.819015908141286,
+      "reference": "本日は晴天です。",
+      "hypothesis": "本日は成点です",
+      "character_errors": 2,
+      "reference_characters": 7,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-short-weather",
+      "language": "ja",
+      "repeat": 2,
+      "audio_seconds": 2.395,
+      "latency_ms": 2179.873300003237,
+      "rtf": 0.9101767432163829,
+      "reference": "本日は晴天です。",
+      "hypothesis": "本日は成点です",
+      "character_errors": 2,
+      "reference_characters": 7,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-medium-system",
+      "language": "ja",
+      "repeat": 1,
+      "audio_seconds": 4.69,
+      "latency_ms": 5889.860199997202,
+      "rtf": 1.2558337313426868,
+      "reference": "今日は新しい音声認識システムの動作を確認します。",
+      "hypothesis": "今日は新しい音声認識システムの動作を確認します",
+      "character_errors": 0,
+      "reference_characters": 23,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-medium-system",
+      "language": "ja",
+      "repeat": 2,
+      "audio_seconds": 4.69,
+      "latency_ms": 4408.617000008235,
+      "rtf": 0.9400036247352312,
+      "reference": "今日は新しい音声認識システムの動作を確認します。",
+      "hypothesis": "今日は新しい音声認識システムの動作を確認します",
+      "character_errors": 0,
+      "reference_characters": 23,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-proper-noun",
+      "language": "ja",
+      "repeat": 1,
+      "audio_seconds": 2.985,
+      "latency_ms": 3820.449599996209,
+      "rtf": 1.2798826130640566,
+      "reference": "札幌の天気を調べてください。",
+      "hypothesis": "札幌の天気を調べてください",
+      "character_errors": 0,
+      "reference_characters": 13,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-proper-noun",
+      "language": "ja",
+      "repeat": 2,
+      "audio_seconds": 2.985,
+      "latency_ms": 3729.162000003271,
+      "rtf": 1.2493005025136585,
+      "reference": "札幌の天気を調べてください。",
+      "hypothesis": "札幌の天気を調べてください",
+      "character_errors": 0,
+      "reference_characters": 13,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-numbers",
+      "language": "ja",
+      "repeat": 1,
+      "audio_seconds": 5.0,
+      "latency_ms": 5188.807300000917,
+      "rtf": 1.0377614600001834,
+      "reference": "会議は二千二十六年十月四日の午後三時に始まります。",
+      "hypothesis": "会議は二千二十六年十月四日の午後三時に始まります",
+      "character_errors": 0,
+      "reference_characters": 24,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-numbers",
+      "language": "ja",
+      "repeat": 2,
+      "audio_seconds": 5.0,
+      "latency_ms": 5842.214899996179,
+      "rtf": 1.1684429799992357,
+      "reference": "会議は二千二十六年十月四日の午後三時に始まります。",
+      "hypothesis": "会議は二千二十六年十月四日の午後三時に始まります",
+      "character_errors": 0,
+      "reference_characters": 24,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-conversation",
+      "language": "ja",
+      "repeat": 1,
+      "audio_seconds": 4.43,
+      "latency_ms": 3753.0538000137312,
+      "rtf": 0.8471904740437316,
+      "reference": "今日は少し休んでから明日の予定について話しましょう。",
+      "hypothesis": "今日は少し休んでから明日の予定について話しましょう",
+      "character_errors": 0,
+      "reference_characters": 25,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "ja-conversation",
+      "language": "ja",
+      "repeat": 2,
+      "audio_seconds": 4.43,
+      "latency_ms": 4784.285699992324,
+      "rtf": 1.0799741986438656,
+      "reference": "今日は少し休んでから明日の予定について話しましょう。",
+      "hypothesis": "今日は少し休んでから明日の予定について話しましょう",
+      "character_errors": 0,
+      "reference_characters": 25,
+      "word_errors": 0,
+      "reference_words": 0
+    },
+    {
+      "id": "en-short-weather",
+      "language": "en",
+      "repeat": 1,
+      "audio_seconds": 2.155,
+      "latency_ms": 1695.6071000022348,
+      "rtf": 0.7868246403722667,
+      "reference": "The weather is clear today.",
+      "hypothesis": "The weather is clear today",
+      "character_errors": 0,
+      "reference_characters": 22,
+      "word_errors": 0,
+      "reference_words": 5
+    },
+    {
+      "id": "en-short-weather",
+      "language": "en",
+      "repeat": 2,
+      "audio_seconds": 2.155,
+      "latency_ms": 2588.163899999927,
+      "rtf": 1.2010041299303604,
+      "reference": "The weather is clear today.",
+      "hypothesis": "The weather is clear today",
+      "character_errors": 0,
+      "reference_characters": 22,
+      "word_errors": 0,
+      "reference_words": 5
+    },
+    {
+      "id": "en-schedule",
+      "language": "en",
+      "repeat": 1,
+      "audio_seconds": 3.445,
+      "latency_ms": 3380.4935999942245,
+      "rtf": 0.9812753555861319,
+      "reference": "Please check the train schedule for tomorrow morning.",
+      "hypothesis": "Please check the train schedule for tomorrow morning",
+      "character_errors": 0,
+      "reference_characters": 45,
+      "word_errors": 0,
+      "reference_words": 8
+    },
+    {
+      "id": "en-schedule",
+      "language": "en",
+      "repeat": 2,
+      "audio_seconds": 3.445,
+      "latency_ms": 3854.907300003106,
+      "rtf": 1.1189861538470554,
+      "reference": "Please check the train schedule for tomorrow morning.",
+      "hypothesis": "Please check the train schedule for tomorrow morning",
+      "character_errors": 0,
+      "reference_characters": 45,
+      "word_errors": 0,
+      "reference_words": 8
+    },
+    {
+      "id": "en-numbers",
+      "language": "en",
+      "repeat": 1,
+      "audio_seconds": 3.375,
+      "latency_ms": 2588.6024000064936,
+      "rtf": 0.7669933037056277,
+      "reference": "Our meeting starts at three thirty in the afternoon.",
+      "hypothesis": "Our meeting starts at three thirty in the afternoon",
+      "character_errors": 0,
+      "reference_characters": 43,
+      "word_errors": 0,
+      "reference_words": 9
+    },
+    {
+      "id": "en-numbers",
+      "language": "en",
+      "repeat": 2,
+      "audio_seconds": 3.375,
+      "latency_ms": 3229.7991000086768,
+      "rtf": 0.956977511113682,
+      "reference": "Our meeting starts at three thirty in the afternoon.",
+      "hypothesis": "Our meeting starts at three thirty in the afternoon",
+      "character_errors": 0,
+      "reference_characters": 43,
+      "word_errors": 0,
+      "reference_words": 9
+    },
+    {
+      "id": "en-system",
+      "language": "en",
+      "repeat": 1,
+      "audio_seconds": 4.09,
+      "latency_ms": 6670.10129999835,
+      "rtf": 1.6308316136915282,
+      "reference": "This realtime voice system supports English and Japanese.",
+      "hypothesis": "This real time voice system supports English and Japanese",
+      "character_errors": 0,
+      "reference_characters": 49,
+      "word_errors": 2,
+      "reference_words": 8
+    },
+    {
+      "id": "en-system",
+      "language": "en",
+      "repeat": 2,
+      "audio_seconds": 4.09,
+      "latency_ms": 6632.175899998401,
+      "rtf": 1.6215588997551103,
+      "reference": "This realtime voice system supports English and Japanese.",
+      "hypothesis": "This real time voice system supports English and Japanese",
+      "character_errors": 0,
+      "reference_characters": 49,
+      "word_errors": 2,
+      "reference_words": 8
+    },
+    {
+      "id": "en-correction",
+      "language": "en",
+      "repeat": 1,
+      "audio_seconds": 4.75,
+      "latency_ms": 6215.312400003313,
+      "rtf": 1.3084868210533291,
+      "reference": "I changed my mind, please tell me about Asahikawa instead.",
+      "hypothesis": "I changed my mind.  Please tell me about Asakawa instead",
+      "character_errors": 2,
+      "reference_characters": 47,
+      "word_errors": 1,
+      "reference_words": 10
+    },
+    {
+      "id": "en-correction",
+      "language": "en",
+      "repeat": 2,
+      "audio_seconds": 4.75,
+      "latency_ms": 7320.660199999111,
+      "rtf": 1.5411916210524443,
+      "reference": "I changed my mind, please tell me about Asahikawa instead.",
+      "hypothesis": "I changed my mind.  Please tell me about Asakawa instead",
+      "character_errors": 2,
+      "reference_characters": 47,
+      "word_errors": 1,
+      "reference_words": 10
+    }
+  ],
+  "summary": {
+    "latency_ms": {
+      "mean": 4286.684505001176,
+      "p50": 3820.449599996209,
+      "p95": 6670.10129999835,
+      "max": 7320.660199999111
+    },
+    "japanese_cer": 0.021739130434782608,
+    "english_wer": 0.075
+  }
+}

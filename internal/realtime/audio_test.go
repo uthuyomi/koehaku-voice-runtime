@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/conversation"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/audio"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/conversation"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/speech"
 )
 
 func TestAudioCreditWaitGenerationLifecycle(t *testing.T) {

@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 func TestHealthRegression(t *testing.T) {

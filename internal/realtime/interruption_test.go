@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel/multisignal"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel/multisignal"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
 )
 
 type classifierFunc func(context.Context, backchannel.Observation) (backchannel.Result, error)

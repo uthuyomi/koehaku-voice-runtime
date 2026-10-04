@@ -1,6 +1,6 @@
 package realtime
 
-import "github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
+import "github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
 
 // Compatibility alias: public wire ownership lives in protocol.
 type Event = protocol.Event

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 // Only a Session-issued Promotion has crossed both endpoint and interruption

@@ -8,10 +8,15 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"net/http/httptrace"
+	"os"
 	"strings"
+	"sync/atomic"
+	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
 )
 
 const defaultBaseURL = "https://api.openai.com/v1"
@@ -27,6 +32,7 @@ type Provider struct {
 	model      string
 	baseURL    string
 	httpClient *http.Client
+	requests   atomic.Uint64
 }
 
 func New(config Config) (*Provider, error) {
@@ -70,6 +76,9 @@ func (p *Provider) Generate(
 	ctx context.Context,
 	req llm.Request,
 ) (llm.Stream, error) {
+	requestID := p.requests.Add(1)
+	requestStart := time.Now()
+	diagnostic := strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true")
 	messages := make(
 		[]inputMessage,
 		0,
@@ -99,6 +108,7 @@ func (p *Provider) Generate(
 			err,
 		)
 	}
+	encodedAt := time.Now()
 
 	httpRequest, err := http.NewRequestWithContext(
 		ctx,
@@ -127,6 +137,15 @@ func (p *Provider) Generate(
 		"Accept",
 		"text/event-stream",
 	)
+	var gotConnAt, firstByteAt time.Time
+	var reused bool
+	if diagnostic {
+		trace := &httptrace.ClientTrace{
+			GotConn:              func(info httptrace.GotConnInfo) { gotConnAt, reused = time.Now(), info.Reused },
+			GotFirstResponseByte: func() { firstByteAt = time.Now() },
+		}
+		httpRequest = httpRequest.WithContext(httptrace.WithClientTrace(httpRequest.Context(), trace))
+	}
 
 	response, err :=
 		p.httpClient.Do(httpRequest)
@@ -136,6 +155,10 @@ func (p *Provider) Generate(
 			"send OpenAI request: %w",
 			err,
 		)
+	}
+	responseAt := time.Now()
+	if diagnostic {
+		log.Printf("OpenAI diagnostic: request=%d context_items=%d body_bytes=%d encode_ms=%.3f connection_reused=%v got_connection_ms=%.3f first_byte_ms=%.3f headers_ms=%.3f", requestID, len(req.Messages), len(body), float64(encodedAt.Sub(requestStart).Microseconds())/1000, reused, durationMilliseconds(gotConnAt, requestStart), durationMilliseconds(firstByteAt, requestStart), float64(responseAt.Sub(requestStart).Microseconds())/1000)
 	}
 
 	if response.StatusCode < 200 ||
@@ -161,14 +184,29 @@ func (p *Provider) Generate(
 	}
 
 	return &responseStream{
-		body:    response.Body,
-		scanner: bufio.NewScanner(response.Body),
+		body:       response.Body,
+		scanner:    bufio.NewScanner(response.Body),
+		requestID:  requestID,
+		started:    requestStart,
+		diagnostic: diagnostic,
 	}, nil
 }
 
+func durationMilliseconds(value, start time.Time) float64 {
+	if value.IsZero() {
+		return -1
+	}
+	return float64(value.Sub(start).Microseconds()) / 1000
+}
+
 type responseStream struct {
-	body    io.ReadCloser
-	scanner *bufio.Scanner
+	body       io.ReadCloser
+	scanner    *bufio.Scanner
+	requestID  uint64
+	started    time.Time
+	firstDelta bool
+	textBytes  int
+	diagnostic bool
 }
 
 type streamEvent struct {
@@ -230,11 +268,21 @@ func (s *responseStream) Recv() (
 				continue
 			}
 
+			s.textBytes += len([]byte(event.Delta))
+			if !s.firstDelta {
+				s.firstDelta = true
+				if s.diagnostic {
+					log.Printf("OpenAI diagnostic: request=%d stage=first_delta duration_ms=%.3f", s.requestID, float64(time.Since(s.started).Microseconds())/1000)
+				}
+			}
 			return llm.Delta{
 				Text: event.Delta,
 			}, nil
 
 		case "response.completed":
+			if s.diagnostic {
+				log.Printf("OpenAI diagnostic: request=%d stage=complete duration_ms=%.3f text_bytes=%d", s.requestID, float64(time.Since(s.started).Microseconds())/1000, s.textBytes)
+			}
 			return llm.Delta{}, io.EOF
 
 		case "response.failed":

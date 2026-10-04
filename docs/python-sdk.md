@@ -1,6 +1,6 @@
-# Python SDK
+﻿# Python SDK
 
-`yukkuri-realtime` 0.1.0 installs the import package `yukkuri_realtime` and the `yukkuri` console command. Python 3.11+ is required. Async is canonical; no nested-event-loop sync facade is introduced. A CLI wraps the async API for shell users.
+`koehaku-voice-runtime` installs the canonical `koehaku_realtime` import package and `koehaku` console command. The former `yukkuri_realtime` package, `YukkuriClient` / `YukkuriError` names, and `yukkuri` command remain compatibility aliases. Python 3.11+ is required. Async is canonical; no nested-event-loop sync facade is introduced. A CLI wraps the async API for shell users.
 
 ## Local installation
 
@@ -15,12 +15,12 @@ No PyPI publication. Use a virtualenv for application dependencies. Package data
 ```python
 import asyncio
 from pathlib import Path
-from yukkuri_realtime import YukkuriClient
+from koehaku_realtime import KoehakuClient
 
 async def main():
-    async with YukkuriClient("http://127.0.0.1:8765") as client:
+    async with KoehakuClient("http://127.0.0.1:8765") as client:
         await client.health()
-        audio = await client.speak("ゆっくりしていってね")
+        audio = await client.speak("繧・▲縺上ｊ縺励※縺・▲縺ｦ縺ｭ")
         Path("hello.wav").write_bytes(audio.audio)
 asyncio.run(main())
 ```
@@ -34,7 +34,7 @@ asyncio.run(main())
 | `health()` | HTTP process health |
 | `capabilities(refresh=False)` | Versioned discovery, 30s TTL cache by default |
 | `speak(text, ...)` | Standalone HTTP TTS |
-| `transcribe(pcm, timeout=None)` | One-shot raw PCM16 mono16k → final Transcript |
+| `transcribe(pcm, timeout=None)` | One-shot raw PCM16 mono16k 竊・final Transcript |
 | `transcription.connect()` | Independent TranscriptionSession |
 | `realtime.connect()` | RealtimeSession, no LLM invocation until input |
 | `close()` / async context manager | Close owned sessions and HTTP client |
@@ -42,7 +42,7 @@ asyncio.run(main())
 Both session kinds support `send_audio`, `cancel_input`, `stop_audio_input`, `close`, `on`, advanced `send_event`, and async context management. TranscriptionSession adds `start`, `commit`, `cancel`. RealtimeSession adds `send_text`, `start_audio_input(mode='realtime'|'manual')`, `commit_input`, `cancel_generation`, `ack_played`, `playback_snapshot`.
 
 ```python
-from yukkuri_realtime import wav_to_pcm
+from koehaku_realtime import wav_to_pcm
 pcm = wav_to_pcm(Path("input.wav").read_bytes())
 transcript = await client.transcribe(pcm)
 print(transcript.text)
@@ -59,7 +59,7 @@ WAV parsing validates the RIFF extent, fmt/data chunks, PCM encoding, channels, 
 async with await client.realtime.connect() as session:
     session.on("text_delta", lambda e: print(e["delta"], end="", flush=True))
     session.on("error", lambda e: print(e.code, e.message))
-    generation = await session.send_text("札幌について教えて", output="text")
+    generation = await session.send_text("譛ｭ蟷後↓縺､縺・※謨吶∴縺ｦ", output="text")
     await generation.wait_done(timeout=130)
 ```
 
@@ -83,10 +83,10 @@ Do not ACK in enqueue or after saving a file. Source frames differ from output d
 
 ## Errors, cancellation and lifecycle
 
-YukkuriError retains code/message/recoverable and available request_id/event_id/related_event_id/generation_id. HTTP and WS structured errors share this model. Transport exceptions are converted to safe connection_error/connection_closed, timeouts to timeout, malformed protocol to protocol_error. `asyncio.CancelledError` deliberately remains the language-native cancellation signal.
+KoehakuError retains code/message/recoverable and available request_id/event_id/related_event_id/generation_id. HTTP and WS structured errors share this model. Transport exceptions are converted to safe connection_error/connection_closed, timeouts to timeout, malformed protocol to protocol_error. `asyncio.CancelledError` deliberately remains the language-native cancellation signal.
 
 Timeout constructor options are **seconds**: http_timeout=130, connect_timeout=10, close_timeout=5, operation_timeout=130, capabilities_ttl=30. HTTP and operation methods allow per-call timeout. HTTP timeout covers the full buffered request/response. `commit` cancellation/timeout sends input cancel; cancelling send_text before generation acceptance closes the session because no safe scoped ID is yet known. After acceptance call generation.cancel explicitly. Cancelling or timing out wait_done stops waiting only: it does not assert that output was cancelled.
 
-States: connecting → active → closing → closed. Close sends session.close, waits for final metadata within its budget, then closes/cancels local transport resources. A quiet session has no SDK idle timeout. Disconnect is terminal: closed/error and pending-request failure, never automatic reconnect. A new connect creates a fresh server session and conversation. Client async-context exit closes all owned sessions.
+States: connecting 竊・active 竊・closing 竊・closed. Close sends session.close, waits for final metadata within its budget, then closes/cancels local transport resources. A quiet session has no SDK idle timeout. Disconnect is terminal: closed/error and pending-request failure, never automatic reconnect. A new connect creates a fresh server session and conversation. Client async-context exit closes all owned sessions.
 
-Examples: `examples/python/simple_tts.py`, `transcription.py`, `realtime_text.py`. They accept `YUKKURI_ENGINE_URL` explicitly in example code; the SDK itself is configured through the constructor and does not silently read environment files.
+Examples: `examples/python/simple_tts.py`, `transcription.py`, `realtime_text.py`. They accept `KOEHAKU_ENGINE_URL` explicitly in example code; the SDK itself is configured through the constructor and does not silently read environment files.

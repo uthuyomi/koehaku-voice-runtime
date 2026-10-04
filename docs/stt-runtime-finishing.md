@@ -188,7 +188,7 @@ $env:STT_DEVICE = 'auto'
 $env:STT_MODEL = 'small'
 go run ./cmd/engine
 # 別terminal: 既存CLI
-python -m yukkuri_realtime transcribe input.wav
+python -m koehaku_realtime transcribe input.wav
 ```
 
 CUDAは適合Toolkit/driver/MSVCを用意し、`setup-whisper.ps1 -Backend cuda -CudaArchitectures '75'`。必要ならsupported toolsetを`-VCToolset`指定。巨大binary/modelはGitへ入れない。詳細の依存DLLと取得・配置方針はruntime doc。

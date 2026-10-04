@@ -50,7 +50,12 @@ class PCMPlayerProcessor extends AudioWorkletProcessor {
         super();
         const config = options.processorOptions || {};
         const bounded = (value, fallback, lo, hi) => Number.isFinite(value) ? Math.max(lo, Math.min(hi, value)) : fallback;
-        this.startupMs = bounded(config.startupBufferMs, 30, 0, 100);
+        // A generation can expose one 32 ms transport packet to the audio
+        // thread before the browser main thread delivers the rest of the
+        // initial credit window.  Wait through the measured 270 ms boundary
+        // jitter instead of starting from that lone packet and immediately
+        // underrunning.  This remains far below the two-second credit window.
+        this.startupMs = bounded(config.startupBufferMs, 300, 0, 500);
         this.lowWatermarkMs = bounded(config.lowWatermarkMs, 10, 0, 100);
         this.ring = new PCMFrameRing(Math.max(1, Math.floor(sampleRate * bounded(config.capacityMs, 30000, 200, 30000) / 1000)));
         this.resampler = new StreamingLinearResampler(sampleRate, this.ring);
@@ -95,6 +100,7 @@ class PCMPlayerProcessor extends AudioWorkletProcessor {
             this.fail("invalid_format"); return;
         }
         this.resampler.sourceRate = rate;
+        // The initial snapshot opens credit-v1 before any PCM can arrive.
         this.report("playback.credit");
     }
     enqueue(id, samples, sourceRate = sampleRate, metadata = {}) {
@@ -128,8 +134,6 @@ class PCMPlayerProcessor extends AudioWorkletProcessor {
         this.metadataWrite = (this.metadataWrite + 1) % this.metadataEnds.length;
         this.metadataUsed++;
         this.maxBufferedFrames = Math.max(this.maxBufferedFrames, this.resampler.targetFrames() - this.playedFrames);
-        // Receipt snapshots are bounded by the server's credit window.
-        this.report("playback.credit");
     }
     fail(reason) {
         this.overflows++;
@@ -224,7 +228,9 @@ class PCMPlayerProcessor extends AudioWorkletProcessor {
             this.rebuffering = true; this.underruns++;
             this.report("playback.underrun");
         }
-        if (count && (!this.ring.used || this.playedFrames - this.lastReportedFrames >= Math.max(128, sampleRate / 20))) this.report("playback.progress");
+        // A 100 ms rendered-frame cadence is 20x inside the negotiated two-second
+        // credit window. Terminal paths above always flush the exact final frame.
+        if (count && (!this.ring.used || this.playedFrames - this.lastReportedFrames >= Math.max(128, sampleRate / 10))) this.report("playback.progress");
         this.checkDrain();
         return true;
     }

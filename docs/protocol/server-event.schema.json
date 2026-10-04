@@ -32,6 +32,6 @@
     "timestamp",
     "data"
   ],
-  "title": "Yukkuri v1 server event envelope",
+  "title": "Koehaku v1 server event envelope",
   "type": "object"
 }

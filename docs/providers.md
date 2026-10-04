@@ -1,6 +1,6 @@
-# Providers
+﻿# Providers
 
-English | [日本語](providers.ja.md)
+English | [譌･譛ｬ隱枉(providers.ja.md)
 
 Providers live under `internal/providers/`. STT implements `Transcribe`, LLM `Generate`/stream `Recv`, TTS `Synthesize`, turn detection `Detect`, backchannel `Classify`. Engine registers TTS; transport setters connect the other boundaries. This is a Go composition boundary, not a public dynamic-plugin loader. Availability comes from `/v1/capabilities`; configured does not guarantee that a remote API or sidecar will succeed.
 
@@ -8,9 +8,11 @@ Providers live under `internal/providers/`. STT implements `Transcribe`, LLM `Ge
 
 The Windows adapter loads AquesTalk1 DLLs dynamically, converts Japanese text through AqKanji2Koe and returns mono 8 kHz WAV. Default voice f1; configured voices f1/f2/f3/m1/m2/r1/dvd/imd1/jgr. The entry point requires all configured DLLs and the dictionary. See [asset paths](quickstart.md#local-tts-assets).
 
+For a local native synthesis failure investigation, set `KOEHAKU_TTS_DIAGNOSTIC_DIR` to an explicitly chosen private directory. Only failed AquesTalk calls then write a JSON replay artifact containing the input text, converted symbols, voice, speed, byte lengths, timestamp, generation, sequence, and native error code. Normal operation never writes conversation text to this artifact or to console logs.
+
 AquesTalk and AqKanji2Koe are third-party proprietary software. This repository must not redistribute their DLLs, dictionaries, SDK libraries/headers, keys or other restricted SDK assets. Obtain them yourself and comply with AQUEST's terms. The project's [MIT License](../LICENSE) for original code and project-authored documentation grants no rights to those assets and does not change AQUEST licensing. Reviewed source candidates and rewritten local reachable history exclude them. Step 10-D also verified these assets are unreachable from advertised GitHub main after replacement; this does not certify backend/cache erasure; see the [release report](release-quality.md). Consult the vendor's [AquesTalk product page](https://www.a-quest.com/products/aquestalk.html) and [AqKanji2Koe product page](https://www.a-quest.com/products/aqkanji2koe.html), including their licensing links; this document does not determine your legal entitlements.
 
-`speed` is a ratio: omitted/0 → 100%; positive values are multiplied by 100 and converted to integer percent, accepted at 50–300%. Use `1.0`, not `100`, for normal speed. Unknown voice, failed conversion or failed native synthesis becomes a sanitized generation error. The converter output buffer is 8192 bytes; long/complex input may fail conversion. Native calls are synchronous and context cancellation cannot interrupt an in-progress DLL call. DLL behavior/concurrency must be validated under the user's licensed build.
+`speed` is a ratio: omitted/0 竊・100%; positive values are multiplied by 100 and converted to integer percent, accepted at 50窶・00%. Use `1.0`, not `100`, for normal speed. Unknown voice, failed conversion or failed native synthesis becomes a sanitized generation error. The converter output buffer is 8192 bytes; long/complex input may fail conversion. Native calls are synchronous and context cancellation cannot interrupt an in-progress DLL call. DLL behavior/concurrency must be validated under the user's licensed build.
 
 The Go config has `DevKey`, `UsrKey`, `Kanji2KoeDevKey`; the supplied executable does not populate these or expose environment variables for them. No secrets belong in source or artifacts. Missing/invalid assets disable TTS without disabling health or text conversation.
 
@@ -31,6 +33,8 @@ Device selection never changes the model. `STT_MODEL` selects a known filename p
 Set `STT_PROVIDER=nemotron` to enable the optional streaming fast path. The engine starts one persistent localhost worker, loads the sherpa-onnx Nemotron 3.5 Streaming ASR 0.6B 560 ms INT8 model once, and creates an `OnlineStream` for each turn. Browser PCM remains 16 kHz mono PCM16 and is sent in bounded binary frames; partial transcripts stay internal. VAD end starts the existing speculative LLM from the current transcript, while Smart Turn remains the commit authority and finalizes the stream. Promotion requires the trimmed speculative and final transcripts to match exactly.
 
 Build `sherpa-onnx-nemotron-worker` in the sherpa-onnx tree, then configure:
+
+The current worker is built from the pinned sherpa-onnx v1.13.8 source plus the repository-adjacent `koehaku-streaming-asr-worker.cc` target and the scoped `session.cc` option that maps `SHERPA_ONNX_ORT_DISABLE_SPINNING=1` to ONNX Runtime session configuration. These changes are not yet an upstream sherpa-onnx release. The publishable source and build instructions are included in [	hird_party/sherpa-onnx](../third_party/sherpa-onnx/README.md). Experimental microphone tools in that working tree are diagnostics and are not Koehaku runtime dependencies.
 
 ```dotenv
 STT_PROVIDER=nemotron

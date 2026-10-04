@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
 )
 
 // More sequential sessions than MaxSessions catches leaked admission slots.

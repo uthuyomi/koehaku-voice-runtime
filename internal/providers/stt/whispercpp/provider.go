@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 type Config struct {
@@ -94,7 +94,7 @@ func (p *Provider) Transcribe(
 
 	tempDir, err := os.MkdirTemp(
 		"",
-		"yukkuri-whisper-*",
+		"koehaku-whisper-*",
 	)
 	if err != nil {
 		return nil, fmt.Errorf(

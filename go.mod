@@ -1,4 +1,4 @@
-module github.com/uthuyomi/yukkuri-realtime-engine
+module github.com/uthuyomi/koehaku-voice-runtime
 
 go 1.27.1
 

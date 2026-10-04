@@ -10,10 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/limited"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/limited"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/speech"
 )
 
 type SpeculationState string
@@ -150,6 +150,7 @@ type speculativeWork struct {
 	changed                 chan struct{}
 	done                    chan struct{}
 	started, committedAt    time.Time
+	deadline                time.Time
 	speechEnd               time.Time
 	sttDuration, firstDelta time.Duration
 	committed, ready        bool
@@ -159,6 +160,32 @@ type speculativeWork struct {
 	terminal                error
 	generation              string
 	request                 llm.Request
+}
+
+// armSpeculationTimeoutLocked starts the lifetime budget for speculative LLM
+// work. Snapshot STT is correctness-critical after commit and may legitimately
+// take longer than this optimization budget (notably Whisper on CPU), so its
+// inference time is deliberately excluded.
+func (s *Session) armSpeculationTimeoutLocked(w *speculativeWork) {
+	if w.timer != nil || !w.deadline.IsZero() {
+		return
+	}
+	w.deadline = time.Now().Add(s.speculation.config.Timeout)
+	w.timer = time.AfterFunc(s.speculation.config.Timeout, func() {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if s.speculation.current == w && w.ctx.Err() == nil && w.state != SpeculationPromoted {
+			// Once Smart Turn commits this exact snapshot, its STT result is the
+			// canonical turn result. Do not abort it and force a duplicate model
+			// invocation merely because the speculative LLM budget expired.
+			if w.committed && w.result == nil {
+				w.timer = nil
+				w.deadline = time.Time{}
+				return
+			}
+			s.endSpeculationLocked(w, SpeculationCancelled, "fallback", "timeout")
+		}
+	})
 }
 
 func (s *Session) ConfigureSpeculation(p *limited.Provider, l llm.Provider, c SpeculationConfig) error {
@@ -407,22 +434,7 @@ func (s *Session) startSpeculationLocked() {
 		"stt",
 		"vad_end_candidate",
 	)
-
-	w.timer = time.AfterFunc(r.config.Timeout, func() {
-		s.mu.Lock()
-		defer s.mu.Unlock()
-
-		if r.current == w &&
-			w.ctx.Err() == nil &&
-			w.state != SpeculationPromoted {
-			s.endSpeculationLocked(
-				w,
-				SpeculationCancelled,
-				"fallback",
-				"timeout",
-			)
-		}
-	})
+	s.armSpeculationTimeoutLocked(w)
 
 	// Preview and final STT share one lane. Once VAD END arrives, final wins.
 	if r.preview != nil && r.preview.running {
@@ -496,13 +508,7 @@ func (s *Session) startSpeculationFromTranscriptLocked(result stt.Result) {
 	r.attempts++
 	r.busy = true
 	s.speculationEventLocked(w, "started", "llm", "streaming_vad_end")
-	w.timer = time.AfterFunc(r.config.Timeout, func() {
-		s.mu.Lock()
-		defer s.mu.Unlock()
-		if r.current == w && w.ctx.Err() == nil && w.state != SpeculationPromoted {
-			s.endSpeculationLocked(w, SpeculationCancelled, "fallback", "timeout")
-		}
-	})
+	s.armSpeculationTimeoutLocked(w)
 	r.workers.Add(1)
 	go s.runSpeculationFromTranscript(w)
 }
@@ -766,6 +772,7 @@ func (s *Session) runSpeculation(
 
 	copyResult := *result
 	w.result = &copyResult
+	s.armSpeculationTimeoutLocked(w)
 
 	s.speculationEventLocked(
 		w,
@@ -1030,9 +1037,7 @@ func (s *Session) PromoteSpeculation(
 
 		// Check the clock under the promotion lock as well as using a timer:
 		// scheduler delay must never let expired work cross the barrier.
-		if !time.Now().Before(
-			w.started.Add(s.speculation.config.Timeout),
-		) {
+		if !w.deadline.IsZero() && !time.Now().Before(w.deadline) {
 			s.endSpeculationLocked(
 				w,
 				SpeculationCancelled,

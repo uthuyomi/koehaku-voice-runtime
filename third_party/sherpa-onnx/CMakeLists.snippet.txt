@@ -1,0 +1,10 @@
+if(WIN32)
+  add_executable(sherpa-onnx-nemotron-worker
+    koehaku-streaming-asr-worker.cc
+  )
+  target_link_libraries(sherpa-onnx-nemotron-worker
+    sherpa-onnx-core
+    ws2_32
+  )
+  install(TARGETS sherpa-onnx-nemotron-worker DESTINATION bin)
+endif()

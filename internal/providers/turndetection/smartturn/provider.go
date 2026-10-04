@@ -6,12 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"math"
 	"net/http"
+	"net/http/httptrace"
 	"net/url"
+	"os"
+	"strings"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
 )
 
 type Provider struct {
@@ -31,6 +35,8 @@ func (*Provider) Name() string               { return "smart-turn-v3.2" }
 func (*Provider) AudioWindow() time.Duration { return 8 * time.Second }
 
 func (p *Provider) Detect(ctx context.Context, req turndetection.Request) (turndetection.Result, error) {
+	started := time.Now()
+	diagnostic := strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true")
 	if len(req.Audio) == 0 || len(req.Audio)%2 != 0 || len(req.Audio) > 8*32000 {
 		return turndetection.Result{}, fmt.Errorf("invalid detector PCM window")
 	}
@@ -39,6 +45,14 @@ func (p *Provider) Detect(ctx context.Context, req turndetection.Request) (turnd
 		return turndetection.Result{}, err
 	}
 	r.Header.Set("Content-Type", "application/octet-stream")
+	var connectedAt, firstByteAt time.Time
+	var reused bool
+	if diagnostic {
+		r = r.WithContext(httptrace.WithClientTrace(r.Context(), &httptrace.ClientTrace{
+			GotConn:              func(info httptrace.GotConnInfo) { connectedAt, reused = time.Now(), info.Reused },
+			GotFirstResponseByte: func() { firstByteAt = time.Now() },
+		}))
+	}
 	resp, err := p.client.Do(r)
 	if err != nil {
 		return turndetection.Result{}, fmt.Errorf("turn inference: %w", err)
@@ -58,5 +72,15 @@ func (p *Provider) Detect(ctx context.Context, req turndetection.Request) (turnd
 	if data.Probability == nil || data.Complete == nil || math.IsNaN(*data.Probability) || *data.Probability < 0 || *data.Probability > 1 {
 		return turndetection.Result{}, fmt.Errorf("invalid turn inference result")
 	}
+	if diagnostic {
+		log.Printf("Smart Turn diagnostic: audio_bytes=%d connection_reused=%v connection_ms=%.3f first_byte_ms=%.3f total_ms=%.3f", len(req.Audio), reused, elapsedMS(connectedAt, started), elapsedMS(firstByteAt, started), float64(time.Since(started).Microseconds())/1000)
+	}
 	return turndetection.Result{Complete: *data.Complete, Probability: *data.Probability}, nil
+}
+
+func elapsedMS(value, start time.Time) float64 {
+	if value.IsZero() {
+		return -1
+	}
+	return float64(value.Sub(start).Microseconds()) / 1000
 }

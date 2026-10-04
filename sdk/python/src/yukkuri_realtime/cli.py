@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import asyncio
 import json
 import os
@@ -9,8 +9,8 @@ from . import YukkuriClient, YukkuriError, wav_to_pcm
 
 
 def parser():
-    p = argparse.ArgumentParser(prog="yukkuri", description="Yukkuri Realtime Engine Public API v1 client")
-    p.add_argument("--url", default=None, help="Engine URL (overrides YUKKURI_ENGINE_URL)")
+    p = argparse.ArgumentParser(prog="koehaku", description="Koehaku Voice Runtime Public API v1 client")
+    p.add_argument("--url", default=None, help="Engine URL (overrides KOEHAKU_ENGINE_URL)")
     p.add_argument("--timeout", type=float, default=130, help="Operation timeout in seconds")
     sub = p.add_subparsers(dest="command", required=True)
     for name in ("health", "capabilities", "speak", "transcribe", "realtime"):
@@ -37,7 +37,7 @@ def _as_wav(result):
 
 
 async def run(args):
-    url = args.url or os.environ.get("YUKKURI_ENGINE_URL") or "http://127.0.0.1:8765"
+    url = args.url or os.environ.get("KOEHAKU_ENGINE_URL") or os.environ.get("YUKKURI_ENGINE_URL") or "http://127.0.0.1:8765"
     async with YukkuriClient(url, http_timeout=args.timeout, operation_timeout=args.timeout) as client:
         if args.command == "health":
             print(json.dumps(await client.health(), ensure_ascii=False))

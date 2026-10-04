@@ -8,15 +8,20 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/audio"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/speech"
 )
 
 const realtimeAudioChunkSize = protocol.MaxOutputBinaryBytes
@@ -175,12 +180,14 @@ func (s *Server) processRealtimeEvent(
 	writer *realtimeWriter,
 	event realtime.Event,
 ) error {
-	log.Printf(
-		"realtime event received: session=%s related_event=%s type=%s generation=%s",
-		session.ID(), writer.related,
-		event.Type,
-		event.Generation,
-	)
+	if event.Type != "playback.credit" && event.Type != "playback.progress" {
+		log.Printf(
+			"realtime event received: session=%s related_event=%s type=%s generation=%s",
+			session.ID(), writer.related,
+			event.Type,
+			event.Generation,
+		)
+	}
 	switch event.Type {
 	case "session.configure":
 		return configurePublic(session.Context(), writer, session.ID(), event, session.RequireAudioCredit)
@@ -709,6 +716,11 @@ func (s *Server) runSpeechPipeline(
 		case chunk, ok := <-pipeline.Output():
 			if !ok {
 				completed = true
+				if strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true") {
+					var memory runtime.MemStats
+					runtime.ReadMemStats(&memory)
+					log.Printf("Engine runtime: generation=%s goroutines=%d heap_alloc_bytes=%d heap_objects=%d sys_bytes=%d num_gc=%d pause_total_ns=%d", generationID, runtime.NumGoroutine(), memory.HeapAlloc, memory.HeapObjects, memory.Sys, memory.NumGC, memory.PauseTotalNs)
+				}
 				if session.MarkGenerationDone(generationID) {
 					var completion any
 					if timeline := session.TimelineForGeneration(generationID); timeline != nil {
@@ -742,6 +754,13 @@ func (s *Server) runSpeechPipeline(
 				voice,
 				speed,
 			); err != nil {
+				if errors.Is(err, tts.ErrNoSpeech) {
+					log.Printf("speech chunk omitted: generation=%s sequence=%d reason=no_pronounceable_symbols", generationID, chunk.Sequence)
+					continue
+				}
+				if strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true") {
+					log.Printf("speech synthesis failed: generation=%s sequence=%d err=%v", generationID, chunk.Sequence, err)
+				}
 				if errors.Is(
 					err,
 					context.Canceled,
@@ -770,6 +789,7 @@ func (s *Server) synthesizeSpeechChunk(
 	voice string,
 	speed float64,
 ) error {
+	chunkStart := time.Now()
 	if elapsed, ok := session.StreamingSpeechEndElapsed(); ok {
 		log.Printf("Nemotron TTS start: session=%s generation=%s sequence=%d speech_end_ms=%.2f", session.ID(), generationID, chunk.Sequence, float64(elapsed.Microseconds())/1000)
 	}
@@ -795,6 +815,7 @@ func (s *Server) synthesizeSpeechChunk(
 		},
 	)
 	if err != nil {
+		writeTTSDiagnosticArtifact(err, generationID, chunk.Sequence)
 		return err
 	}
 	if stream == nil || stream.Audio == nil {
@@ -824,6 +845,10 @@ func (s *Server) synthesizeSpeechChunk(
 			"decode synthesized WAV: %w",
 			err,
 		)
+	}
+	pcmFrames := len(pcm.Data) / (pcm.Bits / 8) / pcm.Channels
+	if strings.EqualFold(os.Getenv("NEMOTRON_PERFORMANCE"), "true") {
+		log.Printf("AquesTalk output: generation=%s sequence=%d pcm_frames=%d pcm_duration_ms=%.2f synthesis_decode_ms=%.2f", generationID, chunk.Sequence, pcmFrames, float64(pcmFrames)*1000/float64(pcm.SampleRate), float64(time.Since(chunkStart).Microseconds())/1000)
 	}
 
 	if pcm.Bits != 16 || pcm.Channels != 1 {
@@ -874,7 +899,7 @@ func (s *Server) synthesizeSpeechChunk(
 	}
 	defer func() {
 		state := flow.Snapshot()
-		log.Printf("audio flow: generation=%s capacity_source_frames=%d reserved_source_frames=%d credit_wait_ms=%d credit_wait_count=%d", generationID, state.Capacity, state.Reserved, state.WaitDuration.Milliseconds(), state.WaitCount)
+		log.Printf("audio flow: generation=%s capacity_source_frames=%d reserved_source_frames=%d credit_updates=%d credit_wait_ms=%d credit_wait_count=%d", generationID, state.Capacity, state.Reserved, state.CreditUpdates, state.WaitDuration.Milliseconds(), state.WaitCount)
 	}()
 	started, err := realtime.NewEvent(
 		"response.audio.chunk.started",
@@ -1019,6 +1044,65 @@ func (s *Server) synthesizeSpeechChunk(
 		ctx,
 		done,
 	)
+}
+
+func writeTTSDiagnosticArtifact(err error, generationID string, sequence int) {
+	dir := strings.TrimSpace(os.Getenv("KOEHAKU_TTS_DIAGNOSTIC_DIR"))
+	if dir == "" {
+		dir = strings.TrimSpace(os.Getenv("YUKKURI_TTS_DIAGNOSTIC_DIR"))
+	}
+	if dir == "" {
+		return
+	}
+	var diagnostic tts.DiagnosticError
+	if !errors.As(err, &diagnostic) {
+		return
+	}
+	d := diagnostic.SynthesisDiagnostic()
+	artifact := struct {
+		Timestamp            string `json:"timestamp"`
+		GenerationID         string `json:"generation_id"`
+		Sequence             int    `json:"sequence"`
+		OriginalText         string `json:"original_text"`
+		ConvertedText        string `json:"kanji2koe_output"`
+		Voice                string `json:"voice"`
+		Speed                int    `json:"speed_percent"`
+		InputBytes           int    `json:"input_byte_length"`
+		ConvertedSymbolBytes int    `json:"converted_symbol_byte_length"`
+		NativeCode           int32  `json:"native_error_code"`
+	}{time.Now().UTC().Format(time.RFC3339Nano), generationID, sequence,
+		d.OriginalText, d.ConvertedText, d.Voice, d.Speed, len([]byte(d.OriginalText)),
+		len([]byte(d.ConvertedText)), d.NativeCode}
+	data, marshalErr := json.MarshalIndent(artifact, "", "  ")
+	if marshalErr != nil {
+		log.Printf("TTS diagnostic artifact encode failed: generation=%s sequence=%d", generationID, sequence)
+		return
+	}
+	if mkdirErr := os.MkdirAll(dir, 0700); mkdirErr != nil {
+		log.Printf("TTS diagnostic artifact directory failed: generation=%s sequence=%d err=%v", generationID, sequence, mkdirErr)
+		return
+	}
+	safeGeneration := strings.Map(func(r rune) rune {
+		if r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9' || r == '-' || r == '_' {
+			return r
+		}
+		return '_'
+	}, generationID)
+	name := fmt.Sprintf("aquestalk-failure-%s-%d-%d.json", safeGeneration, sequence, time.Now().UTC().UnixNano())
+	path := filepath.Join(dir, name)
+	f, openErr := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if openErr != nil {
+		log.Printf("TTS diagnostic artifact create failed: generation=%s sequence=%d err=%v", generationID, sequence, openErr)
+		return
+	}
+	_, writeErr := f.Write(append(data, '\n'))
+	closeErr := f.Close()
+	if writeErr != nil || closeErr != nil {
+		_ = os.Remove(path)
+		log.Printf("TTS diagnostic artifact write failed: generation=%s sequence=%d", generationID, sequence)
+		return
+	}
+	log.Printf("TTS diagnostic artifact written: generation=%s sequence=%d path=%s", generationID, sequence, path)
 }
 
 func sendRealtimeError(

@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt/limited"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/turndetection"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt/limited"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/turndetection"
 )
 
 type testStreamingProvider struct {

@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 func (s *Server) capabilities() protocol.Capabilities {

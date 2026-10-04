@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 type runtimeSTT struct {

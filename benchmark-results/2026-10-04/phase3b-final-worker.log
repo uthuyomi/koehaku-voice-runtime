@@ -1,0 +1,900 @@
+Nemotron stream create: id=1 ms=0.4614
+Nemotron worker finalize receive: id=1 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0849
+Nemotron worker finalize start: id=1
+Nemotron inputFinished end: id=1 ms=0.1317
+Nemotron remaining decode loop end: id=1 calls=2 ms=1235.08
+Nemotron final result extraction end: id=1 ms=0.034 tokens=11
+Nemotron decode: id=1 count=5 p50_ms=642.175 p95_ms=788.254 max_ms=894.688
+Nemotron throughput: id=1 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4598.21 ratio=0.47736 pcm_commands=110 accept_calls=37 queue_high_watermark_samples=13120 scheduling_gap_p50_ms=1.7646 scheduling_gap_p95_ms=2.7144 scheduling_gap_max_ms=376.236
+Nemotron worker finalize response send: id=1 send_ms=0.1475 total_ms=1249.85
+Nemotron stream create: id=2 ms=0.1683
+Nemotron worker finalize receive: id=2 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0315
+Nemotron worker finalize start: id=2
+Nemotron inputFinished end: id=2 ms=0.0431
+Nemotron remaining decode loop end: id=2 calls=2 ms=1222.54
+Nemotron final result extraction end: id=2 ms=0.0414 tokens=48
+Nemotron decode: id=2 count=16 p50_ms=645.064 p95_ms=793.528 max_ms=908.562
+Nemotron throughput: id=2 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=19030.6 ratio=0.428879 pcm_commands=409 accept_calls=158 queue_high_watermark_samples=24000 scheduling_gap_p50_ms=11.179 scheduling_gap_p95_ms=1909.69 scheduling_gap_max_ms=3068.3
+Nemotron worker finalize response send: id=2 send_ms=0.1503 total_ms=1228.46
+Nemotron stream create: id=3 ms=0.309
+Nemotron worker finalize receive: id=3 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0303
+Nemotron worker finalize start: id=3
+Nemotron inputFinished end: id=3 ms=0.0521
+Nemotron remaining decode loop end: id=3 calls=2 ms=755.41
+Nemotron final result extraction end: id=3 ms=0.0417 tokens=57
+Nemotron decode: id=3 count=22 p50_ms=293.027 p95_ms=418.003 max_ms=488.02
+Nemotron throughput: id=3 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=19262.9 ratio=0.59882 pcm_commands=577 accept_calls=413 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=588.3 scheduling_gap_p95_ms=644.217 scheduling_gap_max_ms=651.005
+Nemotron worker finalize response send: id=3 send_ms=0.1181 total_ms=759.46
+Nemotron stream create: id=4 ms=0.2427
+Nemotron worker finalize receive: id=4 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0141
+Nemotron worker finalize start: id=4
+Nemotron inputFinished end: id=4 ms=0.0139
+Nemotron remaining decode loop end: id=4 calls=2 ms=520.035
+Nemotron final result extraction end: id=4 ms=0.0302 tokens=51
+Nemotron decode: id=4 count=13 p50_ms=186.634 p95_ms=270.363 max_ms=368.051
+Nemotron throughput: id=4 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11202 ratio=0.591856 pcm_commands=332 accept_calls=277 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=689.081 scheduling_gap_p95_ms=736.089 scheduling_gap_max_ms=831.074
+Nemotron worker finalize response send: id=4 send_ms=0.0839 total_ms=522.269
+Nemotron stream create: id=5 ms=0.2847
+Nemotron worker finalize receive: id=5 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0387
+Nemotron worker finalize start: id=5
+Nemotron inputFinished end: id=5 ms=0.0541
+Nemotron remaining decode loop end: id=5 calls=2 ms=462.873
+Nemotron final result extraction end: id=5 ms=0.0133 tokens=11
+Nemotron decode: id=5 count=5 p50_ms=201.794 p95_ms=215.019 max_ms=247.845
+Nemotron throughput: id=5 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4250.85 ratio=0.516367 pcm_commands=110 accept_calls=96 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=619.009 scheduling_gap_p95_ms=690.02 scheduling_gap_max_ms=879.525
+Nemotron worker finalize response send: id=5 send_ms=0.0864 total_ms=466.639
+Nemotron stream create: id=6 ms=0.2165
+Nemotron worker finalize receive: id=6 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.017
+Nemotron worker finalize start: id=6
+Nemotron inputFinished end: id=6 ms=0.0122
+Nemotron remaining decode loop end: id=6 calls=2 ms=419.619
+Nemotron final result extraction end: id=6 ms=0.0239 tokens=48
+Nemotron decode: id=6 count=16 p50_ms=182.559 p95_ms=242.822 max_ms=267.252
+Nemotron throughput: id=6 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13863.2 ratio=0.588741 pcm_commands=409 accept_calls=345 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=677.767 scheduling_gap_p95_ms=720.794 scheduling_gap_max_ms=737.448
+Nemotron worker finalize response send: id=6 send_ms=0.0834 total_ms=421.837
+Nemotron stream create: id=7 ms=0.2618
+Nemotron worker finalize receive: id=7 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0234
+Nemotron worker finalize start: id=7
+Nemotron inputFinished end: id=7 ms=0.023
+Nemotron remaining decode loop end: id=7 calls=2 ms=455.842
+Nemotron final result extraction end: id=7 ms=0.0302 tokens=57
+Nemotron decode: id=7 count=22 p50_ms=180.503 p95_ms=231.946 max_ms=262.037
+Nemotron throughput: id=7 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=18816.2 ratio=0.613037 pcm_commands=577 accept_calls=488 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=685.369 scheduling_gap_p95_ms=718.094 scheduling_gap_max_ms=737.322
+Nemotron worker finalize response send: id=7 send_ms=0.0748 total_ms=458.167
+Nemotron stream create: id=8 ms=0.2135
+Nemotron worker finalize receive: id=8 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0322
+Nemotron worker finalize start: id=8
+Nemotron inputFinished end: id=8 ms=0.0115
+Nemotron remaining decode loop end: id=8 calls=2 ms=482.847
+Nemotron final result extraction end: id=8 ms=0.0351 tokens=51
+Nemotron decode: id=8 count=13 p50_ms=183.87 p95_ms=213.947 max_ms=268.89
+Nemotron throughput: id=8 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=10890.1 ratio=0.608809 pcm_commands=332 accept_calls=281 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=654.609 scheduling_gap_p95_ms=712.155 scheduling_gap_max_ms=795.619
+Nemotron worker finalize response send: id=8 send_ms=0.0926 total_ms=485.271
+Nemotron stream create: id=9 ms=0.2088
+Nemotron worker finalize receive: id=9 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0282
+Nemotron worker finalize start: id=9
+Nemotron inputFinished end: id=9 ms=0.022
+Nemotron remaining decode loop end: id=9 calls=2 ms=383.62
+Nemotron final result extraction end: id=9 ms=0.0111 tokens=11
+Nemotron decode: id=9 count=5 p50_ms=219.437 p95_ms=270.417 max_ms=280.114
+Nemotron throughput: id=9 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4223.79 ratio=0.519675 pcm_commands=110 accept_calls=90 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=604.392 scheduling_gap_p95_ms=672.255 scheduling_gap_max_ms=779.834
+Nemotron worker finalize response send: id=9 send_ms=0.09 total_ms=385.73
+Nemotron stream create: id=10 ms=0.2759
+Nemotron worker finalize receive: id=10 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0208
+Nemotron worker finalize start: id=10
+Nemotron inputFinished end: id=10 ms=0.0133
+Nemotron remaining decode loop end: id=10 calls=2 ms=576.292
+Nemotron final result extraction end: id=10 ms=0.0284 tokens=48
+Nemotron decode: id=10 count=16 p50_ms=178.485 p95_ms=245.35 max_ms=330.935
+Nemotron throughput: id=10 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13583.4 ratio=0.600868 pcm_commands=409 accept_calls=350 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=681.179 scheduling_gap_p95_ms=717.49 scheduling_gap_max_ms=718.86
+Nemotron worker finalize response send: id=10 send_ms=0.1102 total_ms=578.942
+Nemotron stream create: id=11 ms=0.3161
+Nemotron worker finalize receive: id=11 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0163
+Nemotron worker finalize start: id=11
+Nemotron inputFinished end: id=11 ms=0.0221
+Nemotron remaining decode loop end: id=11 calls=2 ms=405.568
+Nemotron final result extraction end: id=11 ms=0.028 tokens=57
+Nemotron decode: id=11 count=22 p50_ms=177.337 p95_ms=183.637 max_ms=236.022
+Nemotron throughput: id=11 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=18509.3 ratio=0.6232 pcm_commands=577 accept_calls=492 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=688.029 scheduling_gap_p95_ms=723.205 scheduling_gap_max_ms=727.58
+Nemotron worker finalize response send: id=11 send_ms=0.0832 total_ms=407.749
+Nemotron stream create: id=12 ms=0.337
+Nemotron worker finalize receive: id=12 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0183
+Nemotron worker finalize start: id=12
+Nemotron inputFinished end: id=12 ms=0.0128
+Nemotron remaining decode loop end: id=12 calls=2 ms=517.759
+Nemotron final result extraction end: id=12 ms=0.0408 tokens=51
+Nemotron decode: id=12 count=13 p50_ms=185.221 p95_ms=198.045 max_ms=342.788
+Nemotron throughput: id=12 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11338.2 ratio=0.584748 pcm_commands=332 accept_calls=283 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=686.59 scheduling_gap_p95_ms=733.769 scheduling_gap_max_ms=797.295
+Nemotron worker finalize response send: id=12 send_ms=0.1134 total_ms=520.444
+Nemotron stream create: id=13 ms=0.2975
+Nemotron worker finalize receive: id=13 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0257
+Nemotron worker finalize start: id=13
+Nemotron inputFinished end: id=13 ms=0.0212
+Nemotron remaining decode loop end: id=13 calls=2 ms=395.224
+Nemotron final result extraction end: id=13 ms=0.0154 tokens=11
+Nemotron decode: id=13 count=5 p50_ms=181.123 p95_ms=189.031 max_ms=234.807
+Nemotron throughput: id=13 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4294.21 ratio=0.511153 pcm_commands=110 accept_calls=98 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=693.337 scheduling_gap_p95_ms=714.164 scheduling_gap_max_ms=870.181
+Nemotron worker finalize response send: id=13 send_ms=0.0902 total_ms=397.517
+Nemotron stream create: id=14 ms=0.4341
+Nemotron worker finalize receive: id=14 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0253
+Nemotron worker finalize start: id=14
+Nemotron inputFinished end: id=14 ms=0.0126
+Nemotron remaining decode loop end: id=14 calls=2 ms=449.106
+Nemotron final result extraction end: id=14 ms=0.0258 tokens=48
+Nemotron decode: id=14 count=16 p50_ms=177.21 p95_ms=233.686 max_ms=287.502
+Nemotron throughput: id=14 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13922.6 ratio=0.586228 pcm_commands=409 accept_calls=347 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=706.816 scheduling_gap_p95_ms=751.705 scheduling_gap_max_ms=772.488
+Nemotron worker finalize response send: id=14 send_ms=0.072 total_ms=451.532
+Nemotron stream create: id=15 ms=0.2631
+Nemotron worker finalize receive: id=15 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0219
+Nemotron worker finalize start: id=15
+Nemotron inputFinished end: id=15 ms=0.0215
+Nemotron remaining decode loop end: id=15 calls=2 ms=461.066
+Nemotron final result extraction end: id=15 ms=0.0352 tokens=57
+Nemotron decode: id=15 count=22 p50_ms=173.867 p95_ms=193.745 max_ms=289.014
+Nemotron throughput: id=15 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=18617.9 ratio=0.619565 pcm_commands=577 accept_calls=492 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=680.102 scheduling_gap_p95_ms=738.859 scheduling_gap_max_ms=777.358
+Nemotron worker finalize response send: id=15 send_ms=0.0905 total_ms=463.456
+Nemotron stream create: id=16 ms=0.165
+Nemotron worker finalize receive: id=16 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0239
+Nemotron worker finalize start: id=16
+Nemotron inputFinished end: id=16 ms=0.014
+Nemotron remaining decode loop end: id=16 calls=2 ms=539.802
+Nemotron final result extraction end: id=16 ms=0.0287 tokens=51
+Nemotron decode: id=16 count=13 p50_ms=178.72 p95_ms=268.048 max_ms=271.744
+Nemotron throughput: id=16 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=10475.9 ratio=0.632878 pcm_commands=332 accept_calls=275 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=613.672 scheduling_gap_p95_ms=656.248 scheduling_gap_max_ms=737.69
+Nemotron worker finalize response send: id=16 send_ms=0.0782 total_ms=542.121
+Nemotron stream create: id=17 ms=0.2652
+Nemotron worker finalize receive: id=17 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0387
+Nemotron worker finalize start: id=17
+Nemotron inputFinished end: id=17 ms=0.0226
+Nemotron remaining decode loop end: id=17 calls=2 ms=351.435
+Nemotron final result extraction end: id=17 ms=0.0112 tokens=11
+Nemotron decode: id=17 count=5 p50_ms=188.931 p95_ms=201.952 max_ms=213.953
+Nemotron throughput: id=17 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4105.92 ratio=0.534594 pcm_commands=110 accept_calls=96 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=665.333 scheduling_gap_p95_ms=684.971 scheduling_gap_max_ms=832.421
+Nemotron worker finalize response send: id=17 send_ms=0.0743 total_ms=353.499
+Nemotron stream create: id=18 ms=0.1663
+Nemotron worker finalize receive: id=18 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0246
+Nemotron worker finalize start: id=18
+Nemotron inputFinished end: id=18 ms=0.0126
+Nemotron remaining decode loop end: id=18 calls=2 ms=511.31
+Nemotron final result extraction end: id=18 ms=0.0225 tokens=48
+Nemotron decode: id=18 count=16 p50_ms=174.86 p95_ms=246.971 max_ms=264.33
+Nemotron throughput: id=18 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13375.1 ratio=0.610224 pcm_commands=409 accept_calls=351 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=672.504 scheduling_gap_p95_ms=712.56 scheduling_gap_max_ms=713.715
+Nemotron worker finalize response send: id=18 send_ms=0.0905 total_ms=513.454
+Nemotron stream create: id=19 ms=0.2123
+Nemotron worker finalize receive: id=19 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0345
+Nemotron worker finalize start: id=19
+Nemotron inputFinished end: id=19 ms=0.0227
+Nemotron remaining decode loop end: id=19 calls=2 ms=540.979
+Nemotron final result extraction end: id=19 ms=0.0377 tokens=57
+Nemotron decode: id=19 count=22 p50_ms=180.176 p95_ms=216.482 max_ms=341.68
+Nemotron throughput: id=19 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=19118.2 ratio=0.603352 pcm_commands=577 accept_calls=485 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=688.931 scheduling_gap_p95_ms=745.323 scheduling_gap_max_ms=758.765
+Nemotron worker finalize response send: id=19 send_ms=0.1027 total_ms=543.547
+Nemotron stream create: id=20 ms=0.1376
+Nemotron worker finalize receive: id=20 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0217
+Nemotron worker finalize start: id=20
+Nemotron inputFinished end: id=20 ms=0.012
+Nemotron remaining decode loop end: id=20 calls=2 ms=625.951
+Nemotron final result extraction end: id=20 ms=0.0299 tokens=51
+Nemotron decode: id=20 count=13 p50_ms=185.847 p95_ms=281.066 max_ms=344.873
+Nemotron throughput: id=20 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11403.8 ratio=0.581385 pcm_commands=332 accept_calls=283 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=689.022 scheduling_gap_p95_ms=738.73 scheduling_gap_max_ms=808.517
+Nemotron worker finalize response send: id=20 send_ms=0.0878 total_ms=628.161
+Nemotron stream create: id=21 ms=0.2548
+Nemotron worker finalize receive: id=21 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0106
+Nemotron worker finalize start: id=21
+Nemotron inputFinished end: id=21 ms=0.0223
+Nemotron remaining decode loop end: id=21 calls=2 ms=360.403
+Nemotron final result extraction end: id=21 ms=0.0114 tokens=11
+Nemotron decode: id=21 count=5 p50_ms=184.301 p95_ms=193.028 max_ms=251.958
+Nemotron throughput: id=21 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4119.04 ratio=0.532891 pcm_commands=110 accept_calls=94 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=643.11 scheduling_gap_p95_ms=681.404 scheduling_gap_max_ms=811.531
+Nemotron worker finalize response send: id=21 send_ms=0.0721 total_ms=362.448
+Nemotron stream create: id=22 ms=0.1919
+Nemotron worker finalize receive: id=22 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0144
+Nemotron worker finalize start: id=22
+Nemotron inputFinished end: id=22 ms=0.0121
+Nemotron remaining decode loop end: id=22 calls=2 ms=447.589
+Nemotron final result extraction end: id=22 ms=0.0221 tokens=48
+Nemotron decode: id=22 count=16 p50_ms=176.96 p95_ms=232.182 max_ms=288.976
+Nemotron throughput: id=22 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13987 ratio=0.583527 pcm_commands=409 accept_calls=349 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=709.819 scheduling_gap_p95_ms=744.71 scheduling_gap_max_ms=779.18
+Nemotron worker finalize response send: id=22 send_ms=0.0876 total_ms=449.778
+Nemotron stream create: id=23 ms=0.2163
+Nemotron worker finalize receive: id=23 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0183
+Nemotron worker finalize start: id=23
+Nemotron inputFinished end: id=23 ms=0.0217
+Nemotron remaining decode loop end: id=23 calls=2 ms=339.57
+Nemotron final result extraction end: id=23 ms=0.0258 tokens=57
+Nemotron decode: id=23 count=22 p50_ms=177.294 p95_ms=189.194 max_ms=280.117
+Nemotron throughput: id=23 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=18629.6 ratio=0.619177 pcm_commands=577 accept_calls=487 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=685.723 scheduling_gap_p95_ms=721.644 scheduling_gap_max_ms=727.985
+Nemotron worker finalize response send: id=23 send_ms=0.0834 total_ms=341.659
+Nemotron stream create: id=24 ms=0.2805
+Nemotron worker finalize receive: id=24 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0185
+Nemotron worker finalize start: id=24
+Nemotron inputFinished end: id=24 ms=0.0117
+Nemotron remaining decode loop end: id=24 calls=2 ms=345.13
+Nemotron final result extraction end: id=24 ms=0.0285 tokens=51
+Nemotron decode: id=24 count=13 p50_ms=179.417 p95_ms=187.565 max_ms=328.964
+Nemotron throughput: id=24 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11256.2 ratio=0.589011 pcm_commands=332 accept_calls=281 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=691.23 scheduling_gap_p95_ms=727.339 scheduling_gap_max_ms=813.091
+Nemotron worker finalize response send: id=24 send_ms=0.0756 total_ms=347.294
+Nemotron stream create: id=25 ms=0.2787
+Nemotron worker finalize receive: id=25 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.024
+Nemotron worker finalize start: id=25
+Nemotron inputFinished end: id=25 ms=0.0235
+Nemotron remaining decode loop end: id=25 calls=2 ms=486.875
+Nemotron final result extraction end: id=25 ms=0.0136 tokens=11
+Nemotron decode: id=25 count=5 p50_ms=203.059 p95_ms=217.967 max_ms=268.896
+Nemotron throughput: id=25 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4268.16 ratio=0.514273 pcm_commands=110 accept_calls=97 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=645.2 scheduling_gap_p95_ms=666.339 scheduling_gap_max_ms=889.514
+Nemotron worker finalize response send: id=25 send_ms=0.0819 total_ms=489.046
+Nemotron stream create: id=26 ms=0.1689
+Nemotron worker finalize receive: id=26 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0364
+Nemotron worker finalize start: id=26
+Nemotron inputFinished end: id=26 ms=0.0129
+Nemotron remaining decode loop end: id=26 calls=2 ms=608.415
+Nemotron final result extraction end: id=26 ms=0.0237 tokens=48
+Nemotron decode: id=26 count=16 p50_ms=171.473 p95_ms=296.125 max_ms=312.279
+Nemotron throughput: id=26 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=13675.8 ratio=0.596805 pcm_commands=409 accept_calls=352 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=690.082 scheduling_gap_p95_ms=723.772 scheduling_gap_max_ms=736.869
+Nemotron worker finalize response send: id=26 send_ms=0.0889 total_ms=610.756
+Nemotron stream create: id=27 ms=0.3217
+Nemotron worker finalize receive: id=27 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0214
+Nemotron worker finalize start: id=27
+Nemotron inputFinished end: id=27 ms=0.0224
+Nemotron remaining decode loop end: id=27 calls=2 ms=589.558
+Nemotron final result extraction end: id=27 ms=0.0297 tokens=57
+Nemotron decode: id=27 count=22 p50_ms=179.826 p95_ms=220.792 max_ms=368.757
+Nemotron throughput: id=27 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=18991.1 ratio=0.60739 pcm_commands=577 accept_calls=492 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=689.031 scheduling_gap_p95_ms=766.202 scheduling_gap_max_ms=771.775
+Nemotron worker finalize response send: id=27 send_ms=0.083 total_ms=591.81
+Nemotron stream create: id=28 ms=0.1547
+Nemotron worker finalize receive: id=28 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0237
+Nemotron worker finalize start: id=28
+Nemotron inputFinished end: id=28 ms=0.012
+Nemotron remaining decode loop end: id=28 calls=2 ms=361.345
+Nemotron final result extraction end: id=28 ms=0.031 tokens=51
+Nemotron decode: id=28 count=13 p50_ms=183.169 p95_ms=226.326 max_ms=250.292
+Nemotron throughput: id=28 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11447.8 ratio=0.57915 pcm_commands=332 accept_calls=283 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=722.145 scheduling_gap_p95_ms=781.085 scheduling_gap_max_ms=845.711
+Nemotron worker finalize response send: id=28 send_ms=0.0584 total_ms=363.615
+Nemotron stream create: id=29 ms=0.5406
+Nemotron worker finalize receive: id=29 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0213
+Nemotron worker finalize start: id=29
+Nemotron inputFinished end: id=29 ms=0.0222
+Nemotron remaining decode loop end: id=29 calls=2 ms=423.887
+Nemotron final result extraction end: id=29 ms=0.0153 tokens=11
+Nemotron decode: id=29 count=5 p50_ms=178.858 p95_ms=182.239 max_ms=255.922
+Nemotron throughput: id=29 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4314.97 ratio=0.508694 pcm_commands=110 accept_calls=99 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=693.217 scheduling_gap_p95_ms=705.796 scheduling_gap_max_ms=907.156
+Nemotron worker finalize response send: id=29 send_ms=0.1002 total_ms=426.394
+Nemotron stream create: id=30 ms=0.2486
+Nemotron worker finalize receive: id=30 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0609
+Nemotron worker finalize start: id=30
+Nemotron inputFinished end: id=30 ms=0.0147
+Nemotron remaining decode loop end: id=30 calls=2 ms=545.749
+Nemotron final result extraction end: id=30 ms=0.0232 tokens=48
+Nemotron decode: id=30 count=16 p50_ms=186.991 p95_ms=260.24 max_ms=285.5
+Nemotron throughput: id=30 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14362.6 ratio=0.568269 pcm_commands=409 accept_calls=348 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=726.27 scheduling_gap_p95_ms=773.846 scheduling_gap_max_ms=787.368
+Nemotron worker finalize response send: id=30 send_ms=0.1145 total_ms=548.282
+Nemotron stream create: id=31 ms=0.2915
+Nemotron worker finalize receive: id=31 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0208
+Nemotron worker finalize start: id=31
+Nemotron inputFinished end: id=31 ms=0.0222
+Nemotron remaining decode loop end: id=31 calls=2 ms=438.442
+Nemotron final result extraction end: id=31 ms=0.0302 tokens=57
+Nemotron decode: id=31 count=22 p50_ms=179.722 p95_ms=190.68 max_ms=256.825
+Nemotron throughput: id=31 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=19843.7 ratio=0.581292 pcm_commands=577 accept_calls=498 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=740.369 scheduling_gap_p95_ms=781.073 scheduling_gap_max_ms=807.454
+Nemotron worker finalize response send: id=31 send_ms=0.0845 total_ms=440.723
+Nemotron stream create: id=32 ms=0.2687
+Nemotron worker finalize receive: id=32 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0158
+Nemotron worker finalize start: id=32
+Nemotron inputFinished end: id=32 ms=0.0115
+Nemotron remaining decode loop end: id=32 calls=2 ms=351.837
+Nemotron final result extraction end: id=32 ms=0.0261 tokens=51
+Nemotron decode: id=32 count=13 p50_ms=183.982 p95_ms=201.766 max_ms=236.019
+Nemotron throughput: id=32 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11544 ratio=0.574327 pcm_commands=332 accept_calls=283 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=706.337 scheduling_gap_p95_ms=779.786 scheduling_gap_max_ms=854.186
+Nemotron worker finalize response send: id=32 send_ms=0.0748 total_ms=353.861
+Nemotron stream create: id=33 ms=0.1874
+Nemotron worker finalize receive: id=33 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0211
+Nemotron worker finalize start: id=33
+Nemotron inputFinished end: id=33 ms=0.0222
+Nemotron remaining decode loop end: id=33 calls=2 ms=469.298
+Nemotron final result extraction end: id=33 ms=0.0213 tokens=11
+Nemotron decode: id=33 count=5 p50_ms=181.827 p95_ms=190.348 max_ms=303.226
+Nemotron throughput: id=33 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4483.64 ratio=0.489558 pcm_commands=110 accept_calls=96 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=730.576 scheduling_gap_p95_ms=782.318 scheduling_gap_max_ms=848.345
+Nemotron worker finalize response send: id=33 send_ms=0.0995 total_ms=471.709
+Nemotron stream create: id=34 ms=0.4088
+Nemotron worker finalize receive: id=34 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0192
+Nemotron worker finalize start: id=34
+Nemotron inputFinished end: id=34 ms=0.0121
+Nemotron remaining decode loop end: id=34 calls=2 ms=393.933
+Nemotron final result extraction end: id=34 ms=0.0251 tokens=48
+Nemotron decode: id=34 count=16 p50_ms=176.185 p95_ms=220.991 max_ms=230.086
+Nemotron throughput: id=34 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14326.6 ratio=0.569698 pcm_commands=409 accept_calls=349 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=711.75 scheduling_gap_p95_ms=752.579 scheduling_gap_max_ms=763.025
+Nemotron worker finalize response send: id=34 send_ms=0.0814 total_ms=396.096
+Nemotron stream create: id=35 ms=0.274
+Nemotron worker finalize receive: id=35 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0228
+Nemotron worker finalize start: id=35
+Nemotron inputFinished end: id=35 ms=0.0231
+Nemotron remaining decode loop end: id=35 calls=2 ms=498.608
+Nemotron final result extraction end: id=35 ms=0.0355 tokens=57
+Nemotron decode: id=35 count=22 p50_ms=177.082 p95_ms=218.221 max_ms=280.377
+Nemotron throughput: id=35 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=19793.4 ratio=0.58277 pcm_commands=577 accept_calls=496 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=740.386 scheduling_gap_p95_ms=773.326 scheduling_gap_max_ms=776.982
+Nemotron worker finalize response send: id=35 send_ms=0.0936 total_ms=500.996
+Nemotron stream create: id=36 ms=0.3336
+Nemotron worker finalize receive: id=36 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0227
+Nemotron worker finalize start: id=36
+Nemotron inputFinished end: id=36 ms=0.014
+Nemotron remaining decode loop end: id=36 calls=2 ms=528.683
+Nemotron final result extraction end: id=36 ms=0.0353 tokens=51
+Nemotron decode: id=36 count=13 p50_ms=184.498 p95_ms=246.378 max_ms=282.295
+Nemotron throughput: id=36 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11678.7 ratio=0.5677 pcm_commands=332 accept_calls=285 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=715.533 scheduling_gap_p95_ms=779.532 scheduling_gap_max_ms=831.814
+Nemotron worker finalize response send: id=36 send_ms=0.1326 total_ms=531.568
+Nemotron stream create: id=37 ms=0.3316
+Nemotron worker finalize receive: id=37 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0403
+Nemotron worker finalize start: id=37
+Nemotron inputFinished end: id=37 ms=0.0228
+Nemotron remaining decode loop end: id=37 calls=2 ms=477.386
+Nemotron final result extraction end: id=37 ms=0.015 tokens=11
+Nemotron decode: id=37 count=5 p50_ms=196.742 p95_ms=210.464 max_ms=280.635
+Nemotron throughput: id=37 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4503.34 ratio=0.487416 pcm_commands=110 accept_calls=97 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=661.062 scheduling_gap_p95_ms=748.978 scheduling_gap_max_ms=968.43
+Nemotron worker finalize response send: id=37 send_ms=0.0978 total_ms=479.841
+Nemotron stream create: id=38 ms=0.3009
+Nemotron worker finalize receive: id=38 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0723
+Nemotron worker finalize start: id=38
+Nemotron inputFinished end: id=38 ms=0.0143
+Nemotron remaining decode loop end: id=38 calls=2 ms=365.158
+Nemotron final result extraction end: id=38 ms=0.0223 tokens=48
+Nemotron decode: id=38 count=16 p50_ms=177.189 p95_ms=200.982 max_ms=240.339
+Nemotron throughput: id=38 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14355.5 ratio=0.568548 pcm_commands=409 accept_calls=351 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=727.734 scheduling_gap_p95_ms=797.076 scheduling_gap_max_ms=810.923
+Nemotron worker finalize response send: id=38 send_ms=0.0762 total_ms=367.456
+Nemotron stream create: id=39 ms=0.3134
+Nemotron worker finalize receive: id=39 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0494
+Nemotron worker finalize start: id=39
+Nemotron inputFinished end: id=39 ms=0.0238
+Nemotron remaining decode loop end: id=39 calls=2 ms=469.194
+Nemotron final result extraction end: id=39 ms=0.0295 tokens=57
+Nemotron decode: id=39 count=22 p50_ms=178.184 p95_ms=202.101 max_ms=267.085
+Nemotron throughput: id=39 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20181.8 ratio=0.571555 pcm_commands=577 accept_calls=496 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=755.805 scheduling_gap_p95_ms=807.885 scheduling_gap_max_ms=812.287
+Nemotron worker finalize response send: id=39 send_ms=0.081 total_ms=471.546
+Nemotron stream create: id=40 ms=0.1319
+Nemotron worker finalize receive: id=40 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0234
+Nemotron worker finalize start: id=40
+Nemotron inputFinished end: id=40 ms=0.0114
+Nemotron remaining decode loop end: id=40 calls=2 ms=361.761
+Nemotron final result extraction end: id=40 ms=0.0269 tokens=51
+Nemotron decode: id=40 count=13 p50_ms=186.591 p95_ms=207.166 max_ms=208.872
+Nemotron throughput: id=40 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11802.3 ratio=0.561754 pcm_commands=332 accept_calls=284 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=752.391 scheduling_gap_p95_ms=804.172 scheduling_gap_max_ms=896.442
+Nemotron worker finalize response send: id=40 send_ms=0.0757 total_ms=363.785
+Nemotron stream create: id=41 ms=0.1778
+Nemotron worker finalize receive: id=41 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0194
+Nemotron worker finalize start: id=41
+Nemotron inputFinished end: id=41 ms=0.0222
+Nemotron remaining decode loop end: id=41 calls=2 ms=360.333
+Nemotron final result extraction end: id=41 ms=0.0124 tokens=11
+Nemotron decode: id=41 count=5 p50_ms=174.087 p95_ms=186.041 max_ms=209.492
+Nemotron throughput: id=41 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4309.44 ratio=0.509347 pcm_commands=110 accept_calls=99 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=649.872 scheduling_gap_p95_ms=746.026 scheduling_gap_max_ms=938.914
+Nemotron worker finalize response send: id=41 send_ms=0.0793 total_ms=362.509
+Nemotron stream create: id=42 ms=0.1565
+Nemotron worker finalize receive: id=42 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0296
+Nemotron worker finalize start: id=42
+Nemotron inputFinished end: id=42 ms=0.015
+Nemotron remaining decode loop end: id=42 calls=2 ms=494.919
+Nemotron final result extraction end: id=42 ms=0.0266 tokens=48
+Nemotron decode: id=42 count=16 p50_ms=178.777 p95_ms=237.531 max_ms=257.379
+Nemotron throughput: id=42 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14469.7 ratio=0.564062 pcm_commands=409 accept_calls=357 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=746.457 scheduling_gap_p95_ms=813.247 scheduling_gap_max_ms=829.617
+Nemotron worker finalize response send: id=42 send_ms=0.0919 total_ms=497.47
+Nemotron stream create: id=43 ms=0.232
+Nemotron worker finalize receive: id=43 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.1205
+Nemotron worker finalize start: id=43
+Nemotron inputFinished end: id=43 ms=0.0578
+Nemotron remaining decode loop end: id=43 calls=2 ms=687.154
+Nemotron final result extraction end: id=43 ms=0.0349 tokens=57
+Nemotron decode: id=43 count=22 p50_ms=177.759 p95_ms=251.65 max_ms=435.492
+Nemotron throughput: id=43 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20541.5 ratio=0.561546 pcm_commands=577 accept_calls=481 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=761.631 scheduling_gap_p95_ms=823.41 scheduling_gap_max_ms=839.864
+Nemotron worker finalize response send: id=43 send_ms=0.1015 total_ms=691.333
+Nemotron stream create: id=44 ms=0.2657
+Nemotron worker finalize receive: id=44 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.018
+Nemotron worker finalize start: id=44
+Nemotron inputFinished end: id=44 ms=0.0119
+Nemotron remaining decode loop end: id=44 calls=2 ms=412.671
+Nemotron final result extraction end: id=44 ms=0.0422 tokens=51
+Nemotron decode: id=44 count=13 p50_ms=179.606 p95_ms=231.38 max_ms=257.658
+Nemotron throughput: id=44 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11612.2 ratio=0.570949 pcm_commands=332 accept_calls=284 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=740.535 scheduling_gap_p95_ms=800.106 scheduling_gap_max_ms=808.68
+Nemotron worker finalize response send: id=44 send_ms=0.0802 total_ms=415.079
+Nemotron stream create: id=45 ms=0.1899
+Nemotron worker finalize receive: id=45 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0177
+Nemotron worker finalize start: id=45
+Nemotron inputFinished end: id=45 ms=0.0233
+Nemotron remaining decode loop end: id=45 calls=2 ms=346.073
+Nemotron final result extraction end: id=45 ms=0.0108 tokens=11
+Nemotron decode: id=45 count=5 p50_ms=175.192 p95_ms=191.101 max_ms=195.777
+Nemotron throughput: id=45 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4453.03 ratio=0.492923 pcm_commands=110 accept_calls=98 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=743.619 scheduling_gap_p95_ms=771.309 scheduling_gap_max_ms=890.028
+Nemotron worker finalize response send: id=45 send_ms=0.077 total_ms=348.206
+Nemotron stream create: id=46 ms=0.3565
+Nemotron worker finalize receive: id=46 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0216
+Nemotron worker finalize start: id=46
+Nemotron inputFinished end: id=46 ms=0.0141
+Nemotron remaining decode loop end: id=46 calls=2 ms=494.984
+Nemotron final result extraction end: id=46 ms=0.0213 tokens=48
+Nemotron decode: id=46 count=16 p50_ms=176.383 p95_ms=238.905 max_ms=256.07
+Nemotron throughput: id=46 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14902.8 ratio=0.547671 pcm_commands=409 accept_calls=356 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=794.693 scheduling_gap_p95_ms=820.94 scheduling_gap_max_ms=860.824
+Nemotron worker finalize response send: id=46 send_ms=0.0736 total_ms=497.384
+Nemotron stream create: id=47 ms=0.1957
+Nemotron worker finalize receive: id=47 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0155
+Nemotron worker finalize start: id=47
+Nemotron inputFinished end: id=47 ms=0.0219
+Nemotron remaining decode loop end: id=47 calls=2 ms=385.58
+Nemotron final result extraction end: id=47 ms=0.0409 tokens=57
+Nemotron decode: id=47 count=22 p50_ms=174.386 p95_ms=185.239 max_ms=229.02
+Nemotron throughput: id=47 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=19668.3 ratio=0.586477 pcm_commands=577 accept_calls=507 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=756.04 scheduling_gap_p95_ms=781.295 scheduling_gap_max_ms=798.781
+Nemotron worker finalize response send: id=47 send_ms=0.0719 total_ms=387.762
+Nemotron stream create: id=48 ms=0.1802
+Nemotron worker finalize receive: id=48 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0182
+Nemotron worker finalize start: id=48
+Nemotron inputFinished end: id=48 ms=0.012
+Nemotron remaining decode loop end: id=48 calls=2 ms=421.518
+Nemotron final result extraction end: id=48 ms=0.033 tokens=51
+Nemotron decode: id=48 count=13 p50_ms=180.373 p95_ms=225.99 max_ms=249.645
+Nemotron throughput: id=48 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12006.8 ratio=0.552186 pcm_commands=332 accept_calls=289 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=786.773 scheduling_gap_p95_ms=816.683 scheduling_gap_max_ms=922.518
+Nemotron worker finalize response send: id=48 send_ms=0.0958 total_ms=423.859
+Nemotron stream create: id=49 ms=0.1702
+Nemotron worker finalize receive: id=49 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.023
+Nemotron worker finalize start: id=49
+Nemotron inputFinished end: id=49 ms=0.0247
+Nemotron remaining decode loop end: id=49 calls=2 ms=342.135
+Nemotron final result extraction end: id=49 ms=0.0117 tokens=11
+Nemotron decode: id=49 count=5 p50_ms=181.32 p95_ms=192.775 max_ms=203.962
+Nemotron throughput: id=49 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4316.88 ratio=0.508469 pcm_commands=110 accept_calls=98 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=799.927 scheduling_gap_p95_ms=813.129 scheduling_gap_max_ms=817.395
+Nemotron worker finalize response send: id=49 send_ms=0.0634 total_ms=344.24
+Nemotron stream create: id=50 ms=0.3495
+Nemotron worker finalize receive: id=50 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0191
+Nemotron worker finalize start: id=50
+Nemotron inputFinished end: id=50 ms=0.0118
+Nemotron remaining decode loop end: id=50 calls=2 ms=367.425
+Nemotron final result extraction end: id=50 ms=0.0208 tokens=48
+Nemotron decode: id=50 count=16 p50_ms=175.643 p95_ms=206.906 max_ms=208.111
+Nemotron throughput: id=50 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14347.4 ratio=0.56887 pcm_commands=409 accept_calls=350 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=757.591 scheduling_gap_p95_ms=812.698 scheduling_gap_max_ms=814.961
+Nemotron worker finalize response send: id=50 send_ms=0.0719 total_ms=369.493
+Nemotron stream create: id=51 ms=0.1357
+Nemotron worker finalize receive: id=51 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0232
+Nemotron worker finalize start: id=51
+Nemotron inputFinished end: id=51 ms=0.0215
+Nemotron remaining decode loop end: id=51 calls=2 ms=380.892
+Nemotron final result extraction end: id=51 ms=0.0328 tokens=57
+Nemotron decode: id=51 count=22 p50_ms=182.097 p95_ms=214.8 max_ms=236.651
+Nemotron throughput: id=51 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20453.9 ratio=0.563952 pcm_commands=577 accept_calls=500 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=787.032 scheduling_gap_p95_ms=830.916 scheduling_gap_max_ms=837.408
+Nemotron worker finalize response send: id=51 send_ms=0.0768 total_ms=383.214
+Nemotron stream create: id=52 ms=0.2945
+Nemotron worker finalize receive: id=52 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0278
+Nemotron worker finalize start: id=52
+Nemotron inputFinished end: id=52 ms=0.0117
+Nemotron remaining decode loop end: id=52 calls=2 ms=445.623
+Nemotron final result extraction end: id=52 ms=0.0294 tokens=51
+Nemotron decode: id=52 count=13 p50_ms=178.122 p95_ms=197.038 max_ms=251.88
+Nemotron throughput: id=52 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=11971.2 ratio=0.553827 pcm_commands=332 accept_calls=288 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=766.628 scheduling_gap_p95_ms=801.634 scheduling_gap_max_ms=860.249
+Nemotron worker finalize response send: id=52 send_ms=0.075 total_ms=447.768
+Nemotron stream create: id=53 ms=0.1844
+Nemotron worker finalize receive: id=53 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0285
+Nemotron worker finalize start: id=53
+Nemotron inputFinished end: id=53 ms=0.0215
+Nemotron remaining decode loop end: id=53 calls=2 ms=368.42
+Nemotron final result extraction end: id=53 ms=0.0118 tokens=11
+Nemotron decode: id=53 count=5 p50_ms=196.065 p95_ms=205.633 max_ms=244.579
+Nemotron throughput: id=53 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4454.46 ratio=0.492765 pcm_commands=110 accept_calls=97 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=662.735 scheduling_gap_p95_ms=733.482 scheduling_gap_max_ms=958.49
+Nemotron worker finalize response send: id=53 send_ms=0.0869 total_ms=370.426
+Nemotron stream create: id=54 ms=0.2935
+Nemotron worker finalize receive: id=54 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0208
+Nemotron worker finalize start: id=54
+Nemotron inputFinished end: id=54 ms=0.0123
+Nemotron remaining decode loop end: id=54 calls=2 ms=399.942
+Nemotron final result extraction end: id=54 ms=0.0283 tokens=48
+Nemotron decode: id=54 count=16 p50_ms=180.288 p95_ms=234.156 max_ms=293.814
+Nemotron throughput: id=54 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14842.9 ratio=0.54988 pcm_commands=409 accept_calls=352 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=782.149 scheduling_gap_p95_ms=853.207 scheduling_gap_max_ms=856.822
+Nemotron worker finalize response send: id=54 send_ms=0.0957 total_ms=402.244
+Nemotron stream create: id=55 ms=0.2879
+Nemotron worker finalize receive: id=55 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0339
+Nemotron worker finalize start: id=55
+Nemotron inputFinished end: id=55 ms=0.0233
+Nemotron remaining decode loop end: id=55 calls=2 ms=630.169
+Nemotron final result extraction end: id=55 ms=0.0361 tokens=57
+Nemotron decode: id=55 count=22 p50_ms=176.453 p95_ms=278.413 max_ms=321.877
+Nemotron throughput: id=55 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20373.6 ratio=0.566173 pcm_commands=577 accept_calls=490 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=771.339 scheduling_gap_p95_ms=834.784 scheduling_gap_max_ms=834.893
+Nemotron worker finalize response send: id=55 send_ms=0.1125 total_ms=632.81
+Nemotron stream create: id=56 ms=0.2874
+Nemotron worker finalize receive: id=56 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0259
+Nemotron worker finalize start: id=56
+Nemotron inputFinished end: id=56 ms=0.0123
+Nemotron remaining decode loop end: id=56 calls=2 ms=523.818
+Nemotron final result extraction end: id=56 ms=0.0314 tokens=51
+Nemotron decode: id=56 count=13 p50_ms=180.151 p95_ms=246.727 max_ms=277.083
+Nemotron throughput: id=56 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12387.2 ratio=0.535228 pcm_commands=332 accept_calls=286 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=788.616 scheduling_gap_p95_ms=850.205 scheduling_gap_max_ms=931.831
+Nemotron worker finalize response send: id=56 send_ms=0.0857 total_ms=526.153
+Nemotron stream create: id=57 ms=0.3061
+Nemotron worker finalize receive: id=57 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.037
+Nemotron worker finalize start: id=57
+Nemotron inputFinished end: id=57 ms=0.0219
+Nemotron remaining decode loop end: id=57 calls=2 ms=419.116
+Nemotron final result extraction end: id=57 ms=0.0131 tokens=11
+Nemotron decode: id=57 count=5 p50_ms=181.812 p95_ms=183.798 max_ms=256.747
+Nemotron throughput: id=57 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4585.58 ratio=0.478674 pcm_commands=110 accept_calls=98 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=635.438 scheduling_gap_p95_ms=801.391 scheduling_gap_max_ms=1011.76
+Nemotron worker finalize response send: id=57 send_ms=0.0868 total_ms=421.412
+Nemotron stream create: id=58 ms=0.1615
+Nemotron worker finalize receive: id=58 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0353
+Nemotron worker finalize start: id=58
+Nemotron inputFinished end: id=58 ms=0.0264
+Nemotron remaining decode loop end: id=58 calls=2 ms=612.584
+Nemotron final result extraction end: id=58 ms=0.0265 tokens=48
+Nemotron decode: id=58 count=16 p50_ms=177.771 p95_ms=300.077 max_ms=312.497
+Nemotron throughput: id=58 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=14716.4 ratio=0.554607 pcm_commands=409 accept_calls=356 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=780.533 scheduling_gap_p95_ms=811.493 scheduling_gap_max_ms=838.727
+Nemotron worker finalize response send: id=58 send_ms=0.078 total_ms=615.865
+Nemotron stream create: id=59 ms=0.3076
+Nemotron worker finalize receive: id=59 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0255
+Nemotron worker finalize start: id=59
+Nemotron inputFinished end: id=59 ms=0.0436
+Nemotron remaining decode loop end: id=59 calls=2 ms=571.636
+Nemotron final result extraction end: id=59 ms=0.0439 tokens=57
+Nemotron decode: id=59 count=22 p50_ms=188.681 p95_ms=273.708 max_ms=318.586
+Nemotron throughput: id=59 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21559.4 ratio=0.535032 pcm_commands=577 accept_calls=492 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=796.352 scheduling_gap_p95_ms=850.878 scheduling_gap_max_ms=1116.21
+Nemotron worker finalize response send: id=59 send_ms=0.1442 total_ms=575.462
+Nemotron stream create: id=60 ms=0.4607
+Nemotron worker finalize receive: id=60 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0211
+Nemotron worker finalize start: id=60
+Nemotron inputFinished end: id=60 ms=0.0121
+Nemotron remaining decode loop end: id=60 calls=2 ms=494.159
+Nemotron final result extraction end: id=60 ms=0.0461 tokens=51
+Nemotron decode: id=60 count=13 p50_ms=180.648 p95_ms=198.079 max_ms=339.824
+Nemotron throughput: id=60 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12650.9 ratio=0.524073 pcm_commands=332 accept_calls=291 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=823.185 scheduling_gap_p95_ms=894.635 scheduling_gap_max_ms=960.7
+Nemotron worker finalize response send: id=60 send_ms=0.1224 total_ms=496.94
+Nemotron stream create: id=61 ms=0.3089
+Nemotron worker finalize receive: id=61 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0271
+Nemotron worker finalize start: id=61
+Nemotron inputFinished end: id=61 ms=0.0228
+Nemotron remaining decode loop end: id=61 calls=2 ms=352.131
+Nemotron final result extraction end: id=61 ms=0.012 tokens=11
+Nemotron decode: id=61 count=5 p50_ms=177.869 p95_ms=185.592 max_ms=194.035
+Nemotron throughput: id=61 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4531.53 ratio=0.484384 pcm_commands=110 accept_calls=100 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=674.399 scheduling_gap_p95_ms=777.6 scheduling_gap_max_ms=990.881
+Nemotron worker finalize response send: id=61 send_ms=0.0719 total_ms=354.172
+Nemotron stream create: id=62 ms=0.2238
+Nemotron worker finalize receive: id=62 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0186
+Nemotron worker finalize start: id=62
+Nemotron inputFinished end: id=62 ms=0.0121
+Nemotron remaining decode loop end: id=62 calls=2 ms=361.376
+Nemotron final result extraction end: id=62 ms=0.0297 tokens=48
+Nemotron decode: id=62 count=16 p50_ms=180.616 p95_ms=193.113 max_ms=212.733
+Nemotron throughput: id=62 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15239.7 ratio=0.535561 pcm_commands=409 accept_calls=360 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=820.217 scheduling_gap_p95_ms=855.956 scheduling_gap_max_ms=894.566
+Nemotron worker finalize response send: id=62 send_ms=0.0787 total_ms=363.759
+Nemotron stream create: id=63 ms=0.1244
+Nemotron worker finalize receive: id=63 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0482
+Nemotron worker finalize start: id=63
+Nemotron inputFinished end: id=63 ms=0.0347
+Nemotron remaining decode loop end: id=63 calls=2 ms=738.79
+Nemotron final result extraction end: id=63 ms=0.0302 tokens=57
+Nemotron decode: id=63 count=22 p50_ms=179.564 p95_ms=290.188 max_ms=448.593
+Nemotron throughput: id=63 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20180.9 ratio=0.571579 pcm_commands=577 accept_calls=483 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=737.782 scheduling_gap_p95_ms=858.515 scheduling_gap_max_ms=890.932
+Nemotron worker finalize response send: id=63 send_ms=0.0823 total_ms=741.635
+Nemotron stream create: id=64 ms=0.1737
+Nemotron worker finalize receive: id=64 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.021
+Nemotron worker finalize start: id=64
+Nemotron inputFinished end: id=64 ms=0.016
+Nemotron remaining decode loop end: id=64 calls=2 ms=506.264
+Nemotron final result extraction end: id=64 ms=0.0318 tokens=51
+Nemotron decode: id=64 count=13 p50_ms=181.503 p95_ms=239.566 max_ms=266.689
+Nemotron throughput: id=64 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12458.1 ratio=0.532184 pcm_commands=332 accept_calls=291 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=818.721 scheduling_gap_p95_ms=877.817 scheduling_gap_max_ms=917.803
+Nemotron worker finalize response send: id=64 send_ms=0.0879 total_ms=508.958
+Nemotron stream create: id=65 ms=0.1207
+Nemotron worker finalize receive: id=65 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0172
+Nemotron worker finalize start: id=65
+Nemotron inputFinished end: id=65 ms=0.0226
+Nemotron remaining decode loop end: id=65 calls=2 ms=352.862
+Nemotron final result extraction end: id=65 ms=0.0142 tokens=11
+Nemotron decode: id=65 count=5 p50_ms=176.67 p95_ms=200.054 max_ms=220.907
+Nemotron throughput: id=65 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4491.04 ratio=0.488751 pcm_commands=110 accept_calls=97 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=632.889 scheduling_gap_p95_ms=783.404 scheduling_gap_max_ms=1008.34
+Nemotron worker finalize response send: id=65 send_ms=0.0739 total_ms=355.041
+Nemotron stream create: id=66 ms=0.3528
+Nemotron worker finalize receive: id=66 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0111
+Nemotron worker finalize start: id=66
+Nemotron inputFinished end: id=66 ms=0.0119
+Nemotron remaining decode loop end: id=66 calls=2 ms=498.624
+Nemotron final result extraction end: id=66 ms=0.0231 tokens=48
+Nemotron decode: id=66 count=16 p50_ms=179.333 p95_ms=210.205 max_ms=288.411
+Nemotron throughput: id=66 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15330.4 ratio=0.532394 pcm_commands=409 accept_calls=349 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=831.391 scheduling_gap_p95_ms=881.626 scheduling_gap_max_ms=890.091
+Nemotron worker finalize response send: id=66 send_ms=0.0796 total_ms=500.906
+Nemotron stream create: id=67 ms=0.1678
+Nemotron worker finalize receive: id=67 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0192
+Nemotron worker finalize start: id=67
+Nemotron inputFinished end: id=67 ms=0.0225
+Nemotron remaining decode loop end: id=67 calls=2 ms=522.432
+Nemotron final result extraction end: id=67 ms=0.0369 tokens=57
+Nemotron decode: id=67 count=22 p50_ms=178.421 p95_ms=232.481 max_ms=289.943
+Nemotron throughput: id=67 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21449 ratio=0.537788 pcm_commands=577 accept_calls=491 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=850.236 scheduling_gap_p95_ms=879.029 scheduling_gap_max_ms=893.139
+Nemotron worker finalize response send: id=67 send_ms=0.1022 total_ms=524.836
+Nemotron stream create: id=68 ms=0.2529
+Nemotron worker finalize receive: id=68 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0195
+Nemotron worker finalize start: id=68
+Nemotron inputFinished end: id=68 ms=0.012
+Nemotron remaining decode loop end: id=68 calls=2 ms=421.002
+Nemotron final result extraction end: id=68 ms=0.0594 tokens=51
+Nemotron decode: id=68 count=13 p50_ms=174.02 p95_ms=187.282 max_ms=254.122
+Nemotron throughput: id=68 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12305.9 ratio=0.538766 pcm_commands=332 accept_calls=286 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=807.259 scheduling_gap_p95_ms=845.036 scheduling_gap_max_ms=866.58
+Nemotron worker finalize response send: id=68 send_ms=0.1008 total_ms=423.551
+Nemotron stream create: id=69 ms=0.3063
+Nemotron worker finalize receive: id=69 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0225
+Nemotron worker finalize start: id=69
+Nemotron inputFinished end: id=69 ms=0.0225
+Nemotron remaining decode loop end: id=69 calls=2 ms=345.078
+Nemotron final result extraction end: id=69 ms=0.011 tokens=11
+Nemotron decode: id=69 count=5 p50_ms=185.389 p95_ms=186.669 max_ms=320.897
+Nemotron throughput: id=69 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4607.16 ratio=0.476432 pcm_commands=110 accept_calls=92 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=516.202 scheduling_gap_p95_ms=859.509 scheduling_gap_max_ms=1019.19
+Nemotron worker finalize response send: id=69 send_ms=0.0738 total_ms=347.175
+Nemotron stream create: id=70 ms=0.2434
+Nemotron worker finalize receive: id=70 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.032
+Nemotron worker finalize start: id=70
+Nemotron inputFinished end: id=70 ms=0.0179
+Nemotron remaining decode loop end: id=70 calls=2 ms=620.605
+Nemotron final result extraction end: id=70 ms=0.0293 tokens=48
+Nemotron decode: id=70 count=16 p50_ms=174.692 p95_ms=305.25 max_ms=316.967
+Nemotron throughput: id=70 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15690.9 ratio=0.520162 pcm_commands=409 accept_calls=354 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=829.792 scheduling_gap_p95_ms=896.822 scheduling_gap_max_ms=898.685
+Nemotron worker finalize response send: id=70 send_ms=0.089 total_ms=623.772
+Nemotron stream create: id=71 ms=0.3306
+Nemotron worker finalize receive: id=71 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0149
+Nemotron worker finalize start: id=71
+Nemotron inputFinished end: id=71 ms=0.0217
+Nemotron remaining decode loop end: id=71 calls=2 ms=535.495
+Nemotron final result extraction end: id=71 ms=0.0396 tokens=57
+Nemotron decode: id=71 count=22 p50_ms=695.411 p95_ms=840.827 max_ms=1335.5
+Nemotron throughput: id=71 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=20774.4 ratio=0.55525 pcm_commands=577 accept_calls=207 queue_high_watermark_samples=11200 scheduling_gap_p50_ms=238.77 scheduling_gap_p95_ms=724.237 scheduling_gap_max_ms=799.224
+Nemotron worker finalize response send: id=71 send_ms=0.0886 total_ms=538.127
+Nemotron stream create: id=72 ms=0.2664
+Nemotron worker finalize receive: id=72 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0401
+Nemotron worker finalize start: id=72
+Nemotron inputFinished end: id=72 ms=0.0173
+Nemotron remaining decode loop end: id=72 calls=2 ms=566.622
+Nemotron final result extraction end: id=72 ms=0.025 tokens=51
+Nemotron decode: id=72 count=13 p50_ms=275.014 p95_ms=325.346 max_ms=337.802
+Nemotron throughput: id=72 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12771.9 ratio=0.519107 pcm_commands=332 accept_calls=255 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=757.835 scheduling_gap_p95_ms=817.059 scheduling_gap_max_ms=826.432
+Nemotron worker finalize response send: id=72 send_ms=0.0735 total_ms=568.991
+Nemotron stream create: id=73 ms=0.1749
+Nemotron worker finalize receive: id=73 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0241
+Nemotron worker finalize start: id=73
+Nemotron inputFinished end: id=73 ms=0.1347
+Nemotron remaining decode loop end: id=73 calls=2 ms=648.019
+Nemotron final result extraction end: id=73 ms=0.0163 tokens=11
+Nemotron decode: id=73 count=5 p50_ms=315.479 p95_ms=332.529 max_ms=337.941
+Nemotron throughput: id=73 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=5066.58 ratio=0.433231 pcm_commands=110 accept_calls=93 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=674.078 scheduling_gap_p95_ms=712.319 scheduling_gap_max_ms=1008.34
+Nemotron worker finalize response send: id=73 send_ms=0.1128 total_ms=652.877
+Nemotron stream create: id=74 ms=0.2366
+Nemotron worker finalize receive: id=74 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0449
+Nemotron worker finalize start: id=74
+Nemotron inputFinished end: id=74 ms=0.0291
+Nemotron remaining decode loop end: id=74 calls=2 ms=1233.37
+Nemotron final result extraction end: id=74 ms=0.0309 tokens=48
+Nemotron decode: id=74 count=16 p50_ms=273.94 p95_ms=683.048 max_ms=696.704
+Nemotron throughput: id=74 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=16029.4 ratio=0.509178 pcm_commands=409 accept_calls=283 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=665.112 scheduling_gap_p95_ms=795.614 scheduling_gap_max_ms=800.352
+Nemotron worker finalize response send: id=74 send_ms=0.1319 total_ms=1238.58
+Nemotron stream create: id=75 ms=0.2433
+Nemotron worker finalize receive: id=75 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0219
+Nemotron worker finalize start: id=75
+Nemotron inputFinished end: id=75 ms=0.0239
+Nemotron remaining decode loop end: id=75 calls=2 ms=646.547
+Nemotron final result extraction end: id=75 ms=0.0364 tokens=57
+Nemotron decode: id=75 count=22 p50_ms=335.889 p95_ms=619.771 max_ms=636.187
+Nemotron throughput: id=75 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21520.7 ratio=0.535995 pcm_commands=577 accept_calls=380 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=590.13 scheduling_gap_p95_ms=857.063 scheduling_gap_max_ms=863.658
+Nemotron worker finalize response send: id=75 send_ms=0.1707 total_ms=649.956
+Nemotron stream create: id=76 ms=0.1076
+Nemotron worker finalize receive: id=76 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0193
+Nemotron worker finalize start: id=76
+Nemotron inputFinished end: id=76 ms=0.0122
+Nemotron remaining decode loop end: id=76 calls=2 ms=780.44
+Nemotron final result extraction end: id=76 ms=0.0409 tokens=51
+Nemotron decode: id=76 count=13 p50_ms=351.468 p95_ms=393.364 max_ms=406.687
+Nemotron throughput: id=76 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=13192.7 ratio=0.502549 pcm_commands=332 accept_calls=245 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=639.391 scheduling_gap_p95_ms=850.773 scheduling_gap_max_ms=951.617
+Nemotron worker finalize response send: id=76 send_ms=0.0867 total_ms=783.258
+Nemotron stream create: id=77 ms=0.2871
+Nemotron worker finalize receive: id=77 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.017
+Nemotron worker finalize start: id=77
+Nemotron inputFinished end: id=77 ms=0.0319
+Nemotron remaining decode loop end: id=77 calls=2 ms=596.386
+Nemotron final result extraction end: id=77 ms=0.0112 tokens=11
+Nemotron decode: id=77 count=5 p50_ms=280.736 p95_ms=293.349 max_ms=315.642
+Nemotron throughput: id=77 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=5106.73 ratio=0.429825 pcm_commands=110 accept_calls=89 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=792.182 scheduling_gap_p95_ms=821.135 scheduling_gap_max_ms=835.037
+Nemotron worker finalize response send: id=77 send_ms=0.0789 total_ms=598.521
+Nemotron stream create: id=78 ms=0.218
+Nemotron worker finalize receive: id=78 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0405
+Nemotron worker finalize start: id=78
+Nemotron inputFinished end: id=78 ms=0.0403
+Nemotron remaining decode loop end: id=78 calls=2 ms=1404.83
+Nemotron final result extraction end: id=78 ms=0.0394 tokens=48
+Nemotron decode: id=78 count=16 p50_ms=356.546 p95_ms=669.542 max_ms=746.319
+Nemotron throughput: id=78 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=16376.8 ratio=0.498376 pcm_commands=409 accept_calls=275 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=610.423 scheduling_gap_p95_ms=789.188 scheduling_gap_max_ms=862.209
+Nemotron worker finalize response send: id=78 send_ms=0.1259 total_ms=1411.25
+Nemotron stream create: id=79 ms=0.2122
+Nemotron worker finalize receive: id=79 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0135
+Nemotron worker finalize start: id=79
+Nemotron inputFinished end: id=79 ms=0.0223
+Nemotron remaining decode loop end: id=79 calls=2 ms=517.167
+Nemotron final result extraction end: id=79 ms=0.027 tokens=57
+Nemotron decode: id=79 count=22 p50_ms=239.246 p95_ms=361.678 max_ms=393.834
+Nemotron throughput: id=79 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21764.3 ratio=0.529997 pcm_commands=577 accept_calls=444 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=801.07 scheduling_gap_p95_ms=859.596 scheduling_gap_max_ms=883.627
+Nemotron worker finalize response send: id=79 send_ms=0.0698 total_ms=519.294
+Nemotron stream create: id=80 ms=0.1557
+Nemotron worker finalize receive: id=80 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0199
+Nemotron worker finalize start: id=80
+Nemotron inputFinished end: id=80 ms=0.0119
+Nemotron remaining decode loop end: id=80 calls=2 ms=449.899
+Nemotron final result extraction end: id=80 ms=0.0245 tokens=51
+Nemotron decode: id=80 count=13 p50_ms=239.139 p95_ms=264.841 max_ms=278.905
+Nemotron throughput: id=80 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=13137.5 ratio=0.504662 pcm_commands=332 accept_calls=268 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=806.128 scheduling_gap_p95_ms=876.405 scheduling_gap_max_ms=978.834
+Nemotron worker finalize response send: id=80 send_ms=0.0747 total_ms=451.852
+Nemotron stream create: id=81 ms=0.2917
+Nemotron worker finalize receive: id=81 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0241
+Nemotron worker finalize start: id=81
+Nemotron inputFinished end: id=81 ms=0.0217
+Nemotron remaining decode loop end: id=81 calls=2 ms=512.898
+Nemotron final result extraction end: id=81 ms=0.0101 tokens=11
+Nemotron decode: id=81 count=5 p50_ms=233.617 p95_ms=238.797 max_ms=283.404
+Nemotron throughput: id=81 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4727.62 ratio=0.464292 pcm_commands=110 accept_calls=89 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=600.391 scheduling_gap_p95_ms=771.278 scheduling_gap_max_ms=996.134
+Nemotron worker finalize response send: id=81 send_ms=0.0669 total_ms=514.914
+Nemotron stream create: id=82 ms=0.3877
+Nemotron worker finalize receive: id=82 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0286
+Nemotron worker finalize start: id=82
+Nemotron inputFinished end: id=82 ms=0.0119
+Nemotron remaining decode loop end: id=82 calls=2 ms=520.81
+Nemotron final result extraction end: id=82 ms=0.0194 tokens=48
+Nemotron decode: id=82 count=16 p50_ms=236.929 p95_ms=291.073 max_ms=295.019
+Nemotron throughput: id=82 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15463.5 ratio=0.52781 pcm_commands=409 accept_calls=335 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=777.868 scheduling_gap_p95_ms=839.509 scheduling_gap_max_ms=869.983
+Nemotron worker finalize response send: id=82 send_ms=0.1285 total_ms=522.909
+Nemotron stream create: id=83 ms=0.1936
+Nemotron worker finalize receive: id=83 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0226
+Nemotron worker finalize start: id=83
+Nemotron inputFinished end: id=83 ms=0.0227
+Nemotron remaining decode loop end: id=83 calls=2 ms=459.126
+Nemotron final result extraction end: id=83 ms=0.0267 tokens=57
+Nemotron decode: id=83 count=22 p50_ms=234.526 p95_ms=254.041 max_ms=356.118
+Nemotron throughput: id=83 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21395.3 ratio=0.539136 pcm_commands=577 accept_calls=455 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=777.664 scheduling_gap_p95_ms=878.474 scheduling_gap_max_ms=893.389
+Nemotron worker finalize response send: id=83 send_ms=0.0895 total_ms=461.149
+Nemotron stream create: id=84 ms=0.2464
+Nemotron worker finalize receive: id=84 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0166
+Nemotron worker finalize start: id=84
+Nemotron inputFinished end: id=84 ms=0.0175
+Nemotron remaining decode loop end: id=84 calls=2 ms=528.596
+Nemotron final result extraction end: id=84 ms=0.0309 tokens=51
+Nemotron decode: id=84 count=13 p50_ms=234.915 p95_ms=293.673 max_ms=388.857
+Nemotron throughput: id=84 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12815.3 ratio=0.517351 pcm_commands=332 accept_calls=264 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=808.326 scheduling_gap_p95_ms=870.446 scheduling_gap_max_ms=890.93
+Nemotron worker finalize response send: id=84 send_ms=0.0974 total_ms=531.042
+Nemotron stream create: id=85 ms=0.3387
+Nemotron worker finalize receive: id=85 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0186
+Nemotron worker finalize start: id=85
+Nemotron inputFinished end: id=85 ms=0.0235
+Nemotron remaining decode loop end: id=85 calls=2 ms=775.083
+Nemotron final result extraction end: id=85 ms=0.0136 tokens=11
+Nemotron decode: id=85 count=5 p50_ms=252.924 p95_ms=375.149 max_ms=543.26
+Nemotron throughput: id=85 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=5189.52 ratio=0.422968 pcm_commands=110 accept_calls=87 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=710.365 scheduling_gap_p95_ms=776.837 scheduling_gap_max_ms=837.739
+Nemotron worker finalize response send: id=85 send_ms=0.0911 total_ms=777.736
+Nemotron stream create: id=86 ms=0.1753
+Nemotron worker finalize receive: id=86 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0293
+Nemotron worker finalize start: id=86
+Nemotron inputFinished end: id=86 ms=0.0126
+Nemotron remaining decode loop end: id=86 calls=2 ms=604.755
+Nemotron final result extraction end: id=86 ms=0.0267 tokens=48
+Nemotron decode: id=86 count=16 p50_ms=244.933 p95_ms=363.272 max_ms=382.316
+Nemotron throughput: id=86 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15758.1 ratio=0.517944 pcm_commands=409 accept_calls=318 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=747.642 scheduling_gap_p95_ms=865.534 scheduling_gap_max_ms=879.543
+Nemotron worker finalize response send: id=86 send_ms=0.0944 total_ms=607.543
+Nemotron stream create: id=87 ms=0.1591
+Nemotron worker finalize receive: id=87 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0245
+Nemotron worker finalize start: id=87
+Nemotron inputFinished end: id=87 ms=0.0344
+Nemotron remaining decode loop end: id=87 calls=2 ms=498.592
+Nemotron final result extraction end: id=87 ms=0.0238 tokens=57
+Nemotron decode: id=87 count=22 p50_ms=237.504 p95_ms=274.297 max_ms=283.615
+Nemotron throughput: id=87 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21664.5 ratio=0.532439 pcm_commands=577 accept_calls=466 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=766.339 scheduling_gap_p95_ms=887.218 scheduling_gap_max_ms=899.401
+Nemotron worker finalize response send: id=87 send_ms=0.0697 total_ms=501.076
+Nemotron stream create: id=88 ms=0.1877
+Nemotron worker finalize receive: id=88 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0192
+Nemotron worker finalize start: id=88
+Nemotron inputFinished end: id=88 ms=0.0118
+Nemotron remaining decode loop end: id=88 calls=2 ms=493.135
+Nemotron final result extraction end: id=88 ms=0.0404 tokens=51
+Nemotron decode: id=88 count=13 p50_ms=240.983 p95_ms=267.293 max_ms=300.319
+Nemotron throughput: id=88 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12867.3 ratio=0.515259 pcm_commands=332 accept_calls=274 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=775.534 scheduling_gap_p95_ms=872.152 scheduling_gap_max_ms=881.582
+Nemotron worker finalize response send: id=88 send_ms=0.0838 total_ms=495.392
+Nemotron stream create: id=89 ms=0.2749
+Nemotron worker finalize receive: id=89 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0265
+Nemotron worker finalize start: id=89
+Nemotron inputFinished end: id=89 ms=0.0223
+Nemotron remaining decode loop end: id=89 calls=2 ms=618.959
+Nemotron final result extraction end: id=89 ms=0.0112 tokens=11
+Nemotron decode: id=89 count=5 p50_ms=264.511 p95_ms=320.76 max_ms=381.353
+Nemotron throughput: id=89 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=5102.64 ratio=0.430169 pcm_commands=110 accept_calls=95 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=577.066 scheduling_gap_p95_ms=860.384 scheduling_gap_max_ms=952.476
+Nemotron worker finalize response send: id=89 send_ms=0.0858 total_ms=621.12
+Nemotron stream create: id=90 ms=0.1335
+Nemotron worker finalize receive: id=90 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0207
+Nemotron worker finalize start: id=90
+Nemotron inputFinished end: id=90 ms=0.0143
+Nemotron remaining decode loop end: id=90 calls=2 ms=475.337
+Nemotron final result extraction end: id=90 ms=0.0179 tokens=48
+Nemotron decode: id=90 count=16 p50_ms=236.368 p95_ms=383.33 max_ms=549.644
+Nemotron throughput: id=90 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=15771.2 ratio=0.517512 pcm_commands=409 accept_calls=317 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=700.387 scheduling_gap_p95_ms=879.579 scheduling_gap_max_ms=918.552
+Nemotron worker finalize response send: id=90 send_ms=0.073 total_ms=477.821
+Nemotron stream create: id=91 ms=0.269
+Nemotron worker finalize receive: id=91 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0231
+Nemotron worker finalize start: id=91
+Nemotron inputFinished end: id=91 ms=0.0217
+Nemotron remaining decode loop end: id=91 calls=2 ms=471.166
+Nemotron final result extraction end: id=91 ms=0.0365 tokens=57
+Nemotron decode: id=91 count=22 p50_ms=233.726 p95_ms=260.703 max_ms=402.644
+Nemotron throughput: id=91 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=21445.2 ratio=0.537884 pcm_commands=577 accept_calls=459 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=793.348 scheduling_gap_p95_ms=860.414 scheduling_gap_max_ms=887.812
+Nemotron worker finalize response send: id=91 send_ms=0.0916 total_ms=473.684
+Nemotron stream create: id=92 ms=0.2005
+Nemotron worker finalize receive: id=92 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.155
+Nemotron worker finalize start: id=92
+Nemotron inputFinished end: id=92 ms=0.0479
+Nemotron remaining decode loop end: id=92 calls=2 ms=1400.32
+Nemotron final result extraction end: id=92 ms=0.033 tokens=51
+Nemotron decode: id=92 count=13 p50_ms=297.813 p95_ms=740.359 max_ms=822.99
+Nemotron throughput: id=92 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=16232 ratio=0.408452 pcm_commands=332 accept_calls=264 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=651.748 scheduling_gap_p95_ms=1187.94 scheduling_gap_max_ms=2342.42
+Nemotron worker finalize response send: id=92 send_ms=0.0945 total_ms=1407.26
+Nemotron stream create: id=93 ms=0.3294
+Nemotron worker finalize receive: id=93 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0467
+Nemotron worker finalize start: id=93
+Nemotron inputFinished end: id=93 ms=0.04
+Nemotron remaining decode loop end: id=93 calls=2 ms=607.235
+Nemotron final result extraction end: id=93 ms=0.0118 tokens=11
+Nemotron decode: id=93 count=5 p50_ms=360.764 p95_ms=648.222 max_ms=656.159
+Nemotron throughput: id=93 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=4983.76 ratio=0.440431 pcm_commands=110 accept_calls=66 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=185.495 scheduling_gap_p95_ms=440.415 scheduling_gap_max_ms=803.498
+Nemotron worker finalize response send: id=93 send_ms=0.0819 total_ms=612.081
+Nemotron stream create: id=94 ms=0.3105
+Nemotron worker finalize receive: id=94 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0331
+Nemotron worker finalize start: id=94
+Nemotron inputFinished end: id=94 ms=0.0149
+Nemotron remaining decode loop end: id=94 calls=2 ms=1068.26
+Nemotron final result extraction end: id=94 ms=0.021 tokens=48
+Nemotron decode: id=94 count=16 p50_ms=411.517 p95_ms=795.786 max_ms=1170.36
+Nemotron throughput: id=94 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=16771.8 ratio=0.48664 pcm_commands=409 accept_calls=262 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=483.686 scheduling_gap_p95_ms=941.165 scheduling_gap_max_ms=990.96
+Nemotron worker finalize response send: id=94 send_ms=0.0907 total_ms=1070.64
+Nemotron stream create: id=95 ms=0.3097
+Nemotron worker finalize receive: id=95 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.0268
+Nemotron worker finalize start: id=95
+Nemotron inputFinished end: id=95 ms=0.05
+Nemotron remaining decode loop end: id=95 calls=2 ms=1043.4
+Nemotron final result extraction end: id=95 ms=0.0351 tokens=57
+Nemotron decode: id=95 count=22 p50_ms=592.385 p95_ms=833.823 max_ms=1192.98
+Nemotron throughput: id=95 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=23008.1 ratio=0.501345 pcm_commands=577 accept_calls=306 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=410.494 scheduling_gap_p95_ms=869.983 scheduling_gap_max_ms=895.796
+Nemotron worker finalize response send: id=95 send_ms=0.0965 total_ms=1047.83
+Nemotron stream create: id=96 ms=0.2403
+Nemotron worker finalize receive: id=96 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0179
+Nemotron worker finalize start: id=96
+Nemotron inputFinished end: id=96 ms=0.0106
+Nemotron remaining decode loop end: id=96 calls=2 ms=599.869
+Nemotron final result extraction end: id=96 ms=0.0414 tokens=51
+Nemotron decode: id=96 count=13 p50_ms=438.681 p95_ms=725.939 max_ms=785.018
+Nemotron throughput: id=96 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=12843.1 ratio=0.51623 pcm_commands=332 accept_calls=194 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=513.07 scheduling_gap_p95_ms=745.49 scheduling_gap_max_ms=940.226
+Nemotron worker finalize response send: id=96 send_ms=0.0897 total_ms=602.196
+Nemotron stream create: id=97 ms=0.2377
+Nemotron worker finalize receive: id=97 queued_samples=8240 speech_end_backlog_samples=8240 queue_wait_ms=0.0188
+Nemotron worker finalize start: id=97
+Nemotron inputFinished end: id=97 ms=0.0442
+Nemotron remaining decode loop end: id=97 calls=2 ms=585.539
+Nemotron final result extraction end: id=97 ms=0.0124 tokens=11
+Nemotron decode: id=97 count=5 p50_ms=280.489 p95_ms=285.958 max_ms=344.602
+Nemotron throughput: id=97 accepted_samples=35120 processed_samples=35120 processed_audio_ms=2195 wall_time_ms=5019.94 ratio=0.437256 pcm_commands=110 accept_calls=92 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=841.486 scheduling_gap_p95_ms=853.253 scheduling_gap_max_ms=890.065
+Nemotron worker finalize response send: id=97 send_ms=0.0934 total_ms=588.73
+Nemotron stream create: id=98 ms=0.2319
+Nemotron worker finalize receive: id=98 queued_samples=5149 speech_end_backlog_samples=5149 queue_wait_ms=0.0595
+Nemotron worker finalize start: id=98
+Nemotron inputFinished end: id=98 ms=0.0376
+Nemotron remaining decode loop end: id=98 calls=2 ms=779.964
+Nemotron final result extraction end: id=98 ms=0.0232 tokens=48
+Nemotron decode: id=98 count=16 p50_ms=258.825 p95_ms=371.375 max_ms=408.578
+Nemotron throughput: id=98 accepted_samples=130589 processed_samples=130589 processed_audio_ms=8161.81 wall_time_ms=16204 ratio=0.50369 pcm_commands=409 accept_calls=328 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=809.494 scheduling_gap_p95_ms=885.962 scheduling_gap_max_ms=895.762
+Nemotron worker finalize response send: id=98 send_ms=0.0868 total_ms=784.736
+Nemotron stream create: id=99 ms=0.1418
+Nemotron worker finalize receive: id=99 queued_samples=5360 speech_end_backlog_samples=5360 queue_wait_ms=0.1971
+Nemotron worker finalize start: id=99
+Nemotron inputFinished end: id=99 ms=0.0432
+Nemotron remaining decode loop end: id=99 calls=2 ms=669.966
+Nemotron final result extraction end: id=99 ms=0.0457 tokens=57
+Nemotron decode: id=99 count=22 p50_ms=321.118 p95_ms=645.774 max_ms=952.689
+Nemotron throughput: id=99 accepted_samples=184560 processed_samples=184560 processed_audio_ms=11535 wall_time_ms=22681.3 ratio=0.508568 pcm_commands=577 accept_calls=384 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=645.339 scheduling_gap_p95_ms=864.668 scheduling_gap_max_ms=1496.52
+Nemotron worker finalize response send: id=99 send_ms=0.1406 total_ms=674.205
+Nemotron stream create: id=100 ms=0.2776
+Nemotron worker finalize receive: id=100 queued_samples=7520 speech_end_backlog_samples=7520 queue_wait_ms=0.0474
+Nemotron worker finalize start: id=100
+Nemotron inputFinished end: id=100 ms=0.0294
+Nemotron remaining decode loop end: id=100 calls=2 ms=473.211
+Nemotron final result extraction end: id=100 ms=0.0228 tokens=51
+Nemotron decode: id=100 count=13 p50_ms=260.269 p95_ms=823.269 max_ms=1277.93
+Nemotron throughput: id=100 accepted_samples=106080 processed_samples=106080 processed_audio_ms=6630 wall_time_ms=15869 ratio=0.417795 pcm_commands=332 accept_calls=268 queue_high_watermark_samples=10880 scheduling_gap_p50_ms=824.996 scheduling_gap_p95_ms=1282.58 scheduling_gap_max_ms=1555.29
+Nemotron worker finalize response send: id=100 send_ms=0.069 total_ms=476.687

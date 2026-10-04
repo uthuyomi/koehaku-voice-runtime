@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 // Only whitelisted backend evidence and numeric timings survive stderr.
@@ -194,7 +194,7 @@ func startWorker(ctx context.Context, c RuntimeConfig, device string) (worker, e
 		return nil, stt.ErrUnavailable
 	}
 	prefix := "/" + hex.EncodeToString(token)
-	dir, err := os.MkdirTemp("", "yukkuri-stt-server-")
+	dir, err := os.MkdirTemp("", "koehaku-stt-server-")
 	if err != nil {
 		return nil, stt.ErrUnavailable
 	}
@@ -286,6 +286,7 @@ func (w *serverWorker) infer(ctx context.Context, r stt.Request) (*stt.Result, e
 		}
 	}()
 	var body bytes.Buffer
+	prepareStarted := time.Now()
 	form := multipart.NewWriter(&body)
 	part, err := form.CreateFormFile("file", "audio.wav")
 	if err != nil {
@@ -302,12 +303,15 @@ func (w *serverWorker) infer(ctx context.Context, r stt.Request) (*stt.Result, e
 	if form.Close() != nil {
 		return nil, stt.ErrRuntime
 	}
+	w.metrics.WAVPrepareMS = elapsedMS(prepareStarted)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, w.url+"/inference", &body)
 	if err != nil {
 		return nil, stt.ErrRuntime
 	}
 	req.Header.Set("Content-Type", form.FormDataContentType())
+	inferenceStarted := time.Now()
 	res, err := w.client.Do(req)
+	w.metrics.InferenceMS = elapsedMS(inferenceStarted)
 	if err != nil {
 		return nil, stt.ErrRuntime
 	}
@@ -315,6 +319,7 @@ func (w *serverWorker) infer(ctx context.Context, r stt.Request) (*stt.Result, e
 	if res.StatusCode != http.StatusOK {
 		return nil, stt.ErrRuntime
 	}
+	parseStarted := time.Now()
 	b, err := io.ReadAll(io.LimitReader(res.Body, 65537))
 	if err != nil || len(b) > 65536 {
 		return nil, stt.ErrRuntime
@@ -325,6 +330,7 @@ func (w *serverWorker) infer(ctx context.Context, r stt.Request) (*stt.Result, e
 	if json.Unmarshal(b, &wire) != nil || wire.Text == nil {
 		return nil, stt.ErrRuntime
 	}
+	w.metrics.ParseMS = elapsedMS(parseStarted)
 	if ctx.Err() != nil {
 		return nil, ctx.Err()
 	}
@@ -380,7 +386,7 @@ func (w *processWorker) alive() bool              { return true }
 func (w *processWorker) close()                   {}
 func (w *processWorker) measurement() Measurement { return w.metrics }
 func (w *processWorker) infer(ctx context.Context, r stt.Request) (*stt.Result, error) {
-	dir, err := os.MkdirTemp("", "yukkuri-stt-bench-")
+	dir, err := os.MkdirTemp("", "koehaku-stt-bench-")
 	if err != nil {
 		return nil, stt.ErrRuntime
 	}

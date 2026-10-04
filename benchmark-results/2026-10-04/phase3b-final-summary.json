@@ -1,0 +1,282 @@
+{
+  "turns": 100,
+  "all": {
+    "final_asr_ms": {
+      "mean": 1018.888,
+      "p50": 915.3,
+      "p95": 1813.1,
+      "max": 3316.7
+    },
+    "ttfa_ms": {
+      "mean": 1830.568,
+      "p50": 1593.5,
+      "p95": 3326.6,
+      "max": 4680.3
+    },
+    "decode_ms": {
+      "p50": {
+        "mean": 229.795,
+        "p50": 183.169,
+        "p95": 411.517,
+        "max": 695.411
+      },
+      "p95": {
+        "mean": 308.846,
+        "p50": 238.905,
+        "p95": 788.254,
+        "max": 840.827
+      },
+      "max": {
+        "mean": 380.533,
+        "p50": 288.976,
+        "p95": 908.562,
+        "max": 1335.5
+      }
+    }
+  },
+  "first25": {
+    "final_asr_ms": {
+      "mean": 1075.244,
+      "p50": 878,
+      "p95": 1902.6,
+      "max": 3316.7
+    },
+    "ttfa_ms": {
+      "mean": 2134.596,
+      "p50": 1760.7,
+      "p95": 3189.7,
+      "max": 4056
+    },
+    "decode_ms": {
+      "p50": {
+        "mean": 225.515,
+        "p50": 182.559,
+        "p95": 293.027,
+        "max": 645.064
+      },
+      "p95": {
+        "mean": 276.89,
+        "p50": 231.946,
+        "p95": 418.003,
+        "max": 793.528
+      },
+      "max": {
+        "mean": 342.481,
+        "p50": 280.117,
+        "p95": 488.02,
+        "max": 908.562
+      }
+    }
+  },
+  "middle1": {
+    "final_asr_ms": {
+      "mean": 853.56,
+      "p50": 825.2,
+      "p95": 995.2,
+      "max": 1108.9
+    },
+    "ttfa_ms": {
+      "mean": 1595.664,
+      "p50": 1559,
+      "p95": 2389.5,
+      "max": 2752.9
+    },
+    "decode_ms": {
+      "p50": {
+        "mean": 179.834,
+        "p50": 178.858,
+        "p95": 186.591,
+        "max": 196.742
+      },
+      "p95": {
+        "mean": 216.893,
+        "p50": 210.464,
+        "p95": 251.65,
+        "max": 296.125
+      },
+      "max": {
+        "mean": 262.445,
+        "p50": 256.07,
+        "p95": 312.279,
+        "max": 435.492
+      }
+    }
+  },
+  "middle2": {
+    "final_asr_ms": {
+      "mean": 979.568,
+      "p50": 936.5,
+      "p95": 1212.2,
+      "max": 1813.1
+    },
+    "ttfa_ms": {
+      "mean": 1764.976,
+      "p50": 1537.6,
+      "p95": 2736.9,
+      "max": 4680.3
+    },
+    "decode_ms": {
+      "p50": {
+        "mean": 220.236,
+        "p50": 180.616,
+        "p95": 315.479,
+        "max": 695.411
+      },
+      "p95": {
+        "mean": 294.574,
+        "p50": 234.156,
+        "p95": 619.771,
+        "max": 840.827
+      },
+      "max": {
+        "mean": 360.439,
+        "p50": 293.814,
+        "p95": 636.187,
+        "max": 1335.5
+      }
+    }
+  },
+  "last25": {
+    "final_asr_ms": {
+      "mean": 1167.18,
+      "p50": 1047.2,
+      "p95": 1535.1,
+      "max": 2300.2
+    },
+    "ttfa_ms": {
+      "mean": 1827.036,
+      "p50": 1598.8,
+      "p95": 2765.8,
+      "max": 3351.9
+    },
+    "decode_ms": {
+      "p50": {
+        "mean": 293.597,
+        "p50": 258.825,
+        "p95": 411.517,
+        "max": 592.385
+      },
+      "p95": {
+        "mean": 447.027,
+        "p50": 363.272,
+        "p95": 795.786,
+        "max": 833.823
+      },
+      "max": {
+        "mean": 556.77,
+        "p50": 402.644,
+        "p95": 1170.36,
+        "max": 1277.93
+      }
+    }
+  },
+  "underruns": 0,
+  "errors": 0,
+  "cancelled": 0,
+  "speculation": {
+    "promoted": 74,
+    "mismatched": 26
+  },
+  "decode_streams": 100,
+  "resources": {
+    "sherpa-onnx-nemotron-worker": {
+      "first": {
+        "CPUSeconds": 3.921875,
+        "WorkingSetBytes": 759255040.0,
+        "PrivateBytes": 746770432.0,
+        "Threads": 8.0,
+        "Handles": 152.0,
+        "ProcessorPerformance": 70.6038123715193,
+        "ProcessorUtility": 8.38694785586132,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "middle": {
+        "CPUSeconds": 265.796875,
+        "WorkingSetBytes": 795992064.0,
+        "PrivateBytes": 819376128.0,
+        "Threads": 5.0,
+        "Handles": 151.0,
+        "ProcessorPerformance": 69.8958644591477,
+        "ProcessorUtility": 10.9612641828086,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "last": {
+        "CPUSeconds": 608.203125,
+        "WorkingSetBytes": 795992064.0,
+        "PrivateBytes": 819376128.0,
+        "Threads": 5.0,
+        "Handles": 151.0,
+        "ProcessorPerformance": 69.0591399449762,
+        "ProcessorUtility": 25.6983668000278,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "samples": 350
+    },
+    "engine": {
+      "first": {
+        "CPUSeconds": 0.1875,
+        "WorkingSetBytes": 22003712.0,
+        "PrivateBytes": 58892288.0,
+        "Threads": 9.0,
+        "Handles": 140.0,
+        "ProcessorPerformance": 70.6038123715193,
+        "ProcessorUtility": 8.38694785586132,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "middle": {
+        "CPUSeconds": 11.625,
+        "WorkingSetBytes": 37195776.0,
+        "PrivateBytes": 67858432.0,
+        "Threads": 17.0,
+        "Handles": 379.0,
+        "ProcessorPerformance": 69.8958644591477,
+        "ProcessorUtility": 10.9612641828086,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "last": {
+        "CPUSeconds": 21.890625,
+        "WorkingSetBytes": 37765120.0,
+        "PrivateBytes": 68276224.0,
+        "Threads": 18.0,
+        "Handles": 297.0,
+        "ProcessorPerformance": 69.0591399449762,
+        "ProcessorUtility": 25.6983668000278,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "samples": 350
+    },
+    "python": {
+      "first": {
+        "CPUSeconds": 0.015625,
+        "WorkingSetBytes": 4247552.0,
+        "PrivateBytes": 860160.0,
+        "Threads": 2.0,
+        "Handles": 60.0,
+        "ProcessorPerformance": 70.6038123715193,
+        "ProcessorUtility": 8.38694785586132,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "middle": {
+        "CPUSeconds": 0.015625,
+        "WorkingSetBytes": 4317184.0,
+        "PrivateBytes": 831488.0,
+        "Threads": 1.0,
+        "Handles": 60.0,
+        "ProcessorPerformance": 69.8958644591477,
+        "ProcessorUtility": 10.9612641828086,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "last": {
+        "CPUSeconds": 0.0,
+        "WorkingSetBytes": 4317184.0,
+        "PrivateBytes": 831488.0,
+        "Threads": 1.0,
+        "Handles": 60.0,
+        "ProcessorPerformance": 69.0591399449762,
+        "ProcessorUtility": 25.6983668000278,
+        "ProcessorFrequencyMHz": 1661.0
+      },
+      "samples": 1400
+    }
+  }
+}

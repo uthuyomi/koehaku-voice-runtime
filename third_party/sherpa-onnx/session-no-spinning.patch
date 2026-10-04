@@ -1,0 +1,32 @@
+diff --git a/sherpa-onnx/csrc/session.cc b/sherpa-onnx/csrc/session.cc
+index e5c220c..01c3504 100755
+--- a/sherpa-onnx/csrc/session.cc
++++ b/sherpa-onnx/csrc/session.cc
+@@ -5,6 +5,8 @@
+ #include "sherpa-onnx/csrc/session.h"
+ 
+ #include <algorithm>
++#include <cstdlib>
++#include <cstring>
+ #include <fstream>
+ #include <sstream>
+ #include <string>
+@@ -151,6 +153,18 @@ Ort::SessionOptions GetSessionOptionsImpl(
+ 
+   sess_opts.SetInterOpNumThreads(num_threads);
+ 
++  // Diagnostic A/B for the persistent Nemotron worker showed that ORT's
++  // idle spinning sustains package load between streaming decode calls and
++  // drives Windows processor performance state down over long runs.  Keep
++  // the default for every existing sherpa-onnx executable; the Koehaku
++  // worker opts in through its child-process environment only.
++  const char *disable_spinning =
++      std::getenv("SHERPA_ONNX_ORT_DISABLE_SPINNING");
++  if (disable_spinning != nullptr && std::strcmp(disable_spinning, "1") == 0) {
++    sess_opts.AddConfigEntry("session.intra_op.allow_spinning", "0");
++    sess_opts.AddConfigEntry("session.inter_op.allow_spinning", "0");
++  }
++
+   std::vector<std::string> available_providers = Ort::GetAvailableProviders();
+   std::ostringstream os;
+   for (const auto &ep : available_providers) {

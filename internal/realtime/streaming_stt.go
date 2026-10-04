@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 func (s *Session) ConfigureStreamingSTT(p stt.StreamingProvider) error {

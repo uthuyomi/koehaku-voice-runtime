@@ -158,5 +158,5 @@ func ClientSchema() map[string]any {
 		}
 		variants = append(variants, map[string]any{"type": "object", "required": rootRequired, "properties": map[string]any{"type": map[string]any{"const": kind}, "data": data}})
 	}
-	return map[string]any{"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "Yukkuri protocol v1 client event (structural subset)", "oneOf": variants}
+	return map[string]any{"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "Koehaku protocol v1 client event (structural subset)", "oneOf": variants}
 }

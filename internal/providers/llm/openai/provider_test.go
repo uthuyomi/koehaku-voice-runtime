@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
 )
 
 func TestConversationRolesAndSystemOverrideArePreserved(t *testing.T) {

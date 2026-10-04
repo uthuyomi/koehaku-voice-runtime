@@ -17,7 +17,7 @@ func runTestServer() {
 	for i := 1; i+1 < len(os.Args); i++ {
 		args[os.Args[i]] = os.Args[i+1]
 	}
-	if os.Getenv("YUKKURI_TEST_STT_SERVER") == "cuda" {
+	if os.Getenv("KOEHAKU_TEST_STT_SERVER") == "cuda" {
 		fmt.Fprintln(os.Stderr, "whisper_backend_init_gpu: using CUDA0 backend\nwhisper_model_load: CUDA0 total size = 100.00 MB")
 	}
 	var calls atomic.Int32
@@ -26,12 +26,12 @@ func runTestServer() {
 	mux.HandleFunc(prefix+"/health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, `{"status":"ok"}`) })
 	mux.HandleFunc(prefix+"/inference", func(w http.ResponseWriter, r *http.Request) {
 		n := calls.Add(1)
-		_ = os.WriteFile(os.Getenv("YUKKURI_TEST_STT_MARKER"), []byte(strconv.Itoa(int(n))), 0600)
-		if n > 1 && os.Getenv("YUKKURI_TEST_STT_SERVER") == "block" {
+		_ = os.WriteFile(os.Getenv("KOEHAKU_TEST_STT_MARKER"), []byte(strconv.Itoa(int(n))), 0600)
+		if n > 1 && os.Getenv("KOEHAKU_TEST_STT_SERVER") == "block" {
 			<-r.Context().Done()
 			return
 		}
-		if n > 1 && os.Getenv("YUKKURI_TEST_STT_SERVER") == "crash" {
+		if n > 1 && os.Getenv("KOEHAKU_TEST_STT_SERVER") == "crash" {
 			os.Exit(3)
 		}
 		if err := r.ParseMultipartForm(1 << 20); err != nil {
@@ -64,8 +64,8 @@ func helperConfig(t *testing.T, mode string) RuntimeConfig {
 	if os.WriteFile(model, []byte("model"), 0600) != nil {
 		t.Fatal("write model")
 	}
-	t.Setenv("YUKKURI_TEST_STT_SERVER", mode)
-	t.Setenv("YUKKURI_TEST_STT_MARKER", filepath.Join(dir, "calls"))
+	t.Setenv("KOEHAKU_TEST_STT_SERVER", mode)
+	t.Setenv("KOEHAKU_TEST_STT_MARKER", filepath.Join(dir, "calls"))
 	c := DefaultRuntimeConfig()
 	c.Device = "cpu"
 	c.CPUExecutable = exe
@@ -87,7 +87,7 @@ func TestUpstreamHTTPWorkerReuseAndReap(t *testing.T) {
 			t.Fatal(r, e)
 		}
 	}
-	calls, _ := os.ReadFile(os.Getenv("YUKKURI_TEST_STT_MARKER"))
+	calls, _ := os.ReadFile(os.Getenv("KOEHAKU_TEST_STT_MARKER"))
 	if string(calls) != "4" {
 		t.Fatal("probe + three requests must use same model process", string(calls))
 	}

@@ -3,14 +3,15 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "yukkuri-realtime"
+name = "koehaku-voice-runtime"
 version = "0.1.0"
-description = "Async Public API v1 SDK and CLI for Yukkuri Realtime Engine"
+description = "Async Public API v1 SDK and CLI for Koehaku Voice Runtime"
 requires-python = ">=3.11"
 dependencies = ["httpx>=0.28,<1", "websockets>=15,<18"]
 readme = "README.md"
 
 [project.scripts]
+koehaku = "koehaku_realtime.cli:main"
 yukkuri = "yukkuri_realtime.cli:main"
 
 [tool.setuptools.packages.find]
@@ -18,3 +19,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 yukkuri_realtime = ["py.typed"]
+koehaku_realtime = ["py.typed"]

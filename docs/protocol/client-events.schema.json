@@ -536,5 +536,5 @@
       "type": "object"
     }
   ],
-  "title": "Yukkuri protocol v1 client event (structural subset)"
+  "title": "Koehaku protocol v1 client event (structural subset)"
 }

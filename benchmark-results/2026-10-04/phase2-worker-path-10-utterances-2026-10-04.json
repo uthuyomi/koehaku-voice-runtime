@@ -1,0 +1,62 @@
+[
+    {
+        "utterance":  1,
+        "duration_ms":  4368.88,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  2,
+        "duration_ms":  4504.03,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  3,
+        "duration_ms":  4950.29,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  4,
+        "duration_ms":  5235.46,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  5,
+        "duration_ms":  4902.09,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  6,
+        "duration_ms":  4840.99,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  7,
+        "duration_ms":  5195.05,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  8,
+        "duration_ms":  4814.47,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  9,
+        "duration_ms":  5290.13,
+        "ok":  true,
+        "text_bytes":  141
+    },
+    {
+        "utterance":  10,
+        "duration_ms":  5974.43,
+        "ok":  true,
+        "text_bytes":  141
+    }
+]

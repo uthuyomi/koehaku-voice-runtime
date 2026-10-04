@@ -9,7 +9,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
 )
 
 type Role string

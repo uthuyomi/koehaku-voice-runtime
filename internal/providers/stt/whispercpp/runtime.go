@@ -3,16 +3,23 @@ package whispercpp
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"sync"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 type Measurement struct {
+	AudioMS             float64  `json:"audio_ms"`
 	QueueWaitMS         float64  `json:"runtime_wait_ms"`
 	RequestMS           float64  `json:"request_ms"`
+	WAVPrepareMS        *float64 `json:"wav_prepare_ms"`
+	InferenceMS         *float64 `json:"inference_ms"`
+	ParseMS             *float64 `json:"parse_ms"`
+	RestartMS           *float64 `json:"restart_ms"`
+	Restarted           bool     `json:"restarted"`
 	RuntimeReadyMS      *float64 `json:"runtime_ready_ms"`
 	ProbeMS             *float64 `json:"probe_ms"`
 	LoadMS              *float64 `json:"model_load_ms"`
@@ -129,7 +136,7 @@ func (p *Runtime) initialize(ctx context.Context, auto bool) error {
 	p.last = w.measurement()
 	info := p.info
 	p.mu.Unlock()
-	log.Printf("STT initialized: requested_device=%s selected_device=%s model=%s persistent=%v fallback_from=%s fallback_reason=%s", info.RequestedDevice, info.SelectedDevice, info.Model, info.Persistent, info.FallbackFrom, info.FallbackReason)
+	log.Printf("STT initialized: requested_device=%s selected_device=%s model=%s persistent=%v language=%s threads=%d best_of=%d beam_size=%d fallback_from=%s fallback_reason=%s", info.RequestedDevice, info.SelectedDevice, info.Model, info.Persistent, p.cfg.Language, p.cfg.Threads, p.cfg.BestOf, p.cfg.BeamSize, info.FallbackFrom, info.FallbackReason)
 	return nil
 }
 
@@ -178,21 +185,30 @@ func (p *Runtime) Transcribe(ctx context.Context, r stt.Request) (result *stt.Re
 		return nil, ctx.Err()
 	}
 	waitMS := float64(time.Since(started).Microseconds()) / 1000
+	restarted := false
+	var restartMS *float64
 	if p.worker == nil || !p.worker.alive() {
 		if p.worker != nil {
 			p.worker.close()
 			p.worker = nil
 			p.noteCrash()
 		}
+		restartStarted := time.Now()
 		if err = p.initialize(ctx, p.cfg.Device == "auto"); err != nil {
 			return nil, err
 		}
+		ms := float64(time.Since(restartStarted).Microseconds()) / 1000
+		restarted = true
+		restartMS = &ms
 	}
 	inferenceStart := time.Now()
 	result, err = p.worker.infer(ctx, r)
 	metrics := p.worker.measurement()
+	metrics.AudioMS = float64(len(r.Audio)) / 32
 	metrics.QueueWaitMS = waitMS
 	metrics.RequestMS = float64(time.Since(inferenceStart).Microseconds()) / 1000
+	metrics.Restarted = restarted
+	metrics.RestartMS = restartMS
 	if ctx.Err() != nil {
 		err = ctx.Err()
 		metrics.Cancelled = true
@@ -218,11 +234,18 @@ func (p *Runtime) Transcribe(ctx context.Context, r stt.Request) (result *stt.Re
 	p.last = metrics
 	selected := p.info.SelectedDevice
 	p.mu.Unlock()
-	log.Printf("STT runtime: selected_device=%s runtime_wait_ms=%.2f request_ms=%.2f cancelled=%v failed=%v", selected, metrics.QueueWaitMS, metrics.RequestMS, metrics.Cancelled, err != nil)
+	log.Printf("STT runtime: selected_device=%s audio_ms=%.2f runtime_wait_ms=%.2f wav_prepare_ms=%s inference_ms=%s parse_ms=%s request_ms=%.2f restarted=%v restart_ms=%s cancelled=%v failed=%v", selected, metrics.AudioMS, metrics.QueueWaitMS, metricValue(metrics.WAVPrepareMS), metricValue(metrics.InferenceMS), metricValue(metrics.ParseMS), metrics.RequestMS, metrics.Restarted, metricValue(metrics.RestartMS), metrics.Cancelled, err != nil)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
+}
+
+func metricValue(v *float64) string {
+	if v == nil {
+		return "unavailable"
+	}
+	return fmt.Sprintf("%.2f", *v)
 }
 func (p *Runtime) noteCrash() {
 	p.mu.Lock()

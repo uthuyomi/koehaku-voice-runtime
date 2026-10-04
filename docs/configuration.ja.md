@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `OPENAI_API_KEY` | External LLM credential / 外部LLM資格情報 | empty / 空 | Nonempty for conversation / 会話に必要 | `(set privately / 非公開で設定)` | secret / 秘密 |
 | `OPENAI_MODEL` | LLM model identifier / モデル識別子 | gpt-5.6-luna | Provider account must support it / アカウントで利用可能なもの | `gpt-5.6-luna` | no / なし |
+| `STT_PROVIDER` | STT implementation | whisper | whisper, nemotron | `nemotron` | no |
 | `STT_DEVICE` | Requested backend / 要求backend | auto | auto, cpu, cuda | `cpu` | no / なし |
 | `STT_RUNTIME` | Worker mode / worker方式 | persistent | persistent, process | `persistent` | no / なし |
 | `STT_MODEL` | Model filename identifier / モデル名 | small | tiny, base, small, medium, large-v1/v2/v3, large-v3-turbo; optional .en | `small` | no / なし |
@@ -19,6 +20,15 @@
 | `STT_BEST_OF` | Search candidates / 探索候補 | 5 | 1–16 | `5` | no / なし |
 | `STT_BEAM_SIZE` | Beam search width / beam幅 | 5 | 1–16 | `5` | no / なし |
 | `STT_QUEUE_CAPACITY` | Admitted requests including active / 実行中込みの受入数 | 8 | 1–64 | `8` | no / なし |
+| `STT_OPENVINO_DEVICE` | Optional whisper.cpp OpenVINO device | empty | Runtime-supported identifier | `CPU` | no |
+| `NEMOTRON_WORKER_EXECUTABLE` | Nemotron worker executable | empty | Existing local path | `runtime/nemotron/worker.exe` | local path |
+| `NEMOTRON_ENCODER` | Nemotron encoder graph | empty | Existing local path | `runtime/nemotron/encoder.int8.onnx` | local path |
+| `NEMOTRON_DECODER` | Nemotron decoder graph | empty | Existing local path | `runtime/nemotron/decoder.int8.onnx` | local path |
+| `NEMOTRON_JOINER` | Nemotron joiner graph | empty | Existing local path | `runtime/nemotron/joiner.int8.onnx` | local path |
+| `NEMOTRON_TOKENS` | Nemotron tokens file | empty | Existing local path | `runtime/nemotron/tokens.txt` | local path |
+| `NEMOTRON_THREADS` | Nemotron inference threads | 2 | Positive integer | `2` | no |
+| `NEMOTRON_LANGUAGE` | Nemotron language mode | auto | Worker-supported value | `auto` | no |
+| `NEMOTRON_PERFORMANCE` | Nemotron performance diagnostics | false | Go ParseBool | `true` | no |
 | `TURN_DETECTOR_URL` | Smart Turn endpoint / 判定先 | http://127.0.0.1:8766/predict | Loopback HTTP only; no credentials/query/fragment / loopback HTTPのみ | `http://127.0.0.1:8766/predict` | local endpoint / ローカル接続先 |
 | `TURN_MIN_DELAY` | Earliest endpoint check / 最小待機 | 300ms | Go duration > 0; <= TURN_MAX_DELAY | `300ms` | no / なし |
 | `TURN_MAX_DELAY` | Endpoint upper delay / 最大待機 | 2500ms | Go duration >= TURN_MIN_DELAY | `2500ms` | no / なし |
@@ -29,7 +39,7 @@
 | `SPECULATION_TIMEOUT` | Candidate lifetime / 候補の寿命 | 45s | Go duration > 0 and <= 2m | `45s` | no / なし |
 | `SPECULATION_COOLDOWN` | Attempt spacing / 試行間隔 | 2s | Go duration >= 0 | `2s` | no / なし |
 | `API_ALLOWED_ORIGINS` | Extra exact browser origins / 追加の完全一致Origin | empty / 空 | Comma-separated; no wildcard expansion / カンマ区切り | `http://localhost:8080` | trust boundary / 信頼境界 |
-| `YUKKURI_ENGINE_URL` | CLI/example base URL / CLI・exampleの接続先 | http://127.0.0.1:8765 | HTTP(S), no credentials/query/fragment / 資格情報など不可 | `http://127.0.0.1:8765` | endpoint / 接続先 |
+| `KOEHAKU_ENGINE_URL` | CLI/example base URL / CLI・exampleの接続先 | http://127.0.0.1:8765 | HTTP(S), no credentials/query/fragment / 資格情報など不可 | `http://127.0.0.1:8765` | endpoint / 接続先 |
 
 ## 解釈と起動時の動作
 
@@ -39,7 +49,7 @@ persistentの既定実行名は`whisper-server.exe`、processは`whisper-cli.exe
 
 `cpu`はGPUを試さず、`cuda`はCPUへfallbackしません。`auto`はCUDAのロード・実推論を検証後、必要ならCPUへfallbackします。実行中のCUDA失敗は現在の要求を失敗させ、次の要求でCPUへ切り替えます。モデルは自動変更しません。不正STT設定はSTTを無効化します。不正なturn/interruption/speculation設定は起動を停止します。
 
-`YUKKURI_ENGINE_URL`はCLI／examples用です。CLIの`--url`が優先し、SDKはconstructor指定を使用します。`.env.example`内ではコメント例です。Engineの接続待受設定ではありません。
+`KOEHAKU_ENGINE_URL`はCLI／examples用です。CLIの`--url`が優先し、旧`YUKKURI_ENGINE_URL`は低い優先順位の互換aliasとして残します。SDKはconstructor指定を使用します。Engineの接続待受設定ではありません。
 
 ## 環境変数ではない設定
 
@@ -53,4 +63,4 @@ Smart TurnはCLIで`--model`必須、`--port 8766`、`--threshold 0.5`（0より
 
 Originなしのnative client、same-origin、HTTP(S) loopback Originは既定で許可します。追加許可は完全一致、wildcardなし、credential CORSなし。Originは認証ではありません。
 
-テスト専用変数：`TURN_DETECTOR_TEST_URL`、`WHISPER_CANCEL_TEST_EXE`／`WHISPER_CANCEL_TEST_MODEL`、`WHISPER_RUNTIME_TEST_EXE`／`WHISPER_RUNTIME_TEST_MODEL`。`YUKKURI_TEST_*`はfake worker内部用で、公開設定ではありません。
+テスト専用変数：`TURN_DETECTOR_TEST_URL`、`WHISPER_CANCEL_TEST_EXE`／`WHISPER_CANCEL_TEST_MODEL`、`WHISPER_RUNTIME_TEST_EXE`／`WHISPER_RUNTIME_TEST_MODEL`。`KOEHAKU_TEST_*`はfake worker内部用で、公開設定ではありません。

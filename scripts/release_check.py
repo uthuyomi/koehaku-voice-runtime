@@ -34,7 +34,10 @@ def check_content(name, data):
     errors = []
     if forbidden(name):
         errors.append(f"Forbidden release path: {name}")
-    if len(data) > 1024 * 1024 or b"\0" in data:
+    benchmark_data = name.startswith("benchmark-results/") and PurePosixPath(name).suffix in {".json", ".csv", ".log"}
+    media_asset = name.startswith("docs/assets/") and PurePosixPath(name).suffix == ".mp4"
+    size_limit = 15 * 1024 * 1024 if benchmark_data else (5 * 1024 * 1024 if media_asset else 1024 * 1024)
+    if len(data) > size_limit or (b"\0" in data and not media_asset):
         errors.append(f"Unexpected binary/large source file: {name}")
     if any(re.search(pattern, data) for pattern in SECRET_PATTERNS):
         errors.append(f"Credential signature in {name} (value redacted)")
@@ -43,7 +46,9 @@ def check_content(name, data):
 
 def candidate_files():
     # Includes new documentation for review before a commit, excludes ignored local assets.
-    return sorted(set(git_files("ls-files", "--cached", "--others", "--exclude-standard", "-z")))
+    files = set(git_files("ls-files", "--cached", "--others", "--exclude-standard", "-z"))
+    files.difference_update(git_files("ls-files", "--deleted", "-z"))
+    return sorted(files)
 
 
 def check_candidate():
@@ -73,9 +78,11 @@ def check_links(files):
             if not target or re.match(r"[a-zA-Z]+:", target):
                 continue
             resolved = ((ROOT / name).parent / target).resolve()
-            if not resolved.is_relative_to(ROOT) or resolved.relative_to(ROOT).as_posix() not in allowed:
+            relative = resolved.relative_to(ROOT).as_posix() if resolved.is_relative_to(ROOT) else None
+            directory_has_source = relative is not None and any(path.startswith(relative.rstrip("/") + "/") for path in allowed)
+            if relative is None or (relative not in allowed and not directory_has_source):
                 errors.append(f"Missing/non-source documentation target: {name} -> {target}")
-        if re.search(r"C:[/\\]source[/\\]yukkuri", content, re.I):
+        if re.search(r"[A-Z]:[/\\](?:Users|source)[/\\]", content, re.I):
             errors.append(f"Developer-specific path: {name}")
         if "???" in content:
             errors.append(f"Possible encoding loss: {name}")
@@ -85,8 +92,9 @@ def check_links(files):
 def check_contract_docs():
     errors = []
     source = "\n".join((ROOT / name).read_text(encoding="utf-8") for name in
-                       ["cmd/engine/main.go", "internal/providers/stt/whispercpp/config.go"])
-    variables = set(re.findall(r'"((?:OPENAI|STT|TURN|INTERRUPTION|BACKCHANNEL|SPECULATION|API)_[A-Z_]+)"', source))
+                       ["cmd/engine/main.go", "internal/providers/stt/whispercpp/config.go",
+                        "internal/providers/stt/nemotron/config.go"])
+    variables = set(re.findall(r'"((?:OPENAI|STT|NEMOTRON|TURN|INTERRUPTION|BACKCHANNEL|SPECULATION|API)_[A-Z_]+)"', source))
     example = (ROOT / ".env.example").read_text(encoding="utf-8")
     declared = set(re.findall(r"^([A-Z_]+)=", example, re.M))
     if variables != declared:
@@ -148,10 +156,10 @@ def main():
         # Exclusive create prevents replacing an existing artifact accidentally.
         with zipfile.ZipFile(args.archive, "x", zipfile.ZIP_DEFLATED) as archive:
             for name in files:
-                archive.write(ROOT / name, "yukkuri-realtime-engine/" + name)
+                archive.write(ROOT / name, "koehaku-voice-runtime/" + name)
         with zipfile.ZipFile(args.archive) as archive:
             for member in archive.namelist():
-                name = member.removeprefix("yukkuri-realtime-engine/")
+                name = member.removeprefix("koehaku-voice-runtime/")
                 if check_content(name, archive.read(member)):
                     raise RuntimeError(f"Artifact verification failed: {name}")
         print(f"Verified candidate source archive: {args.archive} ({len(files)} files)")

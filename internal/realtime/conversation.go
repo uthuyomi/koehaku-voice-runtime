@@ -6,9 +6,9 @@ import (
 	"math"
 	"strings"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/conversation"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/speech"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/conversation"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/speech"
 )
 
 type ConversationUpdate struct {

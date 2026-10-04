@@ -3,11 +3,11 @@ package httptransport
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/protocol"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/protocol"
 	"io"
 	"strings"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 func (s *Server) consumeConversationUpdates(session *realtime.Session, writer *realtimeWriter) {

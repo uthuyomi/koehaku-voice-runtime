@@ -11,11 +11,11 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/engine"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/llm"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/tts"
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/engine"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/llm"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/tts"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 )
 
 type specSTT func(context.Context, stt.Request) (*stt.Result, error)
@@ -157,6 +157,7 @@ func TestSpeculationWireFallback(t *testing.T) {
 	for _, failure := range []string{"stt", "llm", "overflow", "timeout_after_commit"} {
 		t.Run(failure, func(t *testing.T) {
 			var sttCalls, llmCalls atomic.Int32
+			slowSTT := make(chan struct{})
 			s, d, _ := specServer(t, specSTT(func(ctx context.Context, _ stt.Request) (*stt.Result, error) {
 				n := sttCalls.Add(1)
 				if n == 1 {
@@ -164,8 +165,12 @@ func TestSpeculationWireFallback(t *testing.T) {
 					case "stt":
 						return nil, errors.New("speculative failure")
 					case "timeout_after_commit":
-						<-ctx.Done()
-						return nil, ctx.Err()
+						select {
+						case <-slowSTT:
+							return &stt.Result{Text: "private transcript"}, nil
+						case <-ctx.Done():
+							return nil, ctx.Err()
+						}
 					}
 				}
 				return &stt.Result{Text: "private transcript"}, nil
@@ -191,6 +196,8 @@ func TestSpeculationWireFallback(t *testing.T) {
 			if failure == "timeout_after_commit" {
 				readSpecEvent(t, c, ctx, "speculation.started", "")
 				close(d.release)
+				time.Sleep(2 * cfg.Timeout)
+				close(slowSTT)
 			} else {
 				readSpecEvent(t, c, ctx, "speculation.fallback", "")
 				close(d.release)
@@ -198,8 +205,12 @@ func TestSpeculationWireFallback(t *testing.T) {
 			readType(t, c, ctx, "input_audio.transcript.final")
 			readType(t, c, ctx, "generation.created")
 			readType(t, c, ctx, "response.text.done")
-			if sttCalls.Load() != 2 {
-				t.Fatalf("normal STT fallback calls=%d", sttCalls.Load())
+			wantCalls := int32(2)
+			if failure == "timeout_after_commit" {
+				wantCalls = 1
+			}
+			if sttCalls.Load() != wantCalls {
+				t.Fatalf("STT calls=%d, want %d", sttCalls.Load(), wantCalls)
 			}
 		})
 	}

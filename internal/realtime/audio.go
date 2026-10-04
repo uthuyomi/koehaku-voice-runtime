@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/audio"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/audio"
 )
 
 // AudioFlow is obtained under the session lock, but Reserve must be called

@@ -1,7 +1,7 @@
 package httptransport
 
 import (
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/realtime"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/realtime"
 	"log"
 )
 

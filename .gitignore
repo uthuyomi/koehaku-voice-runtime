@@ -8,6 +8,7 @@ internal/providers/tts/aquestalk/aqk2k_win/
 # Build outputs
 *.exe
 *.dll
+/log.txt
 
 # Environment / secrets
 .env
@@ -44,3 +45,10 @@ sdk/python/build/
 *.safetensors
 *.tgz
 *.whl
+
+# Local launcher and benchmark scratch (canonical benchmark evidence is kept)
+*.pid
+*.stop
+benchmark-results/**/*launcher*.log
+benchmark-results/**/sample-*-resources.ps1
+.dev/

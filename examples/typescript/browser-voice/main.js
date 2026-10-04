@@ -1,4 +1,4 @@
-import {YukkuriClient} from '../../../sdk/typescript/dist/index.js';
+import {KoehakuClient} from '../../../sdk/typescript/dist/index.js';
 import {BrowserAudioPlayer, BrowserMicrophone, sileroVoiceFactory} from '../../../sdk/typescript/dist/browser.js';
 import {TurnHistory, formatLatency as fmt} from './history.mjs';
 const $ = id => document.getElementById(id);
@@ -66,7 +66,7 @@ $('connect').onclick = async () => {
   $('connect').disabled = true; notice(''); status('接続中');
   try {
     context = new AudioContext(); await context.resume();
-    const current = session = await new YukkuriClient({baseUrl: $('url').value}).realtime.connect();
+    const current = session = await new KoehakuClient({baseUrl: $('url').value}).realtime.connect();
     current.on('event', e => { history.accept(e); scheduleRender(); });
     current.on('audio', e => { history.audio(current.id, e.generationId); scheduleRender(); });
     current.on('error', e => { notice(e); });

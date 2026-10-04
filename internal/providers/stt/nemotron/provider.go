@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 const (
@@ -101,6 +101,12 @@ func New(ctx context.Context, cfg Config) (*Provider, error) {
 		args = append(args, "--performance=true")
 	}
 	p.cmd = exec.CommandContext(pctx, cfg.WorkerExecutable, args...)
+	// ORT worker threads otherwise spin between streaming decode calls. On the
+	// Windows hybrid CPU used for the long-run benchmark that sustained package
+	// load reduced processor performance state and doubled late decode latency.
+	// This affects only the dedicated Nemotron child process; thread count,
+	// provider, decoder, model, and Whisper remain unchanged.
+	p.cmd.Env = append(os.Environ(), "SHERPA_ONNX_ORT_DISABLE_SPINNING=1")
 	p.cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	p.cmd.Stderr = os.Stderr
 	stdout, err := p.cmd.StdoutPipe()

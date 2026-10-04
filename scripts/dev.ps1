@@ -30,14 +30,14 @@ $script:failed = $false
 $script:cleanupStarted = $false
 $script:nativeJob = $null
 
-if (-not ('YukkuriDev.NativeJob' -as [type])) {
+if (-not ('KoehakuDev.NativeJob' -as [type])) {
     Add-Type -TypeDefinition @'
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace YukkuriDev {
+namespace KoehakuDev {
     public static class CancelState {
         public static volatile bool Requested;
         private static bool installed;
@@ -292,9 +292,9 @@ function Stop-DevChildren {
 }
 
 try {
-    $script:nativeJob = [YukkuriDev.NativeJob]::new()
-    [YukkuriDev.CancelState]::Requested = $false
-    [YukkuriDev.CancelState]::Install()
+    $script:nativeJob = [KoehakuDev.NativeJob]::new()
+    [KoehakuDev.CancelState]::Requested = $false
+    [KoehakuDev.CancelState]::Install()
     Import-DevEnvironment $envPath
     $env:STT_PROVIDER = $Mode
 
@@ -352,17 +352,28 @@ try {
         [void](Require-File 'Whisper model' $model)
         $device = if ($env:STT_DEVICE) { $env:STT_DEVICE } else { 'auto' }
         $cpu = if ($env:STT_CPU_EXECUTABLE) { $env:STT_CPU_EXECUTABLE } else { "runtime/whisper/cpu/$binary" }
+        $legacyCpu = "runtime/whisper/$binary"
         $cuda = if ($env:STT_CUDA_EXECUTABLE) { $env:STT_CUDA_EXECUTABLE } else { "runtime/whisper/cuda/$binary" }
         if ($device -eq 'cpu') {
             $cpu = Require-File 'Whisper CPU executable' $cpu
-            if (-not (Test-ExecutableStarts $cpu)) { throw "Whisper CPU executable cannot start or has a missing runtime dependency: $cpu" }
+            if (-not (Test-ExecutableStarts $cpu)) {
+                if (-not $env:STT_CPU_EXECUTABLE -and (Test-Path -LiteralPath $legacyCpu -PathType Leaf) -and (Test-ExecutableStarts $legacyCpu)) {
+                    $cpu = (Resolve-Path -LiteralPath $legacyCpu).Path
+                } else {
+                    throw "Whisper CPU executable cannot start or has a missing runtime dependency: $cpu"
+                }
+            }
+            $env:STT_CPU_EXECUTABLE = $cpu
         } elseif ($device -eq 'cuda') {
             $cuda = Require-File 'Whisper CUDA executable' $cuda
             if (-not (Test-ExecutableStarts $cuda)) { throw "Whisper CUDA executable cannot start or has a missing runtime dependency: $cuda" }
         } else {
-            $workingWhisper = @(@($cuda, $cpu) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Where-Object { Test-ExecutableStarts $_ })
+            $workingWhisper = @(@($cuda, $cpu, $legacyCpu) | Select-Object -Unique | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Where-Object { Test-ExecutableStarts $_ })
             if ($workingWhisper.Count -eq 0) {
-                throw "No runnable Whisper executable is available for STT_DEVICE=auto. Checked: $cpu and $cuda"
+                throw "No runnable Whisper executable is available for STT_DEVICE=auto. Checked: $cpu, $legacyCpu, and $cuda"
+            }
+            if (-not (Test-ExecutableStarts $cpu) -and (Test-ExecutableStarts $legacyCpu)) {
+                $env:STT_CPU_EXECUTABLE = (Resolve-Path -LiteralPath $legacyCpu).Path
             }
         }
     }
@@ -378,7 +389,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Engine build failed.' }
 
     Write-Host ''
-    Write-Host 'Yukkuri Realtime Engine Dev Launcher' -ForegroundColor Cyan
+    Write-Host 'Koehaku Voice Runtime Dev Launcher' -ForegroundColor Cyan
     Write-Host ("STT          : {0}" -f (Get-Culture).TextInfo.ToTitleCase($Mode))
     if ($Mode -eq 'nemotron') {
         Write-Host 'Runtime      : sherpa-onnx persistent worker'
@@ -399,7 +410,7 @@ try {
     [void](Start-DevChild 'Browser' $turnPython @('-u', '-m', 'http.server', "$browserPort", '--bind', '127.0.0.1'))
 
     while (-not $script:cancelRequested) {
-        if ([YukkuriDev.CancelState]::Requested) {
+        if ([KoehakuDev.CancelState]::Requested) {
             $script:interruptRequested = $true
             $script:cancelRequested = $true
             break
@@ -420,7 +431,7 @@ try {
     $script:failed = $true
 } finally {
     Stop-DevChildren
-    [YukkuriDev.CancelState]::Uninstall()
+    [KoehakuDev.CancelState]::Uninstall()
 }
 
 if ($script:failed) { exit 1 }

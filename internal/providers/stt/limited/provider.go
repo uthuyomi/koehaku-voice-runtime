@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 var ErrBusy = errors.New("STT capacity occupied")

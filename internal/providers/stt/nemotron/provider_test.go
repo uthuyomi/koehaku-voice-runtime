@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/stt"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/stt"
 )
 
 func testProvider(t *testing.T, handler func(byte, uint64, []byte) wireResult) *Provider {

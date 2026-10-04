@@ -9,7 +9,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/uthuyomi/yukkuri-realtime-engine/internal/providers/backchannel"
+	"github.com/uthuyomi/koehaku-voice-runtime/internal/providers/backchannel"
 )
 
 type Policy struct{ AllowAcousticRecovery bool }
